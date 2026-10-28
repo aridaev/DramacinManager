@@ -1,0 +1,76 @@
+<%= form_with model: [:admin, source], class: "form" do |f| %>
+  <% if source.errors.any? %>
+    <div class="form-errors">
+      <strong><%= t("common.errors_heading") %></strong>
+      <ul><% source.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <div class="form-row">
+    <div class="field">
+      <%= f.label :name, t("admin.api_sources.f_name") %>
+      <%= f.text_field :name, required: true, placeholder: "DracinAPI" %>
+    </div>
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :slug, t("admin.api_sources.f_slug") %>
+        <span class="field-hint"><%= t("admin.api_sources.f_slug_hint") %></span>
+      </div>
+      <%= f.text_field :slug, placeholder: "dracinapi", pattern: "[a-z0-9\\-]+" %>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label-row">
+      <%= f.label :base_url, t("admin.api_sources.f_base_url") %>
+      <span class="field-hint"><%= t("admin.api_sources.f_base_url_hint") %></span>
+    </div>
+    <%= f.url_field :base_url, required: true, placeholder: "https://api.example.com" %>
+  </div>
+
+  <div class="form-row">
+    <div class="field">
+      <%= f.label :auth_mode, t("admin.api_sources.f_auth_mode") %>
+      <%= f.select :auth_mode, ApiSource::AUTH_MODES.map { |m| [auth_mode_label(m), m] } %>
+    </div>
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :auth_param, t("admin.api_sources.f_auth_param") %>
+        <span class="field-hint"><%= t("admin.api_sources.f_auth_param_hint") %></span>
+      </div>
+      <%= f.text_field :auth_param, placeholder: "code" %>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label-row">
+      <%= f.label :api_key, t("admin.api_sources.f_api_key") %>
+      <span class="field-hint"><%= source.persisted? ? t("admin.settings.api_key_current", masked: masked_secret(source.api_key)) : "" %></span>
+    </div>
+    <%= f.password_field :api_key, autocomplete: "off", placeholder: source.persisted? ? t("admin.api_sources.f_api_key_keep") : t("admin.settings.api_key_placeholder") %>
+  </div>
+
+  <div class="form-row">
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :status_path, t("admin.api_sources.f_status_path") %>
+        <span class="field-hint"><%= t("admin.api_sources.f_status_path_hint") %></span>
+      </div>
+      <%= f.text_field :status_path, placeholder: "/api/status" %>
+    </div>
+    <div class="field">
+      <label>&nbsp;</label>
+      <label class="check-row"><%= f.check_box :enabled %> <%= t("common.enabled") %></label>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :notes, t("admin.api_sources.f_notes") %>
+    <%= f.text_area :notes, rows: 3 %>
+  </div>
+
+  <div class="actions actions-row">
+    <%= f.submit t("common.save"), class: "btn" %>
+    <%= link_to t("common.cancel"), admin_api_sources_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

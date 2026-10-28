@@ -1,0 +1,36 @@
+<% content_for :page_actions do %>
+  <%= link_to template_v1_root_path, target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" do %><%= dm_icon("external", size: 16) %> <%= t("nav.open_template") %><% end %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("dashboard.title"), subtitle: t("dashboard.welcome", email: current_user.email) } do %>
+  <div class="card-grid">
+    <div class="card">
+      <h2><%= t("dashboard.your_account") %></h2>
+      <dl class="dl">
+        <dt><%= t("dashboard.email") %></dt>
+        <dd><%= current_user.email %></dd>
+        <dt><%= t("dashboard.role") %></dt>
+        <dd><span class="badge"><%= t("roles.#{current_user.role}") %></span></dd>
+      </dl>
+      <%= link_to t("nav.account"), edit_user_registration_path, class: "btn btn-secondary btn-sm" %>
+    </div>
+
+    <% if Setting.users_can_create_instances? || admin? %>
+      <div class="card">
+        <h2><%= t("nav.instances") %></h2>
+        <p><%= t("dashboard.instances_text") %></p>
+        <%= link_to t("nav.instances"), admin_instances_path, class: "btn btn-sm" %>
+      </div>
+    <% end %>
+    <% if admin? %>
+      <div class="card">
+        <h2><%= t("dashboard.admin_card_title") %></h2>
+        <p><%= t("dashboard.admin_card_text") %></p>
+        <div class="actions-row" style="margin-top:0">
+          <%= link_to t("dashboard.open_admin"), admin_root_path, class: "btn btn-sm" %>
+          <%= link_to t("nav.providers"), admin_providers_path, class: "btn btn-secondary btn-sm" %>
+          <%= link_to t("nav.api_sources"), admin_api_sources_path, class: "btn btn-secondary btn-sm" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

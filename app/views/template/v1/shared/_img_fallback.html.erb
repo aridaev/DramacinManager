@@ -1,0 +1,22 @@
+<script>
+  // Poster gagal dimuat → coba lewat proxy /covers, lalu ganti kartu placeholder (tanpa ikon gambar rusak).
+  (function () {
+    function fallback(img) {
+      var d = document.createElement("div");
+      d.className = img.className + " poster-fallback"; d.style.setProperty("--hue", img.dataset.hue || "262");
+      d.setAttribute("aria-label", img.alt || "");
+      d.innerHTML = '<span class="poster-fallback-mark"></span><span class="poster-fallback-title"></span>';
+      d.firstChild.textContent = img.dataset.mark || ""; d.lastChild.textContent = img.alt || "";
+      img.replaceWith(d);
+    }
+    function onError(e) {
+      var img = e.target; if (!(img instanceof HTMLImageElement) || !img.dataset.cover) return;
+      if (!img.dataset.proxied) { img.dataset.proxied = "1"; img.src = "/covers?u=" + encodeURIComponent(img.dataset.cover); return; }
+      fallback(img);
+    }
+    document.addEventListener("error", onError, true);
+    document.querySelectorAll("img[data-cover]").forEach(function (img) {
+      if (img.complete && img.naturalWidth === 0 && img.src) onError({ target: img });
+    });
+  })();
+</script>

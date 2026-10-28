@@ -1,0 +1,22 @@
+en:
+  template:
+    v3:
+      search_placeholder: "Search dramas"
+      nav:
+        latest: "Latest"
+      hero:
+        play_now: "Play"
+        fallback_desc: "Watch %{title} in HD for free with subtitles."
+      tags:
+        hot: "HOT"
+        complete: "Complete"
+      sections:
+        hot_now: "Now Airing"
+        ranking: "Top 10 Popular"
+        by_genre: "Browse Genres"
+        more: "More ›"
+      genre_tile_sub: "See all"
+      detail:
+        share: "Share"
+      watch:
+        of_total: "of %{count} episodes"

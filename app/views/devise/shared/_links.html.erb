@@ -1,0 +1,12 @@
+<div class="auth-links">
+  <% if controller_name != "sessions" %>
+    <span>
+      <% if controller_name == "registrations" && action_name == "new" %><%= t("auth.already_have_account") %><% end %>
+      <%= link_to t("auth.back_to_sign_in"), new_session_path(resource_name) %>
+    </span>
+  <% end %>
+
+  <% if devise_mapping.registerable? && controller_name != "registrations" %>
+    <span><%= t("auth.new_here") %> <%= link_to t("auth.create_account"), new_registration_path(resource_name) %></span>
+  <% end %>
+</div>

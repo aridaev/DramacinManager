@@ -1,0 +1,58 @@
+<% content_for :title, tv1_page_title(tt("watch.title", title: @drama.title, number: @episode_number), current_provider.name) %>
+
+<div class="watch">
+  <div class="watch-main">
+    <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>›</span><%= link_to @drama.title, tv1_drama_path(@drama) %><span>›</span><span><%= tt("watch.episode", number: @episode_number) %></span></nav>
+    <div class="player-wrap">
+      <% if @play_url.present? %>
+        <video id="tv1-player" controls playsinline autoplay preload="metadata" poster="<%= @drama.cover %>" controlsList="nodownload noremoteplayback nofullscreen" disablePictureInPicture oncontextmenu="return false"
+               data-src="<%= @play_url %>" data-format="<%= @stream.format %>" data-sources="<%= @sources.to_json %>" data-lang="<%= I18n.locale %>">
+          <% @subtitles.each do |s| %><track kind="subtitles" srclang="<%= s[:lang] %>" label="<%= s[:label] %>" src="<%= s[:src] %>"<%= " default" if s[:lang].to_s == I18n.locale.to_s %>><% end %>
+        </video>
+        <div class="player-loading" id="tv1-loading" aria-hidden="true"><span></span></div>
+        <% if current_instance&.watermark_src.present? %>
+          <div class="player-wm" data-pos="<%= current_instance.watermark_pos %>" data-size="<%= current_instance.watermark_size_key %>" aria-hidden="true"><img src="<%= current_instance.watermark_src %>" alt="" style="opacity:<%= current_instance.watermark_alpha / 100.0 %>" draggable="false"></div>
+        <% end %>
+      <% elsif @episode.locked %>
+        <div class="player-locked"><div><h2>🔒 <%= tt("watch.locked_title") %></h2><p class="muted"><%= tt("watch.locked_text") %></p></div></div>
+      <% else %>
+        <div class="player-locked"><div><h2><%= tt("watch.unavailable_title") %></h2><p class="muted"><%= tt("watch.unavailable_text") %></p></div></div>
+      <% end %>
+    </div>
+
+    <% if @play_url.present? %>
+      <div class="player-bar">
+        <div class="player-bar-info"><span class="player-chip"><%= @stream.format %></span><span class="player-chip player-chip-ghost"><%= current_provider.name %></span></div>
+        <div class="player-bar-ctl">
+          <label class="player-ctl" id="tv1-quality-wrap" hidden><span class="player-ctl-ico">HD</span><select id="tv1-quality" aria-label="<%= tt('player.quality') %>"></select></label>
+          <label class="player-ctl" id="tv1-cc-wrap" hidden><span class="player-ctl-ico">CC</span><select id="tv1-cc" aria-label="<%= tt('player.subtitles') %>"><option value="off"><%= tt("player.subtitles_off") %></option></select></label>
+          <label class="player-ctl"><span class="player-ctl-ico">1x</span><select id="tv1-speed" aria-label="<%= tt('player.speed') %>"><% [ 0.75, 1, 1.25, 1.5, 2 ].each do |s| %><option value="<%= s %>"<%= " selected" if s == 1 %>><%= s %>x</option><% end %></select></label>
+          <button type="button" class="player-ctl player-ctl-btn" id="tv1-fs" aria-label="<%= tt('player.fullscreen') %>">⛶</button>
+        </div>
+      </div>
+      <p class="player-error" id="tv1-error" hidden><%= tt("player.error") %> <a href="<%= @play_url %>" target="_blank" rel="noopener"><%= tt("player.open_direct") %></a></p>
+    <% end %>
+
+    <div class="watch-head">
+      <div>
+        <h1 class="watch-title"><%= link_to @drama.title, tv1_drama_path(@drama) %></h1>
+        <p class="watch-sub"><%= tt("watch.episode", number: @episode_number) %><%= " · #{@episode.title}" if @episode.title.present? && @episode.title != "Episode #{@episode_number}" %><%= " · #{@episode.duration}" if @episode.duration.present? %> · <%= tt("watch.of_total", count: @episodes.size) %></p>
+      </div>
+      <div class="watch-acts">
+        <% if @prev_episode %><%= link_to tt("watch.prev"), tv1_watch_path(@drama, @prev_episode.number), class: "btn btn-glass btn-sm", rel: "prev" %><% end %>
+        <% if @next_episode %><%= link_to tt("watch.next"), tv1_watch_path(@drama, @next_episode.number), class: "btn btn-primary btn-sm", rel: "next" %><% end %>
+      </div>
+    </div>
+    <% if @drama.synopsis.present? %><p class="watch-synopsis"><%= @drama.synopsis.truncate(320) %></p><% end %>
+  </div>
+
+  <aside class="watch-side">
+    <h3><%= tt("detail.episodes") %> <span class="muted">(<%= @episodes.size %>)</span></h3>
+    <div class="episode-grid">
+      <% @episodes.each do |ep| %><%= link_to ep.number, tv1_watch_path(@drama, ep.number), class: ["episode-btn", ("is-active" if ep.number == @episode_number), ("is-locked" if ep.locked)], title: ep.title %><% end %>
+    </div>
+  </aside>
+</div>
+
+<%= render "template/v1/shared/seo_page_text" %>
+<%= render "template/v1/shared/player_js" %>

@@ -1,0 +1,38 @@
+en:
+  template:
+    v2:
+      search_placeholder: "Search dramas, genres…"
+      nav:
+        collection: "Collection"
+      hero:
+        top_trending: "Top Trending"
+        play_now: "Play Now"
+        detail_info: "Details"
+        fallback_desc: "Watch %{title} in full with subtitles, HD quality, free and always up to date."
+      sections:
+        popular_picks: "Popular picks"
+        new_added: "Newly added"
+        most_wanted: "Most Wanted This Week"
+        see_all: "See all"
+        explore_genres: "Explore Genres"
+      footer:
+        explore: "Explore"
+        popular_genres: "Popular genres"
+        info: "Information"
+        rights: "All rights reserved."
+      genre_tile_sub: "Browse the collection"
+      detail:
+        sub_tag: "Subbed"
+        total_episodes: "Total episodes"
+        language: "Language"
+        year: "Year"
+        share: "Share"
+        synopsis: "Synopsis"
+        pick_episode: "Pick an episode of %{title} (%{count} episodes)"
+        faq: "Frequently asked questions"
+        faq_q1: "How many episodes does %{title} have?"
+        faq_a1: "%{count} episodes are currently available and updated as the source releases more."
+        faq_q2: "Can I watch %{title} for free on %{site}?"
+        faq_a2: "Yes. %{title} streams free with subtitles straight from your browser, no account needed."
+      watch:
+        of_total: "of %{count} episodes"

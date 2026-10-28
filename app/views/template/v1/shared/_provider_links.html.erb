@@ -1,0 +1,6 @@
+<% if enabled_providers.size > 1 && (current_instance.nil? || current_instance.footer_show_providers?) %>
+<nav class="prov-links" aria-label="<%= tt("seo.providers_nav") %>">
+  <span class="prov-links-title"><%= tt("seo.providers_nav") %>:</span>
+  <% enabled_providers.each do |p| %><%= link_to tt("seo.kw_watch", name: p.name), template_v1_provider_home_path(p.slug), class: ["prov-link", ("is-active" if p == current_provider)] %><% end %>
+</nav>
+<% end %>

@@ -1,0 +1,5 @@
+<div class="locale-switcher" aria-label="<%= t("nav.language") %>">
+  <% I18n.available_locales.each do |locale| %>
+    <%= link_to t("locales.#{locale}"), url_for(locale: locale), class: ["locale-link", ("is-active" if I18n.locale == locale)] %>
+  <% end %>
+</div>

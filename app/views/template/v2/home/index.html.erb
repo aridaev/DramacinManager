@@ -1,0 +1,96 @@
+<% content_for :title, tv1_page_title(current_provider.name) %>
+<% all_items = @sections.flat_map(&:items).uniq { |d| d.id } %>
+
+<% if @hero.any? %>
+  <section class="hero" id="tv2-hero" aria-label="<%= tt('hero.label') %>">
+    <% @hero.first(5).each_with_index do |drama, i| %>
+      <article class="hero-slide <%= 'is-on' if i.zero? %>">
+        <div class="hero-bg"><%= tv1_poster(drama, css_class: "hero-bg-img", lazy: i > 0) %></div>
+        <div class="hero-inner">
+          <div class="hero-poster"><%= link_to tv1_drama_path(drama) do %><%= tv1_poster(drama, lazy: i > 0) %><% end %></div>
+          <div class="hero-text">
+            <p class="hero-kicker"><span class="kicker-pill"><%= tt("hero.top_trending") %></span><span class="kicker-pill kicker-ghost">Full HD</span><% if (ep = tv1_episode_label(drama)) %><span class="kicker-pill kicker-ghost"><%= ep %></span><% end %></p>
+            <h2 class="hero-title"><%= link_to drama.title, tv1_drama_path(drama) %></h2>
+            <p class="hero-desc"><%= drama.synopsis.presence&.truncate(180) || tt("hero.fallback_desc", title: drama.title) %></p>
+            <div class="hero-acts">
+              <%= link_to tv1_watch_path(drama, 1), class: "btn btn-primary" do %><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span><%= tt("hero.play_now") %></span><% end %>
+              <%= link_to tt("hero.detail_info"), tv1_drama_path(drama), class: "btn btn-glass" %>
+            </div>
+          </div>
+        </div>
+      </article>
+    <% end %>
+    <div class="hero-ctl">
+      <button type="button" class="hero-arrow" data-hero-nav="prev" aria-label="<%= tt('hero.prev') %>">‹</button>
+      <div class="hero-dots"><% @hero.first(5).each_with_index do |_, i| %><button type="button" class="hero-dot <%= 'is-on' if i.zero? %>" aria-label="<%= i + 1 %>"></button><% end %></div>
+      <button type="button" class="hero-arrow" data-hero-nav="next" aria-label="<%= tt('hero.next') %>">›</button>
+    </div>
+  </section>
+<% end %>
+
+<% if @sections.empty? %>
+  <div class="empty-state"><h2><%= tt("empty.title") %></h2><p><%= tt("empty.home", provider: current_provider.name) %></p></div>
+<% end %>
+
+<%# Rail 1: pilihan populer (section pertama) %>
+<% @sections.each_with_index do |section, i| %>
+  <% if i.zero? %>
+    <%= render "template/v2/shared/rail", title: tt("sections.popular_picks"), items: section.items.first(24), eyebrow: current_provider.name, href: template_v1_latest_path %>
+
+    <%# Ranking "Paling Dicari Minggu Ini" (urutan unggulan dari penyedia) %>
+    <% ranked = (all_items.drop(18) + all_items).uniq { |d| d.id }.first(10) %>
+    <% if ranked.size >= 4 %>
+      <section class="section">
+        <div class="section-head"><h2 class="section-title"><%= tt("sections.most_wanted") %></h2><%= link_to tt("sections.see_all"), template_v1_latest_path, class: "section-more-link" %></div>
+        <ol class="rank-grid">
+          <% ranked.each_with_index do |drama, n| %>
+            <li class="rank-item">
+              <%= link_to tv1_drama_path(drama), class: "rank-link" do %>
+                <span class="rank-num"><%= n + 1 %></span>
+                <span class="rank-poster"><%= tv1_poster(drama) %></span>
+                <span class="rank-body"><strong><%= drama.title %></strong><small><%= [ tv1_episode_label(drama), drama.genres.first ].compact_blank.join(" · ") %></small></span>
+              <% end %>
+            </li>
+          <% end %>
+        </ol>
+      </section>
+    <% end %>
+
+    <% if @sections.size == 1 && all_items.size > 12 %>
+      <section class="section" data-lazy-section>
+        <div class="section-head"><h2 class="section-title"><%= tt("sections.new_added") %><small><%= tt("sections.count", count: all_items.size) %></small></h2></div>
+        <div class="grid"><% all_items.first(24).each do |drama| %><%= render "template/v2/shared/card", drama: drama %><% end %></div>
+        <% if all_items.size > 24 %>
+          <template data-more-items><% all_items.drop(24).each do |drama| %><%= render "template/v2/shared/card", drama: drama %><% end %></template>
+          <div class="section-more"><button type="button" class="btn btn-outline" data-load-more><%= tt("browse.load_more", count: all_items.size - 24) %></button></div>
+        <% end %>
+      </section>
+    <% end %>
+  <% elsif i == 1 %>
+    <%= render "template/v2/shared/rail", title: section.title.presence || tt("sections.new_added"), items: section.items.first(18), href: template_v1_latest_path %>
+  <% else %>
+    <% body = capture do %>
+      <section class="section" data-lazy-section>
+        <div class="section-head"><h2 class="section-title"><%= section.title.presence || tt("sections.default") %><small><%= tt("sections.count", count: section.items.size) %></small></h2></div>
+        <div class="grid">
+          <% section.items.first(12).each do |drama| %><%= render "template/v2/shared/card", drama: drama %><% end %>
+        </div>
+        <% if section.items.size > 12 %>
+          <template data-more-items><% section.items.drop(12).each do |drama| %><%= render "template/v2/shared/card", drama: drama %><% end %></template>
+          <div class="section-more"><button type="button" class="btn btn-outline" data-load-more><%= tt("browse.load_more", count: section.items.size - 12) %></button></div>
+        <% end %>
+      </section>
+    <% end %>
+    <div class="lazy-slot" data-lazy-slot aria-busy="true"><template><%= body %></template><div class="lazy-skeleton"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+  <% end %>
+<% end %>
+
+<section class="section">
+  <div class="section-head"><h2 class="section-title"><%= tt("sections.explore_genres") %></h2><%= link_to tt("sections.see_all") + " →", template_v1_genres_path, class: "section-more-link" %></div>
+  <div class="genre-chips">
+    <% ::Template::V1::BaseController::GENRES.each do |g| %><%= link_to t("template.v1.genres.#{g}", default: g.titleize), template_v1_genre_path(g), class: "genre-chip" %><% end %>
+  </div>
+</section>
+
+<% if params[:provider].present? %><%= render "template/v1/shared/seo_page_text" %><% end %>
+<%= render "template/v1/shared/seo_content" %>

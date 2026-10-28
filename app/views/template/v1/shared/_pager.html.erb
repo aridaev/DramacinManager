@@ -1,0 +1,13 @@
+<nav class="pager" aria-label="<%= t('template.v1.pager.label') %>">
+  <% if page > 1 %>
+    <%= link_to t("template.v1.pager.prev"), url_for(request.query_parameters.merge(page: page - 1)), class: "pager-link", rel: "prev" %>
+  <% else %>
+    <span class="pager-link disabled"><%= t("template.v1.pager.prev") %></span>
+  <% end %>
+  <span class="pager-text"><%= t("template.v1.pager.page", page: page) %></span>
+  <% if has_more %>
+    <%= link_to t("template.v1.pager.next"), url_for(request.query_parameters.merge(page: page + 1)), class: "pager-link", rel: "next" %>
+  <% else %>
+    <span class="pager-link disabled"><%= t("template.v1.pager.next") %></span>
+  <% end %>
+</nav>

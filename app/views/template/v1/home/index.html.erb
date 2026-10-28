@@ -1,0 +1,56 @@
+<% content_for :title, tv1_page_title(current_provider.name) %>
+
+<% if @hero.any? %>
+  <%= render "template/v1/shared/hero", items: @hero %>
+<% end %>
+
+<% if @sections.empty? %>
+  <div class="empty-state">
+    <h2><%= t("template.v1.empty.title") %></h2>
+    <p><%= t("template.v1.empty.home", provider: current_provider.name) %></p>
+  </div>
+<% end %>
+
+<%# Lazy load: section pertama dirender langsung; section berikutnya dikirim di <template> dan dipasang
+    saat mendekati viewport. Section besar hanya menampilkan INITIAL item dulu + tombol "Muat lagi". %>
+<% initial = 24 %>
+<% @sections.each_with_index do |section, i| %>
+  <% eager_items = section.items.first(initial) %>
+  <% rest_items = section.items.drop(initial) %>
+  <% body = capture do %>
+    <section class="section" data-lazy-section>
+      <div class="section-head">
+        <div>
+          <% if i.zero? %><p class="eyebrow"><%= current_provider.name %></p><% end %>
+          <h2 class="section-title"><%= section.title.presence || t("template.v1.sections.default") %><small><%= t("template.v1.sections.count", count: section.items.size) %></small></h2>
+        </div>
+      </div>
+      <div class="grid">
+        <% eager_items.each_with_index do |drama, j| %>
+          <%= render "template/v1/shared/card", drama: drama, lazy: !(i.zero? && j < 6) %>
+        <% end %>
+      </div>
+      <% if rest_items.any? %>
+        <template data-more-items>
+          <% rest_items.each do |drama| %>
+            <%= render "template/v1/shared/card", drama: drama %>
+          <% end %>
+        </template>
+        <div class="section-more">
+          <button type="button" class="btn btn-outline" data-load-more><%= t("template.v1.browse.load_more", count: rest_items.size) %></button>
+        </div>
+      <% end %>
+    </section>
+  <% end %>
+  <% if i < 3 %>
+    <%= body %>
+  <% else %>
+    <div class="lazy-slot" data-lazy-slot aria-busy="true">
+      <template><%= body %></template>
+      <div class="lazy-skeleton"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+  <% end %>
+<% end %>
+
+<% if params[:provider].present? %><%= render "template/v1/shared/seo_page_text" %><% end %>
+<%= render "template/v1/shared/seo_content" %>

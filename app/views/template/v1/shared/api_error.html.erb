@@ -1,0 +1,17 @@
+<% content_for :title, tv1_page_title(t("template.v1.api_error.title"), current_provider&.name) %>
+<div class="empty-state" style="margin-top:40px">
+  <h2><%= t("template.v1.api_error.title") %></h2>
+  <p><%= t("template.v1.api_error.#{@error_kind}", provider: current_provider&.name) %></p>
+  <% if admin? %>
+    <p class="muted"><code><%= @error.message %></code></p>
+    <div class="hero-acts" style="justify-content:center;margin-top:14px">
+      <%= link_to t("template.v1.api_error.retry"), request.fullpath, class: "btn btn-sm" %>
+      <%= link_to t("template.v1.api_error.configure"), edit_admin_settings_path, class: "btn btn-outline btn-sm" %>
+    </div>
+  <% else %>
+    <div class="hero-acts" style="justify-content:center;margin-top:14px">
+      <%= link_to t("template.v1.api_error.retry"), request.fullpath, class: "btn btn-sm" %>
+      <%= link_to t("template.v1.browse.back_home"), template_v1_root_path, class: "btn btn-outline btn-sm" %>
+    </div>
+  <% end %>
+</div>

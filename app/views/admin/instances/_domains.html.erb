@@ -1,0 +1,64 @@
+<section class="card" id="sec-domains">
+  <div class="card-head">
+    <h2><%= dm_icon("external", size: 18) %> <%= t("admin.domains.title") %></h2>
+    <span class="muted" style="font-size:.76rem"><%= t("admin.domains.hint") %></span>
+  </div>
+
+  <% unless @cf_ready %>
+    <div class="flash flash-alert" style="margin-bottom:12px">
+      <%= t("admin.domains.cf_not_ready") %>
+      <% if admin? %> <%= link_to t("admin.site_settings.title"), edit_admin_site_settings_path %><% end %>
+    </div>
+  <% end %>
+
+  <% if @domains.any? %>
+    <div class="domain-list">
+      <% @domains.each do |d| %>
+        <div class="domain-card <%= d.status %>">
+          <div class="domain-head">
+            <div>
+              <strong class="domain-host"><%= d.hostname %></strong>
+              <span class="badge <%= d.active? ? 'badge-success' : (d.error? ? 'badge-danger' : 'badge-info') %>"><%= t("admin.domains.statuses.#{d.status}") %></span>
+              <% if d.cf_status.present? %><span class="auth-pill" title="status zone Cloudflare">CF: <%= d.cf_status %></span><% end %>
+            </div>
+            <span class="inline-actions">
+              <%= button_to t("admin.domains.check"), refresh_admin_instance_domain_path(@instance, d), method: :post, class: "btn btn-secondary btn-xs", disabled: d.cf_zone_id.blank? %>
+              <% if d.error? || d.cf_zone_id.blank? %>
+                <%= button_to t("admin.domains.retry"), retry_admin_instance_domain_path(@instance, d), method: :post, class: "btn btn-secondary btn-xs", disabled: !@cf_ready %>
+              <% end %>
+              <%= button_to t("common.delete"), admin_instance_domain_path(@instance, d, delete_zone: 1), method: :delete, class: "btn btn-danger btn-xs", form: { onsubmit: "return confirm(#{t('admin.domains.delete_confirm').to_json})" } %>
+            </span>
+          </div>
+
+          <% if d.active? %>
+            <p class="domain-ok"><%= dm_icon("check", size: 14) %> <%= t("admin.domains.active_text", url: "https://#{d.hostname}") %> <%= link_to "https://#{d.hostname}", "https://#{d.hostname}", target: "_blank", rel: "noopener" %></p>
+          <% elsif d.nameservers.any? %>
+            <p class="muted" style="margin:6px 0"><%= t("admin.domains.ns_instruction_html", hostname: d.hostname) %></p>
+            <div class="ns-list">
+              <% d.nameservers.each do |ns| %>
+                <div class="ns-item"><code><%= ns %></code><button type="button" class="btn btn-secondary btn-xs copy-ns" data-copy="<%= ns %>"><%= t("admin.domains.copy") %></button></div>
+              <% end %>
+            </div>
+            <p class="muted" style="font-size:.74rem;margin:8px 0 0"><%= t("admin.domains.ns_note") %></p>
+          <% end %>
+          <% if d.last_error.present? %><p class="domain-err"><%= d.last_error %></p><% end %>
+          <% if d.last_checked_at %><p class="muted" style="font-size:.72rem;margin:6px 0 0"><%= t("admin.domains.last_checked") %>: <%= l(d.last_checked_at, format: :short) %></p><% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="muted"><%= t("admin.domains.empty") %></p>
+  <% end %>
+
+  <%= form_with model: [:admin, @instance, @domain], class: "domain-add" do |f| %>
+    <%= f.text_field :hostname, placeholder: "contoh.com", required: true, autocomplete: "off", disabled: !@cf_ready %>
+    <%= f.submit t("admin.domains.add"), class: "btn btn-sm", disabled: !@cf_ready %>
+  <% end %>
+</section>
+<script>
+  document.querySelectorAll(".copy-ns").forEach(function (b) {
+    b.addEventListener("click", function () {
+      navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy).then(function () { var t = b.textContent; b.textContent = "✓"; setTimeout(function () { b.textContent = t; }, 1200); });
+    });
+  });
+</script>

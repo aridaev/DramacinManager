@@ -1,0 +1,87 @@
+<%# Shell admin: sidebar (desktop) / drawer (mobile) + toolbar atas + area konten.
+    Kerapatan (compact/comfortable) disimpan di localStorage key "dm_density" dan dipasang ke <html data-density>. %>
+<% nav_items = [
+  { key: :dashboard, path: root_path, icon: "home", active: current_page?(root_path) },
+  (admin? ? { key: :admin, path: admin_root_path, icon: "grid", active: current_page?(admin_root_path) } : nil),
+  (admin? ? { key: :providers, path: admin_providers_path, icon: "layers", active: request.path.start_with?(admin_providers_path) || request.path.include?("custom_providers") } : nil),
+  ((admin? || Setting.users_can_create_instances?) ? { key: :instances, path: admin_instances_path, icon: "box", active: request.path.start_with?(admin_instances_path) } : nil),
+  (admin? ? { key: :site_settings, path: edit_admin_site_settings_path, icon: "key", active: request.path.start_with?("/admin/site_settings") } : nil),
+  (admin? ? { key: :api_sources, path: admin_api_sources_path, icon: "plug", active: request.path.start_with?(admin_api_sources_path) || current_page?(edit_admin_settings_path) } : nil),
+  { key: :account, path: edit_user_registration_path, icon: "user", active: current_page?(edit_user_registration_path) }
+].compact %>
+
+<div class="app" id="app">
+  <a class="skip-link" href="#main"><%= t("nav.skip") %></a>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
+
+  <aside class="sidebar" aria-label="<%= t("nav.main_menu") %>">
+    <div class="sidebar-brand">
+      <span class="brand-mark">D</span>
+      <div class="brand-lockup">
+        <strong><%= t("app.name") %></strong>
+        <span><%= t("app.tagline") %></span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <% nav_items.each do |item| %>
+        <%= link_to item[:path], class: ["side-link", ("is-active" if item[:active])], aria: { current: (item[:active] ? "page" : nil) } do %>
+          <%= dm_icon(item[:icon]) %>
+          <span><%= t("nav.#{item[:key]}") %></span>
+        <% end %>
+      <% end %>
+      <div class="side-sep"></div>
+      <%= link_to template_v1_root_path, class: "side-link", target: "_blank", rel: "noopener" do %>
+        <%= dm_icon("external") %>
+        <span><%= t("nav.open_template") %></span>
+      <% end %>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="density" role="group" aria-label="<%= t("nav.density") %>">
+        <button type="button" class="density-btn" data-density="compact" title="<%= t("nav.compact") %>"><%= dm_icon("compact") %></button>
+        <button type="button" class="density-btn" data-density="comfortable" title="<%= t("nav.comfortable") %>"><%= dm_icon("comfortable") %></button>
+      </div>
+      <%= render "shared/locale_switcher" %>
+      <div class="side-user">
+        <span class="avatar"><%= current_user.email.to_s[0, 1].upcase %></span>
+        <span class="side-user-mail" title="<%= current_user.email %>"><%= current_user.email %></span>
+      </div>
+      <%= button_to t("nav.sign_out"), destroy_user_session_path, method: :delete, class: "btn btn-secondary btn-sm btn-block" %>
+    </div>
+  </aside>
+  <label for="nav-toggle" class="nav-backdrop" aria-hidden="true"></label>
+
+  <div class="app-main">
+    <header class="topbar">
+      <label for="nav-toggle" class="icon-btn nav-burger" aria-label="<%= t("nav.main_menu") %>"><%= dm_icon("menu") %></label>
+      <div class="topbar-title">
+        <h1><%= title %></h1>
+        <% if local_assigns[:subtitle].present? %><p><%= subtitle %></p><% end %>
+      </div>
+      <div class="topbar-actions"><%= yield :page_actions %></div>
+    </header>
+
+    <main class="page" id="main">
+      <%= render "shared/flash" %>
+      <%= yield %>
+    </main>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var cur = (function () { try { return localStorage.getItem("dm_density"); } catch (e) { return null; } })() || "comfortable";
+    var apply = function (d) {
+      root.setAttribute("data-density", d);
+      document.querySelectorAll(".density-btn").forEach(function (b) { b.classList.toggle("is-active", b.dataset.density === d); });
+      try { localStorage.setItem("dm_density", d); } catch (e) {}
+    };
+    apply(cur);
+    document.querySelectorAll(".density-btn").forEach(function (b) { b.addEventListener("click", function () { apply(b.dataset.density); }); });
+    var t = document.getElementById("nav-toggle");
+    document.querySelectorAll(".side-link").forEach(function (a) { a.addEventListener("click", function () { t.checked = false; }); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") t.checked = false; });
+  })();
+</script>

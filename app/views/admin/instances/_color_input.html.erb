@@ -1,0 +1,6 @@
+<% v = value.presence || default %>
+<div class="color-input" data-color-input>
+  <input type="color" value="<%= v %>" aria-label="<%= key %>" data-color-pick>
+  <%= f.text_field key, value: value, placeholder: default, pattern: "#[0-9a-fA-F]{6}", maxlength: 7, class: "color-hex", data: { color_hex: true, theme_key: key } %>
+  <button type="button" class="btn btn-secondary btn-xs" data-color-reset title="<%= t("admin.instances.color_reset") %>">↺</button>
+</div>

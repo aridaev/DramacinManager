@@ -1,0 +1,16 @@
+<% content_for :title, tv1_page_title(t("template.v1.genres_title"), current_provider.name) %>
+<section class="section" style="margin-top:24px">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow"><%= current_provider.name %></p>
+      <h1 class="section-title"><%= t("template.v1.genres_title") %></h1>
+    </div>
+  </div>
+  <div class="genre-grid">
+    <% ::Template::V1::BaseController::GENRES.each do |g| %>
+      <%= link_to t("template.v1.genres.#{g}", default: g.titleize), template_v1_genre_path(g), class: "genre-tile" %>
+    <% end %>
+  </div>
+</section>
+
+<%= render "template/v1/shared/seo_page_text" %>

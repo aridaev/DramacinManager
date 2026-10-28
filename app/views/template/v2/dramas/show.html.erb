@@ -1,0 +1,62 @@
+<% content_for :title, tv1_page_title("#{@drama.title} #{tt('detail.sub_tag')}", current_provider.name) %>
+<% content_for :description, @drama.synopsis.to_s.truncate(160) if @drama.synopsis.present? %>
+<% first = @episodes.find { |e| !e.locked } || @episodes.first %>
+
+<article class="detail">
+  <div class="detail-backdrop"><%= tv1_poster(@drama, css_class: "detail-backdrop-img", lazy: false) %></div>
+  <div class="detail-inner">
+    <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>›</span><span>Movie</span><span>›</span><span><%= @drama.title %></span></nav>
+    <div class="detail-grid">
+      <div class="detail-poster">
+        <% if first %><%= link_to tv1_watch_path(@drama, first.number), aria: { label: tt("detail.watch_ep", number: first.number) } do %><%= tv1_poster(@drama, lazy: false) %><span class="card-play"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><% end %><% else %><%= tv1_poster(@drama, lazy: false) %><% end %>
+      </div>
+      <div class="detail-body">
+        <h1 class="detail-title"><%= @drama.title %> <span class="detail-subtag"><%= tt("detail.sub_tag") %></span></h1>
+        <div class="detail-tags">
+          <% @drama.genres.each do |g| %><%= link_to g, template_v1_genre_path(g.parameterize), class: "genre-chip genre-chip-sm" %><% end %>
+          <% if @drama.rating %><span class="genre-chip genre-chip-sm is-gold">★ <%= @drama.rating %></span><% end %>
+          <% if @drama.status.present? %><span class="genre-chip genre-chip-sm"><%= t("template.v1.status.#{@drama.status}", default: @drama.status.to_s.titleize) %></span><% end %>
+        </div>
+        <dl class="detail-facts">
+          <div><dt><%= tt("detail.total_episodes") %></dt><dd><%= @drama.episodes || @episodes.size %></dd></div>
+          <% if @drama.language.present? %><div><dt><%= tt("detail.language") %></dt><dd><%= @drama.language %></dd></div><% end %>
+          <% if @drama.year %><div><dt><%= tt("detail.year") %></dt><dd><%= @drama.year %></dd></div><% end %>
+          <div><dt><%= tt("provider") %></dt><dd><%= current_provider.name %></dd></div>
+        </dl>
+        <div class="detail-acts">
+          <% if first %><%= link_to tv1_watch_path(@drama, first.number), class: "btn btn-primary" do %><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span><%= tt("hero.watch_now") %></span><% end %><% end %>
+          <button type="button" class="btn btn-glass" data-share data-title="<%= @drama.title %>"><%= tt("detail.share") %></button>
+        </div>
+        <% if @drama.synopsis.present? %>
+          <section class="detail-sec"><h2><%= tt("detail.synopsis") %> <em><%= @drama.title %></em></h2><p><%= @drama.synopsis %></p></section>
+        <% end %>
+      </div>
+    </div>
+
+    <section class="detail-sec">
+      <h2><%= tt("detail.pick_episode", title: @drama.title, count: @episodes.size) %></h2>
+      <% if @episodes.empty? %><div class="empty-state"><p><%= tt("empty.episodes") %></p></div>
+      <% else %><div class="episode-grid"><% @episodes.each do |ep| %><%= link_to ep.number, tv1_watch_path(@drama, ep.number), class: ["episode-btn", ("is-locked" if ep.locked)], title: ep.title %><% end %></div><% end %>
+    </section>
+
+    <section class="detail-sec faq">
+      <h2><%= tt("detail.faq") %></h2>
+      <details open><summary><%= tt("detail.faq_q1", title: @drama.title) %></summary><p><%= tt("detail.faq_a1", count: @episodes.size) %></p></details>
+      <details><summary><%= tt("detail.faq_q2", title: @drama.title, site: tv1_site_name) %></summary><p><%= tt("detail.faq_a2", title: @drama.title) %></p></details>
+    </section>
+  </div>
+</article>
+
+<% content_for :scripts do %>
+  <script>
+    document.querySelectorAll("[data-share]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var d = { title: b.dataset.title, url: location.href };
+        if (navigator.share) navigator.share(d).catch(function () {});
+        else { navigator.clipboard && navigator.clipboard.writeText(location.href); b.textContent = "✓"; }
+      });
+    });
+  </script>
+<% end %>
+
+<%= render "template/v1/shared/seo_page_text" %>

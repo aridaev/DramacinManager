@@ -1,0 +1,125 @@
+<% content_for :scripts do %>
+  <script type="module">
+    import Hls from "hls.js";
+    const video = document.getElementById("tv1-player");
+    if (video) {
+      const sources = JSON.parse(video.dataset.sources || "[]");
+      const qWrap = document.getElementById("tv1-quality-wrap"), qSel = document.getElementById("tv1-quality");
+      const ccWrap = document.getElementById("tv1-cc-wrap"), ccSel = document.getElementById("tv1-cc");
+      const speed = document.getElementById("tv1-speed"), fs = document.getElementById("tv1-fs");
+      const loading = document.getElementById("tv1-loading"), err = document.getElementById("tv1-error");
+      const pref = (k, v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch (e) { return null; } };
+      let hls = null;
+      const isHls = (u) => /\.m3u8(\?|$)/.test(u);
+
+      function load(url, resume) {
+        const t = resume ? video.currentTime : 0, wasPlaying = resume ? !video.paused : true;
+        if (hls) { hls.destroy(); hls = null; }
+        err.hidden = true; loading.hidden = false;
+        if (isHls(url) && !video.canPlayType("application/vnd.apple.mpegurl") && Hls.isSupported()) {
+          hls = new Hls({ enableWorker: true, lowLatencyMode: false, maxBufferLength: 30, backBufferLength: 30 });
+          hls.loadSource(url);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => { buildHlsLevels(); buildHlsSubs(); });
+          hls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, buildHlsSubs);
+          hls.on(Hls.Events.ERROR, (_, d) => {
+            if (!d.fatal) return;
+            if (d.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
+            else if (d.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
+            else showError();
+          });
+        } else {
+          video.src = url;
+        }
+        video.addEventListener("loadedmetadata", () => { if (t > 0) video.currentTime = t; if (wasPlaying) video.play().catch(() => {}); }, { once: true });
+      }
+
+      // ---- kualitas: beberapa file (MP4/HLS per resolusi) ATAU level di dalam satu HLS
+      function buildSources() {
+        if (sources.length <= 1) return;
+        qSel.innerHTML = "";
+        sources.forEach((s, i) => { const o = document.createElement("option"); o.value = "src:" + i; o.textContent = s.label; qSel.appendChild(o); });
+        const saved = pref("tv1_quality");
+        const idx = Math.max(0, sources.findIndex((s) => s.label === saved));
+        qSel.value = "src:" + idx; qWrap.hidden = false;
+        return sources[idx].url;
+      }
+      function buildHlsLevels() {
+        if (!hls || sources.length > 1 || hls.levels.length <= 1) return;
+        qSel.innerHTML = "<option value='auto'>Auto</option>";
+        hls.levels.forEach((l, i) => { const o = document.createElement("option"); o.value = "lvl:" + i; o.textContent = (l.height ? l.height + "p" : Math.round(l.bitrate / 1000) + "k"); qSel.appendChild(o); });
+        const saved = pref("tv1_quality"), i = hls.levels.findIndex((l) => l.height + "p" === saved);
+        if (i >= 0) { hls.currentLevel = i; qSel.value = "lvl:" + i; }
+        qWrap.hidden = false;
+      }
+      qSel.addEventListener("change", () => {
+        const v = qSel.value;
+        if (v.startsWith("src:")) { const s = sources[+v.slice(4)]; pref("tv1_quality", s.label); load(s.url, true); }
+        else if (v === "auto") { if (hls) hls.currentLevel = -1; pref("tv1_quality", "Auto"); }
+        else if (hls) { const i = +v.slice(4); hls.currentLevel = i; pref("tv1_quality", hls.levels[i].height + "p"); }
+      });
+
+      // ---- subtitle: <track> (dari API) dan/atau track di dalam HLS
+      const want = pref("tv1_cc") ?? video.dataset.lang;
+      function buildTrackSubs() {
+        const tracks = Array.from(video.textTracks || []);
+        if (!tracks.length) return;
+        tracks.forEach((tr, i) => { const o = document.createElement("option"); o.value = "tt:" + i; o.textContent = tr.label || tr.language.toUpperCase(); ccSel.appendChild(o); });
+        ccWrap.hidden = false;
+        const i = tracks.findIndex((tr) => tr.language === want);
+        applyTrack(i);
+      }
+      function applyTrack(i) {
+        Array.from(video.textTracks || []).forEach((tr, j) => { tr.mode = j === i ? "showing" : "disabled"; });
+        ccSel.value = i >= 0 ? "tt:" + i : "off";
+      }
+      function buildHlsSubs() {
+        if (!hls || !hls.subtitleTracks.length || ccSel.querySelector("[value^='hs:']")) return;
+        hls.subtitleTracks.forEach((tr, i) => { const o = document.createElement("option"); o.value = "hs:" + i; o.textContent = tr.name || tr.lang; ccSel.appendChild(o); });
+        ccWrap.hidden = false;
+        const i = hls.subtitleTracks.findIndex((tr) => (tr.lang || "").startsWith(want));
+        hls.subtitleTrack = i; hls.subtitleDisplay = i >= 0;
+        if (i >= 0) ccSel.value = "hs:" + i;
+      }
+      ccSel.addEventListener("change", () => {
+        const v = ccSel.value;
+        if (v === "off") { applyTrack(-1); if (hls) { hls.subtitleTrack = -1; hls.subtitleDisplay = false; } pref("tv1_cc", "off"); return; }
+        if (v.startsWith("tt:")) { const i = +v.slice(3); applyTrack(i); if (hls) hls.subtitleDisplay = false; pref("tv1_cc", video.textTracks[i].language); }
+        else if (hls) { const i = +v.slice(3); applyTrack(-1); hls.subtitleTrack = i; hls.subtitleDisplay = true; pref("tv1_cc", hls.subtitleTracks[i].lang || ""); }
+      });
+
+      // ---- kecepatan, fullscreen, loading, error, autoplay next
+      const savedSpeed = pref("tv1_speed"); if (savedSpeed) { video.playbackRate = +savedSpeed; speed.value = savedSpeed; }
+      speed.addEventListener("change", () => { video.playbackRate = +speed.value; pref("tv1_speed", speed.value); });
+      // Fullscreen pada WRAPPER (bukan <video>) agar overlay watermark ikut tampil; fallback "fullscreen palsu" (fixed) bila API tidak ada.
+      const wrap = video.closest(".player-wrap");
+      function fakeFs(on) { wrap.classList.toggle("is-fake-fs", on); document.documentElement.classList.toggle("fake-fs", on); }
+      function toggleFs() {
+        if (document.fullscreenElement || document.webkitFullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+        if (wrap.classList.contains("is-fake-fs")) { fakeFs(false); return; }
+        const req = wrap.requestFullscreen || wrap.webkitRequestFullscreen;
+        if (req) req.call(wrap).catch(() => fakeFs(true)); else fakeFs(true);
+      }
+      fs.addEventListener("click", toggleFs);
+      video.addEventListener("dblclick", (e) => { e.preventDefault(); toggleFs(); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && wrap.classList.contains("is-fake-fs")) fakeFs(false); });
+      ["playing", "canplay"].forEach((e) => video.addEventListener(e, () => { loading.hidden = true; }));
+      video.addEventListener("waiting", () => { loading.hidden = false; });
+      function showError() { loading.hidden = true; err.hidden = false; }
+      video.addEventListener("error", () => { if (!hls) showError(); });
+      video.addEventListener("ended", () => { const n = document.querySelector("a[rel=next]"); if (n) window.location.href = n.href; });
+      document.addEventListener("keydown", (e) => {
+        if (e.target.matches("input,select,textarea")) return;
+        if (e.key === " " || e.key === "k") { e.preventDefault(); video.paused ? video.play() : video.pause(); }
+        else if (e.key === "ArrowRight") video.currentTime += 10;
+        else if (e.key === "ArrowLeft") video.currentTime -= 10;
+        else if (e.key === "f") fs.click();
+        else if (e.key === "n") { const n = document.querySelector("a[rel=next]"); if (n) window.location.href = n.href; }
+      });
+
+      const start = buildSources() || video.dataset.src;
+      load(start, false);
+      buildTrackSubs();
+    }
+  </script>
+<% end %>

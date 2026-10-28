@@ -1,0 +1,22 @@
+id:
+  template:
+    v3:
+      search_placeholder: "Cari drama"
+      nav:
+        latest: "Terbaru"
+      hero:
+        play_now: "Putar"
+        fallback_desc: "Tonton %{title} HD gratis dengan subtitle Indonesia."
+      tags:
+        hot: "HOT"
+        complete: "Tamat"
+      sections:
+        hot_now: "Sedang Tayang"
+        ranking: "Top 10 Terpopuler"
+        by_genre: "Jelajah Genre"
+        more: "Lainnya ›"
+      genre_tile_sub: "Lihat semua"
+      detail:
+        share: "Bagikan"
+      watch:
+        of_total: "dari %{count} episode"

@@ -1,0 +1,3 @@
+<%= render layout: "shared/app_shell", locals: { title: t("admin.custom_providers.new_title", name: @provider.name.presence), subtitle: t("admin.custom_providers.form_subtitle") } do %>
+  <div class="card"><%= render "form", provider: @provider %></div>
+<% end %>

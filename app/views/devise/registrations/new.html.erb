@@ -1,0 +1,27 @@
+<%= render layout: "shared/auth_card", locals: { title: t("auth.sign_up.title"), subtitle: t("auth.sign_up.subtitle") } do %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form" }) do |f| %>
+    <div class="field">
+      <%= f.label :email, t("auth.email") %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: t("auth.email_placeholder") %>
+    </div>
+
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :password, t("auth.password") %>
+        <% if @minimum_password_length %>
+          <span class="field-hint"><%= t("auth.min_length", count: @minimum_password_length) %></span>
+        <% end %>
+      </div>
+      <%= f.password_field :password, autocomplete: "new-password", placeholder: t("auth.sign_up.password_placeholder") %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password_confirmation, t("auth.confirm_password") %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: t("auth.sign_up.confirm_placeholder") %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit t("auth.sign_up.submit") %>
+    </div>
+  <% end %>
+<% end %>

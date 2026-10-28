@@ -1,0 +1,31 @@
+<%= render layout: "shared/app_shell", locals: { title: t("admin.settings.title"), subtitle: t("admin.settings.subtitle") } do %>
+  <div class="card">
+    <%= form_with url: admin_settings_path, method: :patch, scope: :settings, class: "form" do |f| %>
+      <div class="field">
+        <div class="field-label-row">
+          <%= f.label :base_url, t("admin.settings.base_url") %>
+          <span class="field-hint"><%= t("admin.settings.base_url_hint") %></span>
+        </div>
+        <%= f.url_field :base_url, value: @base_url, placeholder: DracinApi::Client::DEFAULT_BASE_URL, required: true %>
+      </div>
+
+      <div class="field">
+        <div class="field-label-row">
+          <%= f.label :api_key, t("admin.settings.api_key") %>
+          <span class="field-hint"><%= t("admin.settings.api_key_current", masked: masked_secret(@api_key)) %></span>
+        </div>
+        <%= f.password_field :api_key, autocomplete: "off", placeholder: t("admin.settings.api_key_placeholder") %>
+        <span class="field-hint"><%= t("admin.settings.api_key_hint") %></span>
+      </div>
+
+      <div class="actions actions-row">
+        <%= f.submit t("common.save") %>
+      </div>
+    <% end %>
+
+    <div class="actions-row">
+      <%= button_to t("admin.settings.test_connection"), test_connection_admin_settings_path, method: :post, class: "btn btn-secondary btn-sm", disabled: @api_key.blank? %>
+      <%= link_to t("admin.settings.docs"), "#{@base_url}/api/status", target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" %>
+    </div>
+  </div>
+<% end %>

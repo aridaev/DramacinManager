@@ -1,0 +1,88 @@
+<%= form_with model: provider, url: (provider.persisted? ? admin_custom_provider_path(provider) : admin_custom_providers_path), class: "form" do |f| %>
+  <% if provider.errors.any? %>
+    <div class="form-errors">
+      <strong><%= t("common.errors_heading") %></strong>
+      <ul><% provider.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <div class="form-row">
+    <div class="field">
+      <%= f.label :name, t("admin.custom_providers.f_name") %>
+      <%= f.text_field :name, required: true %>
+    </div>
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :slug, t("admin.custom_providers.f_slug") %>
+        <span class="field-hint"><%= t("admin.custom_providers.f_slug_hint") %></span>
+      </div>
+      <%= f.text_field :slug, required: true, pattern: "[a-z0-9]+", readonly: provider.persisted? && !provider.custom? %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :adapter_key, t("admin.custom_providers.f_adapter") %>
+        <span class="field-hint"><%= t("admin.custom_providers.f_adapter_hint") %></span>
+      </div>
+      <%= f.select :adapter_key, DracinApi::Adapters.supported_slugs.sort.map { |s| [s, s] }, { include_blank: t("admin.custom_providers.f_adapter_same_slug") } %>
+    </div>
+    <div class="field">
+      <%= f.label :category, t("admin.providers.col_category") %>
+      <%= f.select :category, Provider.categories.keys.map { |c| [t("providers.categories.#{c}"), c] } %>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label-row">
+      <%= f.label :api_url, t("admin.custom_providers.f_api_url") %>
+      <span class="field-hint"><%= t("admin.custom_providers.f_api_url_hint") %></span>
+    </div>
+    <%= f.url_field :api_url, placeholder: "https://dramabox.goodbos.online" %>
+  </div>
+
+  <div class="form-row">
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :api_source_id, t("admin.custom_providers.f_source") %>
+        <span class="field-hint"><%= t("admin.custom_providers.f_source_hint") %></span>
+      </div>
+      <%= f.collection_select :api_source_id, ApiSource.ordered, :id, :name, { include_blank: t("admin.custom_providers.f_source_none") } %>
+    </div>
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :auth_mode, t("admin.custom_providers.f_auth_mode") %>
+        <span class="field-hint"><%= t("admin.custom_providers.f_auth_mode_hint") %></span>
+      </div>
+      <%= f.select :auth_mode, ApiSource::AUTH_MODES.map { |m| [auth_mode_label(m), m] }, { include_blank: auth_mode_label(nil) } %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="field">
+      <div class="field-label-row">
+        <%= f.label :api_key, t("admin.custom_providers.f_api_key") %>
+        <span class="field-hint"><%= provider.api_key.present? ? t("admin.settings.api_key_current", masked: masked_secret(provider.api_key)) : t("admin.custom_providers.f_api_key_hint") %></span>
+      </div>
+      <%= f.password_field :api_key, autocomplete: "off", placeholder: provider.api_key.present? ? t("admin.api_sources.f_api_key_keep") : "" %>
+    </div>
+    <div class="field">
+      <%= f.label :logo_url, t("admin.custom_providers.f_logo") %>
+      <%= f.url_field :logo_url %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :notes, t("admin.api_sources.f_notes") %>
+    <%= f.text_area :notes, rows: 2 %>
+  </div>
+  <div class="field">
+    <label class="check-row"><%= f.check_box :enabled %> <%= t("common.enabled") %></label>
+  </div>
+
+  <div class="actions actions-row">
+    <%= f.submit t("common.save"), class: "btn" %>
+    <%= link_to t("common.cancel"), admin_providers_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

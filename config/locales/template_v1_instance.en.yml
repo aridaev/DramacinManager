@@ -1,0 +1,8 @@
+en:
+  template:
+    v1:
+      preview_bar: "Previewing branding of instance \"%{name}\" — visible only to you."
+      preview_exit: "Exit preview"
+      genres_title: "All genres"
+      latest_title: "Latest"
+      inactive_text: "This site is currently paused. Please come back later."

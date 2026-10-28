@@ -1,0 +1,11 @@
+<% html = tv1_seo_content_html %>
+<% if html.present? %>
+<section class="seo-content" id="tv-seo" data-seo>
+  <div class="seo-content-body"><%= html %></div>
+  <button type="button" class="seo-toggle" data-seo-toggle aria-expanded="false"><span data-more><%= tt("seo.read_more") %></span><span data-less hidden><%= tt("seo.read_less") %></span></button>
+</section>
+<script>
+  (function () { var s = document.querySelector("[data-seo]"), b = s && s.querySelector("[data-seo-toggle]"); if (!b) return;
+    b.addEventListener("click", function () { var o = s.classList.toggle("is-open"); b.setAttribute("aria-expanded", o); b.querySelector("[data-more]").hidden = o; b.querySelector("[data-less]").hidden = !o; }); })();
+</script>
+<% end %>

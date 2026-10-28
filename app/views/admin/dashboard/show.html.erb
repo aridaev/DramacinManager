@@ -1,0 +1,71 @@
+<% content_for :page_actions do %>
+  <%= button_to t("admin.providers.sync_status"), sync_status_admin_providers_path, method: :post, class: "btn btn-secondary btn-sm", disabled: @api_key.blank? %>
+  <%= link_to t("admin.dashboard.manage_providers"), admin_providers_path, class: "btn btn-sm" %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.dashboard.title"), subtitle: t("admin.dashboard.subtitle", email: current_user.email) } do %>
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-label"><%= t("admin.dashboard.stat_enabled") %></span>
+      <span class="stat-num"><%= @enabled_providers %><span class="muted" style="font-size:.9rem;font-weight:600"> / <%= @total_providers %></span></span>
+      <span class="stat-sub"><%= t("admin.dashboard.stat_supported", count: @supported_providers) %></span>
+    </div>
+    <div class="stat is-ok">
+      <span class="stat-label"><%= t("admin.dashboard.online") %></span>
+      <span class="stat-num"><%= @online_providers %></span>
+      <span class="stat-sub"><%= t("admin.dashboard.last_sync", time: @last_checked_at ? l(@last_checked_at, format: :short) : t("common.never")) %></span>
+    </div>
+    <div class="stat is-bad">
+      <span class="stat-label"><%= t("admin.dashboard.offline") %></span>
+      <span class="stat-num"><%= @offline_providers %></span>
+      <span class="stat-sub"><%= t("admin.dashboard.unknown") %>: <%= @total_providers - @online_providers - @offline_providers %></span>
+    </div>
+    <div class="stat">
+      <span class="stat-label"><%= t("admin.dashboard.stat_sources") %></span>
+      <span class="stat-num"><%= @sources_count %></span>
+      <span class="stat-sub"><%= @api_key.present? ? t("admin.dashboard.api_configured", masked: masked_secret(@api_key)) : t("admin.dashboard.api_not_configured") %></span>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-head">
+        <h2><%= t("admin.dashboard.fastest_title") %></h2>
+        <span class="muted" style="font-size:.76rem"><%= t("admin.dashboard.fastest_hint") %></span>
+      </div>
+      <% if @fastest.empty? %>
+        <p class="muted"><%= t("admin.dashboard.fastest_empty") %></p>
+      <% else %>
+        <ul class="list-plain">
+          <% @fastest.each do |p| %>
+            <li>
+              <span class="provider-cell">
+                <% if p.logo_url.present? %><%= image_tag provider_logo_path(p.slug), alt: "", class: "provider-logo", loading: "lazy" %><% end %>
+                <%= link_to p.name, template_v1_root_path(provider: p.slug), target: "_blank", rel: "noopener" %>
+              </span>
+              <span class="latency <%= p.last_latency_ms < 1500 ? 'is-fast' : (p.last_latency_ms > 5000 ? 'is-slow' : '') %>"><%= number_with_delimiter(p.last_latency_ms) %> ms</span>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2><%= t("admin.dashboard.api_title") %></h2>
+        <%= link_to t("admin.dashboard.configure_api"), admin_api_sources_path, class: "btn btn-secondary btn-xs" %>
+      </div>
+      <% if @sources.empty? %>
+        <p class="muted"><%= t("admin.api_sources.empty") %></p>
+      <% else %>
+        <ul class="list-plain">
+          <% @sources.each do |s| %>
+            <li>
+              <span><strong><%= s.name %></strong> <% if s.is_default? %><span class="badge tag-default"><%= t("admin.api_sources.default") %></span><% end %><br><code><%= s.base_url %></code></span>
+              <span class="muted" style="font-size:.76rem;text-align:right"><%= s.last_test_result.presence || t("common.never") %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+<% end %>

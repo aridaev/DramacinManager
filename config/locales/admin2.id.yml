@@ -1,0 +1,296 @@
+id:
+  common:
+    edit: Ubah
+    delete: Hapus
+    errors_heading: 'Periksa isian berikut:'
+  nav:
+    instances: Instance
+    skip: Lompat ke konten
+    main_menu: Menu utama
+    api_sources: Sumber API
+    open_template: Buka situs publik
+    density: Kerapatan tampilan
+    compact: Compact
+    comfortable: Comfortable
+    site_settings: Pengaturan Situs
+  admin:
+    instances:
+      open_site: Buka situs
+      menu_count: Menu
+      preview_title: Pratinjau situs
+      preview_hint: arahkan kursor ke menu yang punya ▾ untuk melihat sub-menu
+      sec_template: Template
+      template_hint: Tampilan situs publik yang dipakai instance ini
+      tpl_stable: stabil
+      tpl_soon: Template berikutnya
+      tpl_soon_hint: Akan muncul di sini saat ditambahkan di Instance::TEMPLATES.
+      f_app_name_hint: dipakai di navbar/judul tab
+      serp_title_placeholder: Judul situs
+      serp_desc_placeholder: Meta description akan tampil di sini.
+      nav_sub: Sub
+      nav_sub_add: Tambah sub-menu
+      nav_preview: Pratinjau
+      sec_general: Umum
+      sec_branding: Branding
+      sec_seo: SEO
+      sec_footer: Footer
+      sec_nav: Navbar
+      f_app_name: Nama aplikasi
+      f_icon: Ikon (favicon)
+      f_icon_hint: URL gambar persegi, PNG/SVG/ICO
+      f_logo: Logo
+      f_logo_hint: URL gambar, SVG/PNG transparan
+      f_site_title: Judul situs (title)
+      f_site_title_hint: maks 70 karakter
+      f_meta: Meta description
+      f_meta_hint: maks 160 karakter
+      f_copyright: Copyright
+      f_footer_text: Teks footer
+      f_footer_links: Tautan footer
+      f_footer_links_hint: 'satu per baris: Label | /url'
+      nav_add: Tambah menu
+      nav_hint: Klik Tambah cepat untuk halaman bawaan, atau Tambah menu untuk tautan sendiri. Seret ☰ untuk mengurutkan; setiap menu bisa punya sub-menu (dropdown).
+      nav_label: Label
+      nav_url: URL
+      title: Instance
+      subtitle: Daftar instance. Nama acak dibuat otomatis saat create; logika instance menyusul.
+      create: Create Instance
+      empty: Belum ada instance. Klik Create Instance.
+      col_name: Nama
+      col_title: Label
+      col_status: Status
+      col_created_by: Dibuat oleh
+      col_created_at: Dibuat
+      col_updated_at: Diubah
+      show_subtitle: Instance %{name}
+      detail_title: Detail
+      settings_title: Settings (JSON)
+      settings_hint: Konfigurasi instance akan diisi oleh logika berikutnya.
+      edit_title: Ubah instance %{name}
+      edit_subtitle: Nama acak tidak bisa diedit; gunakan Buat ulang nama di halaman detail.
+      name_hint: dibuat otomatis
+      title_placeholder: Label opsional agar mudah dikenali
+      regenerate: Buat ulang nama
+      regenerate_confirm: Ganti nama instance dengan nama acak baru?
+      created: Instance %{name} dibuat.
+      updated: Instance %{name} disimpan.
+      regenerated: 'Nama baru: %{name}.'
+      deleted: Instance %{name} dihapus.
+      statuses:
+        active: Aktif
+        paused: Dijeda
+        disabled: Nonaktif
+      limit_reached: Batas %{limit} instance per user tercapai.
+      access_disabled: Pembuatan instance oleh user sedang dinonaktifkan.
+      sec_theme: Tema & Warna
+      theme_hint: warna, font, dan sudut untuk situs publik instance ini
+      theme_presets: Preset
+      theme_presets_hint: klik untuk mengisi semua warna, lalu sesuaikan
+      f_accent: Warna aksen
+      f_accent_hint: tombol, link aktif, badge
+      f_theme_default: Mode awal
+      f_theme_default_hint: pengunjung tetap bisa ganti
+      theme_dark: Gelap
+      theme_light: Terang
+      f_bg: Latar
+      f_surface: Permukaan (kartu/navbar)
+      f_text: Teks
+      f_font: Font
+      f_font_hint: font Google dimuat otomatis
+      f_radius: Sudut
+      f_radius_hint: kelengkungan kartu & tombol
+      radius_sharp: Tajam
+      radius_normal: Normal
+      radius_round: Bulat
+      theme_preview: Pratinjau
+      theme_preview_hint: langsung berubah saat warna diubah
+      color_reset: Kembali ke bawaan
+      sec_watermark: Watermark video
+      watermark_hint: logo tampil di atas pemutar (overlay). Tidak tertanam di file video — lihat catatan di bawah.
+      f_watermark: URL gambar watermark
+      f_watermark_hint: kosong = pakai Logo, lalu Icon; PNG transparan paling bagus
+      f_wm_position: Posisi
+      f_wm_opacity: Transparansi
+      wm_none: belum ada logo/watermark
+      wm_pos:
+        top-center: Tengah atas
+        top-left: Kiri atas
+        top-right: Kanan atas
+        bottom-left: Kiri bawah
+        bottom-right: Kanan bawah
+      footer_hint: teks, tautan, media sosial, dan baris bawah footer
+      f_footer_text_hint: satu kalimat di bawah logo
+      f_copyright_hint: baris paling bawah; kosong = © tahun + nama
+      f_footer_about: Tentang singkat
+      f_footer_about_hint: opsional, 1–3 kalimat di bawah tagline
+      f_footer_about_ph: Situs nonton drama pendek gratis, update setiap hari…
+      fl_add: Tambah tautan
+      fl_hint: Seret ☰ untuk mengurutkan. ↗ = buka di tab baru. Kosong diabaikan.
+      quick_add: Tambah cepat
+      f_social: Media sosial
+      f_social_hint: tampil sebagai tombol di footer; kosongkan yang tidak dipakai
+      f_show_providers: Tampilkan jumlah penyedia aktif
+      f_show_powered: Tampilkan 'Didukung DracinAPI'
+      nav_new_tab: Buka di tab baru
+      nav_reset: Reset bawaan
+      nav_reset_hint: kembalikan menu ke Beranda / Genre / Terbaru
+      nav_reset_confirm: Ganti semua menu dengan menu bawaan?
+      nav_genre_dropdown: + Genre (dropdown semua genre)
+      nav_legend: Ketik / di kolom URL untuk melihat daftar halaman bawaan. URL luar (https://…) juga boleh.
+      f_wm_size: Ukuran
+      wm_size:
+        small: Kecil
+        medium: Sedang
+        large: Besar
+        xlarge: Sangat besar
+      wm_download_note: 'Catatan: watermark ini overlay di halaman, jadi tidak ikut tersimpan jika video diunduh. Tombol unduh browser & klik kanan di video sudah dimatikan untuk mempersulit. Watermark
+        permanen hanya mungkin lewat transcoding ulang video (ffmpeg) — berat dan tidak tersedia di server ini.'
+    dashboard:
+      stat_enabled: Penyedia aktif
+      stat_supported: '%{count} punya adapter'
+      stat_sources: Sumber API
+      fastest_title: Penyedia tercepat
+      fastest_hint: diukur tiap 30 menit
+      fastest_empty: Belum ada pengukuran. Jalankan bin/rails dracin:latency.
+    providers:
+      col_source: Sumber
+      col_latency: Latensi
+    api_sources:
+      title: Sumber API
+      subtitle: Hub / penyedia API eksternal. Tambahkan sumber lain lalu tautkan ke penyedia.
+      new: Tambah sumber
+      new_title: Tambah sumber API
+      edit_title: 'Ubah sumber: %{name}'
+      form_subtitle: Base URL, cara autentikasi, dan kunci API disimpan terenkripsi.
+      empty: Belum ada sumber API.
+      default: Default
+      col_name: Nama
+      col_base_url: Base URL
+      col_auth: Auth
+      col_key: Key
+      col_providers: Penyedia
+      col_last_test: Tes terakhir
+      test: Tes
+      sync: Sinkron
+      sync_confirm: Tarik daftar platform dari sumber ini ke tabel penyedia?
+      make_default: Jadikan default
+      f_name: Nama
+      f_slug: Slug
+      f_slug_hint: huruf kecil, angka, tanda minus; kosongkan untuk otomatis
+      f_base_url: Base URL
+      f_base_url_hint: tanpa garis miring di akhir
+      f_auth_mode: Mode autentikasi
+      f_auth_param: Nama parameter
+      f_auth_param_hint: 'hanya untuk mode query (default: code / key)'
+      f_api_key: API key
+      f_api_key_keep: Kosongkan jika tidak diubah
+      f_status_path: Path status
+      f_status_path_hint: endpoint daftar platform, mis. /api/status
+      f_notes: Catatan
+      auth_modes:
+        inherit: Ikuti sumber / bawaan adapter
+        header_x_token: Header x-token
+        query_code: Query ?code=
+        query_key: Query ?key=
+        bearer: 'Authorization: Bearer'
+        none: Tanpa auth
+      created: Sumber %{name} ditambahkan.
+      updated: Sumber %{name} disimpan.
+      deleted: Sumber %{name} dihapus.
+      cannot_delete_default: Sumber default tidak bisa dihapus. Jadikan sumber lain default dulu.
+      default_set: '%{name} kini sumber default.'
+      key_missing: API key sumber ini belum diisi.
+      test_success: Koneksi berhasil dalam %{ms} ms (%{count} entri).
+      test_failed: 'Koneksi gagal: %{error}'
+      sync_success: '%{count} platform disinkron dari %{name}.'
+      how_title: Menambah penyedia dari sumber lain
+      how_text_html: '1) Tambahkan <strong>Sumber API</strong> (base URL + auth + key). 2) Klik <em>Sinkron</em> bila hub-nya punya endpoint status, atau 3) buat <strong>penyedia kustom</strong>: tunjuk
+        host API-nya dan pilih adapter (skema respons) yang cocok. Key efektif penyedia = key penyedia → key sumber → key default.'
+    custom_providers:
+      new: Tambah penyedia
+      new_title: Tambah penyedia
+      edit_title: 'Ubah penyedia: %{name}'
+      form_subtitle: Host API, sumber, dan autentikasi khusus penyedia ini.
+      badge: Kustom
+      f_name: Nama
+      f_slug: Slug
+      f_slug_hint: dipakai di URL template, unik
+      f_adapter: Adapter (skema API)
+      f_adapter_hint: pilih skema yang respons API-nya sama
+      f_adapter_same_slug: — sama dengan slug —
+      f_api_url: Host API
+      f_api_url_hint: kosongkan untuk host bawaan adapter
+      f_source: Sumber API
+      f_source_hint: key diambil dari sini bila key penyedia kosong
+      f_source_none: — tidak ada —
+      f_auth_mode: Mode autentikasi
+      f_auth_mode_hint: override untuk penyedia ini saja
+      f_api_key: API key khusus
+      f_api_key_hint: opsional; mengalahkan key sumber
+      f_logo: URL logo
+      created: Penyedia %{name} ditambahkan.
+      updated: Penyedia %{name} disimpan.
+      deleted: Penyedia %{name} dihapus.
+    site_settings:
+      title: Pengaturan Situs
+      subtitle: Integrasi Cloudflare global, IP VPS, dan kebijakan instance.
+      cf_title: Cloudflare
+      cf_connected: Terhubung
+      cf_text_html: Token dipakai untuk <strong>membuat zone</strong> saat user menambah domain di instance, mengatur <strong>SSL</strong>, dan membuat record <code>A @</code> + <code>CNAME www</code> ke
+        IP VPS. User lalu mengarahkan nameserver domainnya ke NS Cloudflare yang ditampilkan.
+      cf_token: API Token / Global API Key
+      cf_token_hint: API Token (disarankan; izin Zone:Read, Zone:Edit, DNS:Edit, Zone Settings:Edit, semua zone) ATAU Global API Key dari halaman API Keys. Kosongkan jika tidak diubah.
+      cf_account: Account ID
+      cf_account_hint: diisi otomatis saat Tes token bila hanya ada 1 akun
+      vps_ip: IP VPS (origin)
+      vps_ip_hint: record A @ akan menunjuk ke sini
+      ssl_mode: Mode SSL Cloudflare
+      ssl_mode_hint: Flexible = origin boleh HTTP
+      last_test: Tes terakhir
+      test_token: Tes token
+      clear_token: Hapus token
+      cf_token_page: Buat token di Cloudflare ↗
+      updated: Pengaturan situs disimpan.
+      token_missing: Token Cloudflare belum diisi.
+      token_ok: 'Token valid (%{status}). Akun: %{accounts}.'
+      token_failed: 'Token gagal: %{error}'
+      token_cleared: Token Cloudflare dihapus.
+      inst_title: Instance untuk user
+      inst_text: Role user bisa membuat instance sendiri dan hanya melihat miliknya. Admin melihat semua.
+      users_can_create: Izinkan role user membuat instance
+      max_per_user: Maks instance per user
+      max_per_user_hint: 0 = tanpa batas
+      flow_title: Alur domain kustom
+      flow_1: User menambah domain di halaman instance → zone Cloudflare dibuat otomatis.
+      flow_2: SSL diset ke mode di atas; record A @ → IP VPS dan CNAME www dibuat (proxied).
+      flow_3: User mengarahkan nameserver di registrar ke 2 NS Cloudflare yang ditampilkan.
+      flow_4: Klik Cek status; saat zone aktif, domain berstatus Aktif dan siap melayani instance.
+      cf_email: Email akun Cloudflare
+      cf_email_hint: WAJIB diisi jika memakai Global API Key; kosongkan jika memakai API Token
+    domains:
+      title: Domain
+      hint: domain sendiri untuk instance ini via Cloudflare
+      empty: Belum ada domain. Tambahkan di bawah.
+      add: Tambah domain
+      check: Cek status
+      retry: Coba lagi
+      copy: Salin
+      cf_not_ready: Cloudflare belum dikonfigurasi (token / IP VPS). Hubungi admin.
+      created: 'Domain %{hostname} dibuat. Arahkan nameserver ke: %{ns}'
+      provision_failed: 'Gagal membuat zone Cloudflare: %{error}'
+      now_active: '%{hostname} sudah aktif di Cloudflare.'
+      still_pending: '%{hostname} masih menunggu NS (CF: %{cf}). Propagasi bisa sampai 24 jam.'
+      retried: Provisioning %{hostname} diulang.
+      deleted: Domain %{hostname} dihapus.
+      delete_confirm: Hapus domain ini beserta zone-nya di Cloudflare?
+      active_text: Aktif. Situs bisa diakses di
+      ns_instruction_html: 'Di registrar domain <strong>%{hostname}</strong>, ganti nameserver menjadi:'
+      ns_note: Setelah diubah, klik Cek status. Cloudflare biasanya mendeteksi dalam beberapa menit hingga 24 jam.
+      last_checked: Dicek
+      statuses:
+        pending_ns: Menunggu NS
+        active: Aktif
+        error: Gagal
+        removed: Dihapus
+  dashboard:
+    instances_text: 'Buat dan kelola instance situs kamu: branding, navbar, dan domain sendiri.'

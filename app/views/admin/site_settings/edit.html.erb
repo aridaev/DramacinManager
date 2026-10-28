@@ -1,0 +1,127 @@
+<%= render layout: "shared/app_shell", locals: { title: t("admin.site_settings.title"), subtitle: t("admin.site_settings.subtitle") } do %>
+  <%= form_with url: admin_site_settings_path, method: :patch, scope: :site, id: "site-settings-form", class: "form form-wide", data: { turbo: false } do |f| %>
+    <div class="card">
+      <div class="card-head">
+        <h2><%= dm_icon("plug", size: 18) %> <%= t("admin.site_settings.cf_title") %></h2>
+        <% if @token.present? %><span class="badge badge-success"><%= t("admin.site_settings.cf_connected") %></span><% else %><span class="badge badge-muted"><%= t("common.not_set") %></span><% end %>
+      </div>
+      <p><%= t("admin.site_settings.cf_text_html") %></p>
+      <div class="form-row">
+        <div class="field">
+          <div class="field-label-row"><%= f.label :cloudflare_api_token, t("admin.site_settings.cf_token") %><span class="field-hint"><%= @token.present? ? t("admin.settings.api_key_current", masked: masked_secret(@token)) : "" %></span></div>
+          <%= f.password_field :cloudflare_api_token, autocomplete: "off", placeholder: @token.present? ? t("admin.api_sources.f_api_key_keep") : "cf_xxx…" %>
+          <span class="field-hint"><%= t("admin.site_settings.cf_token_hint") %></span>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :cloudflare_auth_email, t("admin.site_settings.cf_email") %><span class="field-hint"><%= t("admin.site_settings.cf_email_hint") %></span></div>
+          <%= f.email_field :cloudflare_auth_email, value: @auth_email, placeholder: "email@akun-cloudflare.com", autocomplete: "off" %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <div class="field-label-row"><%= f.label :cloudflare_account_id, t("admin.site_settings.cf_account") %><span class="field-hint"><%= t("admin.site_settings.cf_account_hint") %></span></div>
+          <%= f.text_field :cloudflare_account_id, value: @account_id, placeholder: "otomatis saat tes" %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <div class="field-label-row"><%= f.label :vps_ip, t("admin.site_settings.vps_ip") %><span class="field-hint"><%= t("admin.site_settings.vps_ip_hint") %></span></div>
+          <%= f.text_field :vps_ip, value: @vps_ip, placeholder: "203.0.113.10", pattern: "[0-9.]+" %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :cloudflare_ssl_mode, t("admin.site_settings.ssl_mode") %><span class="field-hint"><%= t("admin.site_settings.ssl_mode_hint") %></span></div>
+          <%= f.select :cloudflare_ssl_mode, [ [ "Flexible (HTTP ke origin)", "flexible" ], [ "Full", "full" ], [ "Full (strict)", "strict" ] ], selected: @ssl_mode %>
+        </div>
+      </div>
+      <% if @token_status.present? %><p class="muted" style="font-size:.78rem"><%= t("admin.site_settings.last_test") %>: <%= @token_status %></p><% end %>
+      <div class="actions-row" style="margin-top:4px">
+        <%= f.submit t("common.save"), class: "btn btn-sm" %>
+        <button type="submit" class="btn btn-secondary btn-sm" form="cf-test-form" <%= "disabled" if @token.blank? %>><%= t("admin.site_settings.test_token") %></button>
+        <button type="submit" class="btn btn-danger btn-sm" form="cf-clear-form" <%= "disabled" if @token.blank? %>><%= t("admin.site_settings.clear_token") %></button>
+        <%= link_to t("admin.site_settings.cf_token_page"), "https://dash.cloudflare.com/profile/api-tokens", target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" %>
+      </div>
+    </div>
+
+    <div class="card" id="seo">
+      <div class="card-head"><h2><%= dm_icon("external", size: 18) %> <%= t("admin.site_settings.seo_title") %></h2></div>
+      <p><%= t("admin.site_settings.seo_text_html", host: @main_host) %></p>
+      <div class="form-row">
+        <div class="field">
+          <div class="field-label-row"><%= f.label :main_host, "Host utama" %></div>
+          <%= f.text_field :main_host, value: @main_host, placeholder: "dracin.aridaev.com" %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :gsc_verification, t("admin.site_settings.gsc") %><span class="field-hint"><%= t("admin.site_settings.gsc_hint") %></span></div>
+          <%= f.text_field :gsc_verification, value: @gsc, placeholder: "google-site-verification code", autocomplete: "off" %>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label><%= t("admin.site_settings.sitemap_urls") %></label></div>
+        <div class="muted" style="font-size:.8rem;line-height:1.8">
+          <code>https://<%= @main_host %>/robots.txt</code><br>
+          <% Instance::TEMPLATES.each_key do |k| %><code>https://<%= @main_host %>/template/<%= k %>/sitemap.xml</code><br><% end %>
+          <%= t("admin.site_settings.indexnow_key") %>: <code><%= @indexnow_key %></code> → <code>https://<%= @main_host %>/<%= @indexnow_key %>.txt</code>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <%= button_to t("admin.site_settings.indexnow_submit"), submit_indexnow_admin_site_settings_path, method: :post, form: { data: { turbo: false }, style: "display:inline" }, class: "btn btn-secondary btn-sm" %>
+        <% if @indexnow_last.present? %><span class="muted" style="font-size:.78rem"><%= @indexnow_last %></span><% end %>
+      </div>
+    </div>
+
+    <div class="card" id="tokenplus">
+      <div class="card-head">
+        <h2><%= dm_icon("plug", size: 18) %> <%= t("admin.site_settings.tp_title") %></h2>
+        <% if @tp_key.present? %><span class="badge badge-success"><%= t("admin.site_settings.tp_connected") %></span><% else %><span class="badge badge-muted"><%= t("common.not_set") %></span><% end %>
+      </div>
+      <p><%= t("admin.site_settings.tp_text_html") %></p>
+      <div class="form-row">
+        <div class="field">
+          <div class="field-label-row"><%= f.label :tokenplus_api_key, t("admin.site_settings.tp_key") %><span class="field-hint"><%= @tp_key.present? ? t("admin.settings.api_key_current", masked: masked_secret(@tp_key)) : "sk-…" %></span></div>
+          <%= f.password_field :tokenplus_api_key, autocomplete: "off", placeholder: @tp_key.present? ? t("admin.api_sources.f_api_key_keep") : "sk-xxxxxxxx" %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :tokenplus_model, t("admin.site_settings.tp_model") %><span class="field-hint"><%= t("admin.site_settings.tp_model_hint") %></span></div>
+          <%= f.text_field :tokenplus_model, value: @tp_model, list: "tp-models", autocomplete: "off" %>
+          <datalist id="tp-models"><% @tp_models.each do |m| %><option value="<%= m %>"></option><% end %></datalist>
+        </div>
+      </div>
+      <div class="field-actions" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <%= button_to t("admin.site_settings.tp_test"), test_tokenplus_admin_site_settings_path, method: :post, form: { data: { turbo: false }, style: "display:inline" }, class: "btn btn-secondary btn-sm" %>
+        <% if @tp_key.present? %><%= button_to t("admin.site_settings.tp_clear"), clear_tokenplus_admin_site_settings_path, method: :delete, form: { data: { turbo: false, turbo_confirm: t("common.confirm", default: "Yakin?") }, style: "display:inline" }, class: "btn btn-danger btn-sm" %><% end %>
+        <% if @tp_status.present? %><span class="muted" style="font-size:.78rem"><%= @tp_status %></span><% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2><%= dm_icon("box", size: 18) %> <%= t("admin.site_settings.inst_title") %></h2></div>
+      <p><%= t("admin.site_settings.inst_text") %></p>
+      <div class="form-row">
+        <div class="field">
+          <label class="check-row"><%= f.check_box :users_can_create_instances, checked: @users_can_create %> <%= t("admin.site_settings.users_can_create") %></label>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :max_instances_per_user, t("admin.site_settings.max_per_user") %><span class="field-hint"><%= t("admin.site_settings.max_per_user_hint") %></span></div>
+          <%= f.number_field :max_instances_per_user, value: @max_per_user, min: 0 %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.site_settings.flow_title") %></h2></div>
+      <ol class="flow-list">
+        <li><%= t("admin.site_settings.flow_1") %></li>
+        <li><%= t("admin.site_settings.flow_2") %></li>
+        <li><%= t("admin.site_settings.flow_3") %></li>
+        <li><%= t("admin.site_settings.flow_4") %></li>
+      </ol>
+      <div class="actions actions-row inst-actions">
+        <%= f.submit t("common.save"), class: "btn" %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Form aksi terpisah (di luar form utama; HTML melarang form bersarang). Tombolnya di atas lewat atribut form="…". %>
+  <%= form_with url: test_cloudflare_admin_site_settings_path, method: :post, id: "cf-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: clear_cloudflare_admin_site_settings_path, method: :delete, id: "cf-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('common.confirm').to_json})" } do %><% end %>
+<% end %>

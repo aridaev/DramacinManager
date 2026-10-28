@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Deploy ke production di server ini (systemd: dracinmanager.service, nginx: dracin.aridaev.com).
+# Production memakai Ruby sistem (/usr/bin/ruby 3.2.3), bukan rbenv.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+export RBENV_VERSION=system
+export RAILS_ENV=production
+export SECRET_KEY_BASE="${SECRET_KEY_BASE:-dummy-for-asset-precompile}"
+export DRACIN_MANAGER_DATABASE_PASSWORD="${DRACIN_MANAGER_DATABASE_PASSWORD:-$(systemctl show dracinmanager -p Environment --value | tr ' ' '\n' | sed -n 's/^DRACIN_MANAGER_DATABASE_PASSWORD=//p')}"
+
+echo "==> bundle install"
+bundle install --quiet
+echo "==> db:migrate"
+bin/rails db:migrate
+echo "==> db:seed (idempotent: admin + 42 provider)"
+bin/rails db:seed
+echo "==> assets:precompile"
+bin/rails assets:precompile | grep -E "Writing|error" || true
+echo "==> restart dracinmanager"
+systemctl restart dracinmanager
+sleep 6
+systemctl is-active dracinmanager
+curl -s -o /dev/null -w "sign_in -> HTTP %{http_code}\n" -H "Host: dracin.aridaev.com" http://127.0.0.1/users/sign_in

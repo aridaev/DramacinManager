@@ -1,0 +1,27 @@
+<% if current_instance.nil? || current_instance.protect_source? %>
+<div class="src-guard" id="src-guard" hidden><div><strong><%= tt("guard.title") %></strong><p><%= tt("guard.text") %></p></div></div>
+<script>
+  // Penghalang klik kanan / Ctrl+U / F12 / Ctrl+Shift+I,J,C / Ctrl+S,P + deteksi DevTools terbuka.
+  // Catatan: ini pencegah ringan di sisi browser, bukan proteksi mutlak (HTML selalu bisa diunduh).
+  (function () {
+    var g = document.getElementById("src-guard");
+    document.addEventListener("contextmenu", function (e) { if (!e.target.closest("input,textarea")) e.preventDefault(); });
+    document.addEventListener("keydown", function (e) {
+      var k = (e.key || "").toLowerCase(), c = e.ctrlKey || e.metaKey;
+      if (e.key === "F12" || (c && e.shiftKey && (k === "i" || k === "j" || k === "c" || k === "k")) || (c && (k === "u" || k === "s" || k === "p"))) { e.preventDefault(); e.stopPropagation(); return false; }
+    }, true);
+    document.addEventListener("dragstart", function (e) { if (e.target.tagName === "IMG") e.preventDefault(); });
+    document.addEventListener("selectstart", function (e) { if (!e.target.closest("input,textarea,[contenteditable]")) e.preventDefault(); });
+    var open = false;
+    function check() {
+      var w = window.outerWidth - window.innerWidth > 180, h = window.outerHeight - window.innerHeight > 180;
+      var now = w || h;
+      if (now !== open) { open = now; g.hidden = !open; document.documentElement.classList.toggle("devtools-open", open);
+        if (open) document.querySelectorAll("video").forEach(function (v) { try { v.pause(); } catch (x) {} }); }
+    }
+    setInterval(check, 800);
+    var consoleTrap = new Image(); Object.defineProperty(consoleTrap, "id", { get: function () { open = true; g.hidden = false; document.documentElement.classList.add("devtools-open"); return ""; } });
+    setInterval(function () { console.debug(consoleTrap); }, 2000);
+  })();
+</script>
+<% end %>

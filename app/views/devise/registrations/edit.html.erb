@@ -1,0 +1,49 @@
+<%= render layout: "shared/app_shell", locals: { title: t("account.title"), subtitle: t("account.subtitle") } do %>
+  <div class="card">
+    <h2><%= t("account.profile") %></h2>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "form" }) do |f| %>
+      <div class="field">
+        <%= f.label :email, t("auth.email") %>
+        <%= f.email_field :email, autocomplete: "email" %>
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <span class="field-hint"><%= t("account.pending_reconfirmation", email: resource.unconfirmed_email) %></span>
+        <% end %>
+      </div>
+
+      <div class="field">
+        <div class="field-label-row">
+          <%= f.label :password, t("auth.new_password") %>
+          <% if @minimum_password_length %>
+            <span class="field-hint"><%= t("auth.min_length", count: @minimum_password_length) %></span>
+          <% end %>
+        </div>
+        <%= f.password_field :password, autocomplete: "new-password", placeholder: t("account.leave_blank") %>
+      </div>
+
+      <div class="field">
+        <%= f.label :password_confirmation, t("auth.confirm_new_password") %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+      </div>
+
+      <div class="field">
+        <div class="field-label-row">
+          <%= f.label :current_password, t("auth.current_password") %>
+          <span class="field-hint"><%= t("account.current_password_hint") %></span>
+        </div>
+        <%= f.password_field :current_password, autocomplete: "current-password" %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit t("common.save") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card card-danger">
+    <h2><%= t("account.delete_title") %></h2>
+    <p><%= t("account.delete_description") %></p>
+    <%= button_to t("account.delete_button"), registration_path(resource_name), method: :delete, class: "btn btn-danger btn-sm", form: { onsubmit: "return confirm(#{t('account.delete_confirm').to_json})" } %>
+  </div>
+<% end %>

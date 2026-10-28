@@ -1,0 +1,47 @@
+en:
+  tokenplus:
+    not_configured: "TokenPlus is not configured. Add the API Key in Site Settings."
+    empty_reply: "The model returned an empty reply."
+    timeout: "TokenPlus did not respond (timeout)."
+    connection: "Could not connect to tokenplus.net."
+    bad_json: "The model did not return valid JSON. Try again or switch model."
+    keywords_missing: "Fill in Target Keywords first (comma separated)."
+  template:
+    v1:
+      mtabs:
+        latest: "Latest"
+      seo:
+        read_more: "Read more"
+        read_less: "Close"
+      guard:
+        title: "DevTools detected"
+        text: "Close the developer panel (F12) to continue watching."
+      seo_default_html: |
+        <h2>Watch Short Chinese Dramas with Subtitles for Free on %{site}</h2>
+        <p>%{site} is a free place to watch short Chinese dramas with subtitles straight from your browser — no app download and no account required. Every title is organised by genre and provider, updated daily, and streams in HD on phones, tablets and desktops. We built %{site} to be light, fast to open and comfortable to use even on mobile data.</p>
+        <h3>What are short dramas and why are they so popular?</h3>
+        <p>Short dramas are series with 1–3 minute vertical episodes designed for the phone screen. A title usually has 40–100 episodes with a dense plot: the conflict starts in the first minute, every episode ends on a cliffhanger, and the story is easy to pick up anywhere — on a commute, during a break or before sleep. The most searched themes include CEO and contract marriage, revenge, rebirth, hidden identity, sweet romance, fantasy and action.</p>
+        <h3>How to watch on %{site}</h3>
+        <ul>
+          <li>Pick a title from the home page, the <strong>Latest</strong> section, or use the search box.</li>
+          <li>Open the detail page to read the synopsis, see the episode count and choose an episode.</li>
+          <li>Press play; the player supports <strong>video quality</strong>, <strong>subtitles (CC)</strong>, playback speed and fullscreen.</li>
+          <li>The next episode plays automatically and you can resume from the detail page.</li>
+        </ul>
+        <h3>Subtitles and dubbing</h3>
+        <p>Most titles on %{site} include translated subtitles that can be toggled from the CC button. Some providers also offer dubbed versions so you can choose the most comfortable experience. When a title is available in several languages the subtitle options appear automatically.</p>
+        <h3>Genres to explore</h3>
+        <p>Love a cold boss who slowly melts? Try <strong>Romance</strong> and <strong>CEO</strong>. Want adrenaline? Go for <strong>Action</strong> and <strong>Thriller</strong>. <strong>Comedy</strong> is there for light fun, while twist lovers can browse <strong>Revenge</strong>, <strong>Rebirth</strong> and <strong>Fantasy</strong>. Genre pages show relevant titles with their episode counts so it is easy to pick a weekend binge.</p>
+        <h3>Why choose %{site}?</h3>
+        <ul>
+          <li><strong>Free, no account</strong> — just watch, no registration or subscription.</li>
+          <li><strong>Daily updates</strong> from several official providers, with the fastest provider selected first.</li>
+          <li><strong>HD quality</strong> with adaptive streaming that follows your connection.</li>
+          <li><strong>Mobile friendly</strong>: vertical layout, big buttons and a bottom navigation bar.</li>
+          <li><strong>Safe and light</strong>: no app download, no annoying pop-ups.</li>
+        </ul>
+        <h3>Pick the provider and quality that fit your network</h3>
+        <p>%{site} combines catalogues from several short-drama providers at once. Providers are ordered by response speed, so the first option usually gives the smoothest playback. If a title is missing from one provider, simply switch to another from the menu — the collection, episodes and subtitles adjust automatically without reloading any settings.</p>
+        <h3>Tips for smooth streaming</h3>
+        <p>Use an up-to-date browser (Chrome, Safari, Firefox or Edge). If the video stutters, lower the quality from the HD menu or switch provider from the menu. Make sure the subtitle language is selected. All these settings are remembered for your next visit.</p>
+        <p>Enjoy %{site} — find your favourite short drama today, from heart-fluttering romance to satisfying revenge arcs. The home page always shows what is trending, so come back daily for the newest episodes.</p>

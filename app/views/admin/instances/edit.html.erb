@@ -1,0 +1,584 @@
+<% content_for :page_actions do %>
+  <%= link_to t("common.cancel"), admin_instance_path(@instance), class: "btn btn-secondary btn-sm" %>
+  <button type="submit" form="instance-form" class="btn btn-sm"><%= dm_icon("check", size: 16) %> <%= t("common.save") %></button>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.instances.edit_title", name: @instance.name), subtitle: t("admin.instances.edit_subtitle") } do %>
+  <%= form_with model: [:admin, @instance], id: "instance-form", class: "inst-layout" do |f| %>
+    <aside class="inst-side">
+      <nav class="inst-tabs" aria-label="Bagian">
+        <% { general: "grid", template: "layers", branding: "box", theme: "palette", watermark: "box", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
+          <a href="#sec-<%= k %>" class="inst-tab <%= 'is-active' if i.zero? %>" data-sec="sec-<%= k %>"><%= dm_icon(ic, size: 16) %><span><%= t("admin.instances.sec_#{k}") %></span></a>
+        <% end %>
+      </nav>
+      <div class="inst-meta">
+        <div><span class="muted"><%= t("admin.instances.col_name") %></span><br><code><%= @instance.name %></code></div>
+        <div><span class="muted"><%= t("admin.instances.col_status") %></span><br><% if admin? %><%= f.select :status, Instance.statuses.keys.map { |s| [t("admin.instances.statuses.#{s}"), s] }, {}, class: "select-sm" %><% else %><span class="badge <%= @instance.active? ? 'badge-success' : 'badge-muted' %>"><%= t("admin.instances.statuses.#{@instance.status}") %></span><% end %></div>
+      </div>
+    </aside>
+
+    <div class="inst-main">
+      <% if @instance.errors.any? %>
+        <div class="form-errors">
+          <strong><%= t("common.errors_heading") %></strong>
+          <ul><% @instance.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+        </div>
+      <% end %>
+
+      <section class="card inst-sec" id="sec-general">
+        <div class="card-head"><h2><%= t("admin.instances.sec_general") %></h2></div>
+        <div class="form-row">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :app_name, t("admin.instances.f_app_name") %><span class="field-hint"><%= t("admin.instances.f_app_name_hint") %></span></div>
+            <%= f.text_field :app_name, placeholder: "Dracin Drama" %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :title, t("admin.instances.col_title") %><span class="field-hint"><%= t("admin.instances.title_placeholder") %></span></div>
+            <%= f.text_field :title %>
+          </div>
+        </div>
+        <div class="field">
+          <%= f.label :notes, t("admin.api_sources.f_notes") %>
+          <%= f.text_area :notes, rows: 2 %>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-template">
+        <div class="card-head"><h2><%= t("admin.instances.sec_template") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.instances.template_hint") %></span></div>
+        <div class="tpl-grid">
+          <% Instance::TEMPLATES.each do |key, info| %>
+            <label class="tpl-card <%= 'is-selected' if @instance.template_key == key %>">
+              <%= f.radio_button :template, key, checked: @instance.template_key == key %>
+              <span class="tpl-thumb" style="--tpl-accent:<%= info[:accent] %>;--tpl-bg:<%= info[:bg] %>" data-tpl="<%= key %>"><span class="tpl-thumb-bar"></span><span class="tpl-thumb-hero"></span><span class="tpl-thumb-row"><i></i><i></i><i></i><i></i></span></span>
+              <span class="tpl-body">
+                <strong><%= info[:name] %> <code><%= key %></code> <% if info[:status] == "stable" %><span class="badge badge-success"><%= t("admin.instances.tpl_stable") %></span><% else %><span class="badge badge-info"><%= info[:status] %></span><% end %></strong>
+                <span class="muted"><%= info[:description] %></span>
+                <%= link_to info[:path], info[:path], target: "_blank", rel: "noopener", class: "tpl-link" %>
+              </span>
+            </label>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-branding">
+        <div class="card-head"><h2><%= t("admin.instances.sec_branding") %></h2></div>
+        <div class="form-row">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :icon_url, t("admin.instances.f_icon") %><span class="field-hint"><%= t("admin.instances.f_icon_hint") %></span></div>
+            <div class="input-preview">
+              <span class="preview-box preview-box-sm"><% if @instance.icon_url.present? %><%= image_tag @instance.icon_url, alt: "", class: "preview-icon", data: { preview: "icon" } %><% else %><img alt="" class="preview-icon" data-preview="icon" hidden><span class="preview-empty">icon</span><% end %></span>
+              <%= f.url_field :icon_url, placeholder: "https://.../favicon.png", data: { preview_for: "icon" } %>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :logo_url, t("admin.instances.f_logo") %><span class="field-hint"><%= t("admin.instances.f_logo_hint") %></span></div>
+            <div class="input-preview">
+              <span class="preview-box"><% if @instance.logo_url.present? %><%= image_tag @instance.logo_url, alt: "", class: "preview-logo", data: { preview: "logo" } %><% else %><img alt="" class="preview-logo" data-preview="logo" hidden><span class="preview-empty">logo</span><% end %></span>
+              <%= f.url_field :logo_url, placeholder: "https://.../logo.svg", data: { preview_for: "logo" } %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-theme">
+        <div class="card-head">
+          <h2><%= t("admin.instances.sec_theme") %></h2>
+          <span class="muted" style="font-size:.76rem"><%= t("admin.instances.theme_hint") %></span>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row"><label><%= t("admin.instances.theme_presets") %></label><span class="field-hint"><%= t("admin.instances.theme_presets_hint") %></span></div>
+          <div class="theme-presets">
+            <% Instance::THEME_PRESETS.each do |key, p| %>
+              <button type="button" class="theme-preset" data-preset="<%= p.to_json %>" title="<%= p[:name] %>">
+                <span class="theme-preset-sw" style="background:<%= p[:bg_dark] %>"><i style="background:<%= p[:accent] %>"></i><i style="background:<%= p[:surface_dark] %>"></i></span>
+                <span><%= p[:name] %></span>
+              </button>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :theme_accent, t("admin.instances.f_accent") %><span class="field-hint"><%= t("admin.instances.f_accent_hint") %></span></div>
+            <%= render "color_input", f: f, key: :theme_accent, value: @instance.theme_accent, default: Instance::THEME_DEFAULTS["theme_accent"] %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :theme_default, t("admin.instances.f_theme_default") %><span class="field-hint"><%= t("admin.instances.f_theme_default_hint") %></span></div>
+            <%= f.select :theme_default, [ [ t("admin.instances.theme_dark"), "dark" ], [ t("admin.instances.theme_light"), "light" ] ], { selected: @instance.theme_default.presence || "dark" } %>
+          </div>
+        </div>
+
+        <div class="theme-cols">
+          <div class="theme-col">
+            <h3><%= dm_icon("moon", size: 14) %> <%= t("admin.instances.theme_dark") %></h3>
+            <div class="field"><%= f.label :theme_bg_dark, t("admin.instances.f_bg") %><%= render "color_input", f: f, key: :theme_bg_dark, value: @instance.theme_bg_dark, default: Instance::THEME_DEFAULTS["theme_bg_dark"] %></div>
+            <div class="field"><%= f.label :theme_surface_dark, t("admin.instances.f_surface") %><%= render "color_input", f: f, key: :theme_surface_dark, value: @instance.theme_surface_dark, default: Instance::THEME_DEFAULTS["theme_surface_dark"] %></div>
+            <div class="field"><%= f.label :theme_text_dark, t("admin.instances.f_text") %><%= render "color_input", f: f, key: :theme_text_dark, value: @instance.theme_text_dark, default: Instance::THEME_DEFAULTS["theme_text_dark"] %></div>
+          </div>
+          <div class="theme-col">
+            <h3><%= dm_icon("sun", size: 14) %> <%= t("admin.instances.theme_light") %></h3>
+            <div class="field"><%= f.label :theme_bg_light, t("admin.instances.f_bg") %><%= render "color_input", f: f, key: :theme_bg_light, value: @instance.theme_bg_light, default: Instance::THEME_DEFAULTS["theme_bg_light"] %></div>
+            <div class="field"><%= f.label :theme_surface_light, t("admin.instances.f_surface") %><%= render "color_input", f: f, key: :theme_surface_light, value: @instance.theme_surface_light, default: Instance::THEME_DEFAULTS["theme_surface_light"] %></div>
+            <div class="field"><%= f.label :theme_text_light, t("admin.instances.f_text") %><%= render "color_input", f: f, key: :theme_text_light, value: @instance.theme_text_light, default: Instance::THEME_DEFAULTS["theme_text_light"] %></div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :theme_font, t("admin.instances.f_font") %><span class="field-hint"><%= t("admin.instances.f_font_hint") %></span></div>
+            <%= f.select :theme_font, Instance::THEME_FONTS.map { |k, v| [ v[:name], k ] }, { selected: @instance.theme_font.presence || "default" } %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :theme_radius, t("admin.instances.f_radius") %><span class="field-hint"><%= t("admin.instances.f_radius_hint") %></span></div>
+            <%= f.select :theme_radius, [ [ t("admin.instances.radius_sharp"), "sharp" ], [ t("admin.instances.radius_normal"), "normal" ], [ t("admin.instances.radius_round"), "round" ] ], { selected: @instance.theme_radius.presence || "normal" } %>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row"><label><%= t("admin.instances.theme_preview") %></label><span class="field-hint"><%= t("admin.instances.theme_preview_hint") %></span></div>
+          <div class="theme-preview" id="theme-preview" data-mode="dark">
+            <div class="tp-top">
+              <span class="tp-brand"><i class="tp-mark"></i><b data-tp="app"><%= @instance.app_name.presence || "Dracin" %></b></span>
+              <span class="tp-links"><span class="is-on">Beranda</span><span>Genre</span><span>Terbaru</span></span>
+              <button type="button" class="tp-toggle" data-tp-toggle>☾ / ☀</button>
+            </div>
+            <div class="tp-body">
+              <div class="tp-hero"><span class="tp-pill">EP 1-80</span><b>Judul Drama Pilihan</b><span class="tp-btn">▶ Tonton</span></div>
+              <div class="tp-cards"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-watermark">
+        <div class="card-head"><h2><%= t("admin.instances.sec_watermark") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.instances.watermark_hint") %></span></div>
+        <div class="form-row form-row-3">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :watermark_url, t("admin.instances.f_watermark") %><span class="field-hint"><%= t("admin.instances.f_watermark_hint") %></span></div>
+            <div class="input-preview">
+              <span class="preview-box"><% if @instance.watermark_url.present? %><%= image_tag @instance.watermark_url, alt: "", class: "preview-logo", data: { preview: "wm" } %><% else %><img alt="" class="preview-logo" data-preview="wm" hidden><span class="preview-empty">wm</span><% end %></span>
+              <%= f.url_field :watermark_url, placeholder: "https://.../watermark.png", data: { preview_for: "wm" } %>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :watermark_position, t("admin.instances.f_wm_position") %></div>
+            <%= f.select :watermark_position, Instance::WATERMARK_POSITIONS.map { |p| [ t("admin.instances.wm_pos.#{p}"), p ] }, { selected: @instance.watermark_pos } %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :watermark_size, t("admin.instances.f_wm_size") %></div>
+            <%= f.select :watermark_size, Instance::WATERMARK_SIZES.map { |z| [ t("admin.instances.wm_size.#{z}"), z ] }, { selected: @instance.watermark_size_key }, onchange: "document.getElementById('wm-demo').dataset.size=this.value" %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :watermark_opacity, t("admin.instances.f_wm_opacity") %><span class="field-hint" id="wm-op-val"><%= @instance.watermark_alpha %>%</span></div>
+            <%= f.range_field :watermark_opacity, value: @instance.watermark_alpha, min: 10, max: 100, step: 5, oninput: "document.getElementById('wm-op-val').textContent=this.value+'%';document.getElementById('wm-demo-img').style.opacity=this.value/100" %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.instances.theme_preview") %></label></div>
+            <div class="wm-demo" data-pos="<%= @instance.watermark_pos %>" data-size="<%= @instance.watermark_size_key %>" id="wm-demo">
+              <% if @instance.watermark_src.present? %><img id="wm-demo-img" src="<%= @instance.watermark_src %>" alt="" style="opacity:<%= @instance.watermark_alpha / 100.0 %>"><% else %><img id="wm-demo-img" alt="" hidden><span class="wm-demo-empty"><%= t("admin.instances.wm_none") %></span><% end %>
+              <span class="wm-demo-play">▶</span>
+            </div>
+          </div>
+        </div>
+        <p class="muted" style="font-size:.76rem;margin:8px 0 0"><%= t("admin.instances.wm_download_note") %></p>
+              <div class="field">
+          <label class="check-row"><%= f.check_box :protect_source, { checked: @instance.protect_source? }, "1", "0" %> <%= t("admin.instances.f_protect_source") %></label>
+          <span class="field-hint"><%= t("admin.instances.f_protect_source_hint") %></span>
+        </div>
+</section>
+
+      <section class="card inst-sec" id="sec-seo">
+        <div class="card-head"><h2><%= t("admin.instances.sec_seo") %></h2></div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :site_title, t("admin.instances.f_site_title") %><span class="field-hint" data-count-for="instance_site_title"><%= @instance.site_title.to_s.length %>/70</span></div>
+          <%= f.text_field :site_title, maxlength: 70 %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :meta_description, t("admin.instances.f_meta") %><span class="field-hint" data-count-for="instance_meta_description"><%= @instance.meta_description.to_s.length %>/160</span></div>
+          <%= f.text_area :meta_description, rows: 3, maxlength: 160 %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :seo_content, t("admin.instances.f_seo_content") %><span class="field-hint"><%= t("admin.instances.seo_words", count: @instance.seo_word_count) %> · <%= t("admin.instances.f_seo_content_hint") %></span></div>
+          <%= f.text_area :seo_content, rows: 12, placeholder: t("admin.instances.f_seo_content_ph"), style: "font-family:ui-monospace,monospace;font-size:.8rem" %>
+        </div>
+        <div class="serp">
+          <div class="serp-title" data-serp="title"><%= @instance.site_title.presence || @instance.app_name.presence || t("admin.instances.serp_title_placeholder") %></div>
+          <div class="serp-url">dracin.aridaev.com › …</div>
+          <div class="serp-desc" data-serp="desc"><%= @instance.meta_description.presence || t("admin.instances.serp_desc_placeholder") %></div>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-ai">
+        <div class="card-head"><h2><%= t("admin.instances.sec_ai") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.instances.ai_hint") %></span></div>
+        <% tp_ready = Setting.tokenplus_api_key.present? %>
+        <% unless tp_ready %><p class="form-errors" style="margin-bottom:12px"><%= t("admin.instances.ai_not_configured") %> <% if admin? %><%= link_to t("admin.instances.ai_setup_link"), edit_admin_site_settings_path(anchor: "tokenplus") %><% end %></p><% end %>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :seo_keywords, t("admin.instances.f_seo_keywords") %><span class="field-hint"><%= t("admin.instances.f_seo_keywords_hint") %></span></div>
+          <%= f.text_area :seo_keywords, rows: 2, placeholder: t("admin.instances.f_seo_keywords_ph") %>
+          <span class="field-hint"><%= t("admin.instances.kw_auto_hint") %></span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button type="submit" class="btn btn-sm" formaction="<%= generate_seo_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" <%= "disabled" unless tp_ready %> onclick="return confirm(this.dataset.confirm)" data-confirm="<%= t('admin.instances.ai_generate_confirm') %>"><%= dm_icon("plug", size: 16) %> <%= t("admin.instances.ai_generate") %></button>
+          <% if tp_ready %><span class="muted" style="font-size:.78rem"><%= Setting.tokenplus_model %></span><% end %>
+          <% if @instance.seo_generated_at.present? %><span class="muted" style="font-size:.78rem"><%= t("admin.instances.ai_last", time: (I18n.l(Time.zone.parse(@instance.seo_generated_at), format: :short) rescue @instance.seo_generated_at)) %></span><% end %>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-search">
+        <div class="card-head"><h2><%= t("admin.instances.sec_search") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.instances.search_hint") %></span></div>
+        <% host = @instance.primary_host %>
+        <% unless host %><p class="form-errors" style="margin-bottom:12px"><%= t("admin.instances.indexnow_need_domain") %></p><% end %>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :gsc_verification, t("admin.instances.f_gsc") %><span class="field-hint"><%= t("admin.instances.f_gsc_hint") %></span></div>
+          <%= f.text_field :gsc_verification, autocomplete: "off", placeholder: '<meta name="google-site-verification" content="…">' %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :bing_verification, t("admin.instances.f_bing") %></div>
+          <%= f.text_field :bing_verification, autocomplete: "off" %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><label><%= t("admin.instances.seo_urls") %></label><span class="field-hint"><%= t("admin.instances.seo_urls_hint") %></span></div>
+          <% base = host ? "https://#{host}" : @instance.public_url.sub(/\?.*/, "") %>
+          <div class="muted" style="font-size:.8rem;line-height:1.8">
+            <code><%= base %>/sitemap.xml</code><br><code><%= base %>/robots.txt</code><br>
+            <%= t("admin.instances.indexnow_key") %>: <code><%= @instance.indexnow_key %></code> · <%= t("admin.instances.indexnow_key_url") %>: <code><%= base %>/<%= @instance.indexnow_key %>.txt</code>
+          </div>
+        </div>
+        <div class="field">
+          <label class="check-row"><%= f.check_box :indexnow_auto, { checked: @instance.indexnow_auto? }, "1", "0" %> <%= t("admin.instances.f_indexnow_auto") %></label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button type="submit" class="btn btn-sm btn-secondary" formaction="<%= submit_indexnow_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" <%= "disabled" unless host %>><%= dm_icon("check", size: 16) %> <%= t("admin.instances.indexnow_submit") %></button>
+          <% if @instance.indexnow_last.present? %><span class="muted" style="font-size:.78rem"><%= t("admin.instances.indexnow_last", status: @instance.indexnow_last) %></span><% end %>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-footer">
+        <div class="card-head">
+          <h2><%= t("admin.instances.sec_footer") %></h2>
+          <span class="muted" style="font-size:.76rem"><%= t("admin.instances.footer_hint") %></span>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :footer_text, t("admin.instances.f_footer_text") %><span class="field-hint"><%= t("admin.instances.f_footer_text_hint") %></span></div>
+            <%= f.text_field :footer_text, placeholder: t("template.v1.footer.tagline") %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :copyright, t("admin.instances.f_copyright") %><span class="field-hint"><%= t("admin.instances.f_copyright_hint") %></span></div>
+            <%= f.text_field :copyright, placeholder: "© #{Date.current.year} Nama Situs. Hak cipta dilindungi." %>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :footer_about, t("admin.instances.f_footer_about") %><span class="field-hint"><%= t("admin.instances.f_footer_about_hint") %></span></div>
+          <%= f.text_area :footer_about, rows: 3, placeholder: t("admin.instances.f_footer_about_ph") %>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row">
+            <label><%= t("admin.instances.f_footer_links") %></label>
+            <button type="button" class="btn btn-secondary btn-xs" id="fl-add"><%= dm_icon("plus", size: 14) %> <%= t("admin.instances.fl_add") %></button>
+          </div>
+          <p class="muted" style="margin:0 0 8px;font-size:.76rem"><%= t("admin.instances.fl_hint") %></p>
+          <div class="nav-builder" id="fl-builder">
+            <input type="hidden" name="instance[footer_links][z][label]" value="">
+            <% @instance.footer_link_items.each_with_index do |it, i| %>
+              <div class="nav-row" data-fl>
+                <span class="drag" title="drag">☰</span>
+                <input type="text" name="instance[footer_links][<%= i %>][label]" value="<%= it["label"] %>" placeholder="<%= t("admin.instances.nav_label") %>" class="nav-in">
+                <input type="text" name="instance[footer_links][<%= i %>][url]" value="<%= it["url"] %>" placeholder="/path atau https://…" class="nav-in nav-url" list="tv1-pages">
+                <label class="nav-on nav-nt" title="<%= t("admin.instances.nav_new_tab") %>">↗<input type="checkbox" name="instance[footer_links][<%= i %>][new_tab]" value="1" <%= "checked" if it["new_tab"] %>></label>
+                <button type="button" class="btn btn-danger btn-xs fl-del" title="<%= t("common.delete") %>">✕</button>
+              </div>
+            <% end %>
+          </div>
+          <template id="fl-tpl">
+            <div class="nav-row" data-fl>
+              <span class="drag">☰</span>
+              <input type="text" name="instance[footer_links][__i__][label]" placeholder="<%= t("admin.instances.nav_label") %>" class="nav-in">
+              <input type="text" name="instance[footer_links][__i__][url]" placeholder="/path atau https://…" class="nav-in nav-url" list="tv1-pages">
+              <label class="nav-on nav-nt" title="<%= t("admin.instances.nav_new_tab") %>">↗<input type="checkbox" name="instance[footer_links][__i__][new_tab]" value="1"></label>
+              <button type="button" class="btn btn-danger btn-xs fl-del">✕</button>
+            </div>
+          </template>
+          <div class="quick-add">
+            <span class="muted"><%= t("admin.instances.quick_add") %>:</span>
+            <% [ [ "Tentang", "/about" ], [ "Kebijakan Privasi", "/privacy" ], [ "DMCA", "/dmca" ], [ "Kontak", "/contact" ], [ "Semua genre", "/genre" ], [ "Terbaru", "/latest" ] ].each do |l, u| %>
+              <button type="button" class="chip chip-btn" data-fl-quick data-label="<%= l %>" data-url="<%= u %>">+ <%= l %></button>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row"><label><%= t("admin.instances.f_social") %></label><span class="field-hint"><%= t("admin.instances.f_social_hint") %></span></div>
+          <div class="social-grid">
+            <% Instance::SOCIALS.each do |key, s| %>
+              <label class="social-field"><span class="social-dot" style="background:<%= s[:color] %>"></span><span class="social-name"><%= s[:name] %></span><%= f.url_field "social_#{key}", placeholder: s[:placeholder], value: @instance.public_send("social_#{key}") %></label>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label class="check-row"><%= f.check_box :footer_show_providers, { checked: @instance.footer_show_providers? }, "1", "0" %> <%= t("admin.instances.f_show_providers") %></label></div>
+          <div class="field"><label class="check-row"><%= f.check_box :footer_show_powered, { checked: @instance.footer_show_powered? }, "1", "0" %> <%= t("admin.instances.f_show_powered") %></label></div>
+        </div>
+      </section>
+
+      <section class="card inst-sec" id="sec-nav">
+        <div class="card-head">
+          <h2><%= t("admin.instances.sec_nav") %></h2>
+          <span class="inline-actions">
+            <button type="button" class="btn btn-secondary btn-xs" id="nav-reset" title="<%= t("admin.instances.nav_reset_hint") %>"><%= t("admin.instances.nav_reset") %></button>
+            <button type="button" class="btn btn-secondary btn-xs" id="nav-add"><%= dm_icon("plus", size: 14) %> <%= t("admin.instances.nav_add") %></button>
+          </span>
+        </div>
+        <p class="muted"><%= t("admin.instances.nav_hint") %></p>
+
+        <datalist id="tv1-pages">
+          <% Instance::PAGES.each do |u, l| %><option value="<%= u %>"><%= l %></option><% end %>
+        </datalist>
+
+        <div class="quick-add">
+          <span class="muted"><%= t("admin.instances.quick_add") %>:</span>
+          <% Instance::PAGES.each do |u, l| %>
+            <button type="button" class="chip chip-btn" data-nav-quick data-label="<%= l %>" data-url="<%= u %>">+ <%= l %></button>
+          <% end %>
+          <button type="button" class="chip chip-btn" data-nav-genres><%= t("admin.instances.nav_genre_dropdown") %></button>
+        </div>
+
+        <div class="nav-builder" id="nav-builder">
+          <% @instance.nav_items.each_with_index do |it, i| %>
+            <div class="nav-item" data-item>
+              <div class="nav-row">
+                <span class="drag" title="drag">☰</span>
+                <input type="text" name="instance[nav_items][<%= i %>][label]" value="<%= it["label"] %>" placeholder="<%= t("admin.instances.nav_label") %>" class="nav-in">
+                <input type="text" name="instance[nav_items][<%= i %>][url]" value="<%= it["url"] %>" placeholder="/path" class="nav-in nav-url" list="tv1-pages">
+                <label class="nav-on nav-nt" title="<%= t("admin.instances.nav_new_tab") %>">↗<input type="checkbox" name="instance[nav_items][<%= i %>][new_tab]" value="1" <%= "checked" if it["new_tab"] %>></label>
+                <label class="nav-on" title="<%= t("common.enabled") %>"><input type="hidden" name="instance[nav_items][<%= i %>][enabled]" value="0"><input type="checkbox" name="instance[nav_items][<%= i %>][enabled]" value="1" <%= "checked" if it["enabled"] != false %>></label>
+                <button type="button" class="btn btn-secondary btn-xs nav-sub-add" title="<%= t("admin.instances.nav_sub_add") %>">+ <%= t("admin.instances.nav_sub") %></button>
+                <button type="button" class="btn btn-danger btn-xs nav-del" title="<%= t("common.delete") %>">✕</button>
+              </div>
+              <div class="nav-children">
+                <% Array(it["children"]).each_with_index do |ch, j| %>
+                  <div class="nav-row nav-child" data-child>
+                    <span class="drag">└</span>
+                    <input type="text" name="instance[nav_items][<%= i %>][children][<%= j %>][label]" value="<%= ch["label"] %>" placeholder="<%= t("admin.instances.nav_label") %>" class="nav-in">
+                    <input type="text" name="instance[nav_items][<%= i %>][children][<%= j %>][url]" value="<%= ch["url"] %>" placeholder="/path" class="nav-in nav-url" list="tv1-pages">
+                    <label class="nav-on nav-nt" title="<%= t("admin.instances.nav_new_tab") %>">↗<input type="checkbox" name="instance[nav_items][<%= i %>][children][<%= j %>][new_tab]" value="1" <%= "checked" if ch["new_tab"] %>></label>
+                    <label class="nav-on"><input type="hidden" name="instance[nav_items][<%= i %>][children][<%= j %>][enabled]" value="0"><input type="checkbox" name="instance[nav_items][<%= i %>][children][<%= j %>][enabled]" value="1" <%= "checked" if ch["enabled"] != false %>></label>
+                    <span class="nav-spacer"></span>
+                    <button type="button" class="btn btn-danger btn-xs nav-del">✕</button>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <template id="nav-item-tpl">
+          <div class="nav-item" data-item>
+            <div class="nav-row">
+              <span class="drag">☰</span>
+              <input type="text" name="instance[nav_items][__i__][label]" placeholder="<%= t("admin.instances.nav_label") %>" class="nav-in">
+              <input type="text" name="instance[nav_items][__i__][url]" placeholder="/path" class="nav-in nav-url" list="tv1-pages">
+              <label class="nav-on nav-nt" title="<%= t("admin.instances.nav_new_tab") %>">↗<input type="checkbox" name="instance[nav_items][__i__][new_tab]" value="1"></label>
+              <label class="nav-on"><input type="hidden" name="instance[nav_items][__i__][enabled]" value="0"><input type="checkbox" name="instance[nav_items][__i__][enabled]" value="1" checked></label>
+              <button type="button" class="btn btn-secondary btn-xs nav-sub-add">+ <%= t("admin.instances.nav_sub") %></button>
+              <button type="button" class="btn btn-danger btn-xs nav-del">✕</button>
+            </div>
+            <div class="nav-children"></div>
+          </div>
+        </template>
+        <template id="nav-child-tpl">
+          <div class="nav-row nav-child" data-child>
+            <span class="drag">└</span>
+            <input type="text" name="instance[nav_items][__i__][children][__j__][label]" placeholder="<%= t("admin.instances.nav_label") %>" class="nav-in">
+            <input type="text" name="instance[nav_items][__i__][children][__j__][url]" placeholder="/path" class="nav-in nav-url" list="tv1-pages">
+            <label class="nav-on nav-nt" title="<%= t("admin.instances.nav_new_tab") %>">↗<input type="checkbox" name="instance[nav_items][__i__][children][__j__][new_tab]" value="1"></label>
+            <label class="nav-on"><input type="hidden" name="instance[nav_items][__i__][children][__j__][enabled]" value="0"><input type="checkbox" name="instance[nav_items][__i__][children][__j__][enabled]" value="1" checked></label>
+            <span class="nav-spacer"></span>
+            <button type="button" class="btn btn-danger btn-xs nav-del">✕</button>
+          </div>
+        </template>
+
+        <div class="nav-live">
+          <span class="muted"><%= t("admin.instances.nav_preview") %>:</span>
+          <nav class="nav-preview" id="nav-live"></nav>
+        </div>
+        <p class="muted" style="font-size:.74rem;margin:8px 0 0"><%= t("admin.instances.nav_legend") %></p>
+      </section>
+
+      <div class="actions actions-row inst-actions">
+        <%= f.submit t("common.save"), class: "btn" %>
+        <%= link_to t("common.cancel"), admin_instance_path(@instance), class: "btn btn-secondary" %>
+      </div>
+    </div>
+  <% end %>
+
+<script>
+(function () {
+  var sec = document.getElementById("sec-theme"); if (!sec) return;
+  var prev = document.getElementById("theme-preview");
+  var fld = function (k) { return sec.querySelector('[data-theme-key="' + k + '"]'); };
+  var val = function (k) { var el = fld(k); return (el && el.value.trim()) || (el && el.placeholder) || "#000000"; };
+  function shade(h, a) { var c = h.replace("#", "").match(/../g).map(function (x) { return parseInt(x, 16); }); var t = a > 0 ? 255 : 0; a = Math.abs(a); return "#" + c.map(function (v) { return ("0" + Math.round(v + (t - v) * a).toString(16)).slice(-2); }).join(""); }
+  function render() {
+    var mode = prev.dataset.mode, dark = mode === "dark", d = dark ? 1 : -1;
+    var bg = val("theme_bg_" + mode), sf = val("theme_surface_" + mode), tx = val("theme_text_" + mode), ac = val("theme_accent");
+    var font = sec.querySelector('[name="instance[theme_font]"]'), radius = sec.querySelector('[name="instance[theme_radius]"]');
+    var stacks = { "default": "'Plus Jakarta Sans', Inter, system-ui, sans-serif", inter: "Inter, system-ui, sans-serif", poppins: "Poppins, system-ui, sans-serif", nunito: "Nunito, system-ui, sans-serif", system: "system-ui, sans-serif", serif: "Georgia, serif" };
+    var radii = { sharp: "4px", normal: "10px", round: "16px" };
+    prev.style.cssText = "--bg:" + bg + ";--sf:" + sf + ";--sf2:" + shade(sf, 0.08 * d) + ";--tx:" + tx + ";--ac:" + ac + ";--line:" + shade(sf, 0.16 * d) + ";--r:" + radii[radius.value] + ";font-family:" + stacks[font.value];
+    prev.querySelector("[data-tp=app]").textContent = (document.querySelector('[name="instance[app_name]"]') || {}).value || "Dracin";
+  }
+  sec.querySelectorAll("[data-color-input]").forEach(function (box) {
+    var pick = box.querySelector("[data-color-pick]"), hex = box.querySelector("[data-color-hex]"), reset = box.querySelector("[data-color-reset]");
+    pick.addEventListener("input", function () { hex.value = pick.value; render(); });
+    hex.addEventListener("input", function () { if (/^#[0-9a-f]{6}$/i.test(hex.value)) pick.value = hex.value; render(); });
+    reset.addEventListener("click", function () { hex.value = ""; pick.value = hex.placeholder; render(); });
+  });
+  sec.querySelectorAll("select").forEach(function (s) { s.addEventListener("change", render); });
+  sec.querySelectorAll(".theme-preset").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var p = JSON.parse(b.dataset.preset);
+      [["accent", "theme_accent"], ["bg_dark", "theme_bg_dark"], ["surface_dark", "theme_surface_dark"], ["text_dark", "theme_text_dark"], ["bg_light", "theme_bg_light"], ["surface_light", "theme_surface_light"], ["text_light", "theme_text_light"]].forEach(function (m) {
+        var el = fld(m[1]); el.value = p[m[0]]; el.closest("[data-color-input]").querySelector("[data-color-pick]").value = p[m[0]];
+      });
+      sec.querySelectorAll(".theme-preset").forEach(function (x) { x.classList.toggle("is-active", x === b); });
+      render();
+    });
+  });
+  prev.querySelector("[data-tp-toggle]").addEventListener("click", function () { prev.dataset.mode = prev.dataset.mode === "dark" ? "light" : "dark"; render(); });
+  var def = sec.querySelector('[name="instance[theme_default]"]'); prev.dataset.mode = def.value || "dark";
+  def.addEventListener("change", function () { prev.dataset.mode = def.value; render(); });
+  render();
+})();
+</script>
+
+  <script>
+    (function () {
+      var pos = document.querySelector('[name="instance[watermark_position]"]'), demo = document.getElementById("wm-demo");
+      if (pos && demo) pos.addEventListener("change", function () { demo.dataset.pos = pos.value; });
+      var wmUrl = document.querySelector('[name="instance[watermark_url]"]'), wmImg = document.getElementById("wm-demo-img");
+      if (wmUrl && wmImg) wmUrl.addEventListener("input", function () { if (wmUrl.value) { wmImg.src = wmUrl.value; wmImg.hidden = false; var e = demo.querySelector(".wm-demo-empty"); if (e) e.hidden = true; } });
+    })();
+  </script>
+  <script>
+    (function () {
+      /* Navbar: quick-add, dropdown genre, reset; Footer links builder */
+      var root = document.getElementById("nav-builder"), itemTpl = document.getElementById("nav-item-tpl"), childTpl = document.getElementById("nav-child-tpl");
+      function addNav(label, url, children) {
+        root.insertAdjacentHTML("beforeend", itemTpl.innerHTML.replace(/__i__/g, root.children.length));
+        var item = root.lastElementChild; item.querySelector(".nav-in").value = label; item.querySelector(".nav-url").value = url;
+        (children || []).forEach(function (c) {
+          var box = item.querySelector(".nav-children");
+          box.insertAdjacentHTML("beforeend", childTpl.innerHTML.replace(/__i__/g, 0).replace(/__j__/g, box.children.length));
+          box.lastElementChild.querySelector(".nav-in").value = c[0]; box.lastElementChild.querySelector(".nav-url").value = c[1];
+        });
+        root.dispatchEvent(new Event("input", { bubbles: true })); root.dispatchEvent(new Event("nav:renumber"));
+      }
+      document.querySelectorAll("[data-nav-quick]").forEach(function (b) { b.addEventListener("click", function () { addNav(b.dataset.label, b.dataset.url); }); });
+      var genresBtn = document.querySelector("[data-nav-genres]");
+      if (genresBtn) genresBtn.addEventListener("click", function () { addNav("Genre", "/genre", <%= ::Template::V1::BaseController::GENRES.map { |g| [ t("template.v1.genres.#{g}", default: g.titleize), "/genre/#{g}" ] }.to_json.html_safe %>); });
+      document.getElementById("nav-reset").addEventListener("click", function () {
+        if (!confirm(<%= t("admin.instances.nav_reset_confirm").to_json %>)) return;
+        root.innerHTML = ""; <%= Instance::DEFAULT_NAV.map { |n| [ n["label"], n["url"] ] }.to_json.html_safe %>.forEach(function (n) { addNav(n[0], n[1]); });
+      });
+
+      var fl = document.getElementById("fl-builder"), flTpl = document.getElementById("fl-tpl");
+      function flRenumber() { fl.querySelectorAll("[data-fl]").forEach(function (row, i) { row.querySelectorAll("input").forEach(function (inp) { inp.name = inp.name.replace(/\[footer_links\]\[[^\]]*\]/, "[footer_links][" + i + "]"); }); }); }
+      function flAdd(label, url) {
+        fl.insertAdjacentHTML("beforeend", flTpl.innerHTML.replace(/__i__/g, fl.querySelectorAll("[data-fl]").length));
+        var row = fl.lastElementChild; if (label) { row.querySelector(".nav-in").value = label; row.querySelector(".nav-url").value = url; } else row.querySelector(".nav-in").focus();
+        flRenumber();
+      }
+      document.getElementById("fl-add").addEventListener("click", function () { flAdd(); });
+      document.querySelectorAll("[data-fl-quick]").forEach(function (b) { b.addEventListener("click", function () { flAdd(b.dataset.label, b.dataset.url); }); });
+      fl.addEventListener("click", function (e) { var b = e.target.closest(".fl-del"); if (b) { b.closest("[data-fl]").remove(); flRenumber(); } });
+      var dragging = null;
+      fl.addEventListener("mousedown", function (e) { var h = e.target.closest(".drag"); if (h) h.closest("[data-fl]").draggable = true; });
+      fl.addEventListener("dragstart", function (e) { dragging = e.target.closest("[data-fl]"); });
+      fl.addEventListener("dragend", function () { if (dragging) dragging.draggable = false; dragging = null; flRenumber(); });
+      fl.addEventListener("dragover", function (e) { if (!dragging) return; e.preventDefault(); var over = e.target.closest("[data-fl]"); if (!over || over === dragging) return; var r = over.getBoundingClientRect(); fl.insertBefore(dragging, (e.clientY - r.top) > r.height / 2 ? over.nextSibling : over); });
+    })();
+  </script>
+  <script>
+    (function () {
+      /* tab bagian: scroll + highlight */
+      var tabs = document.querySelectorAll(".inst-tab"), secs = document.querySelectorAll(".inst-sec");
+      tabs.forEach(function (t) { t.addEventListener("click", function (e) { e.preventDefault(); document.getElementById(t.dataset.sec).scrollIntoView({ behavior: "smooth", block: "start" }); }); });
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (en) { if (en.isIntersecting) tabs.forEach(function (t) { t.classList.toggle("is-active", t.dataset.sec === en.target.id); }); });
+        }, { rootMargin: "-30% 0px -60% 0px" });
+        secs.forEach(function (s) { io.observe(s); });
+      }
+      /* preview gambar & hitung karakter & SERP */
+      document.querySelectorAll("[data-preview-for]").forEach(function (inp) {
+        var img = document.querySelector('[data-preview="' + inp.dataset.previewFor + '"]');
+        var empty = img && img.parentElement.querySelector(".preview-empty");
+        inp.addEventListener("input", function () { if (!img) return; img.src = inp.value; img.hidden = !inp.value; if (empty) empty.hidden = !!inp.value; });
+      });
+      document.querySelectorAll("[data-count-for]").forEach(function (c) {
+        var el = document.getElementById(c.dataset.countFor), max = el.maxLength;
+        el.addEventListener("input", function () { c.textContent = el.value.length + "/" + max; });
+      });
+      var st = document.getElementById("instance_site_title"), md = document.getElementById("instance_meta_description"), an = document.getElementById("instance_app_name");
+      function serp() {
+        document.querySelector('[data-serp="title"]').textContent = st.value || an.value || st.placeholder || "—";
+        document.querySelector('[data-serp="desc"]').textContent = md.value || "—";
+      }
+      [st, md, an].forEach(function (el) { el.addEventListener("input", serp); });
+
+      /* navbar builder */
+      var root = document.getElementById("nav-builder"), itemTpl = document.getElementById("nav-item-tpl"), childTpl = document.getElementById("nav-child-tpl"), live = document.getElementById("nav-live");
+      function renumber() {
+        root.querySelectorAll("[data-item]").forEach(function (item, i) {
+          item.querySelectorAll(":scope > .nav-row input").forEach(function (inp) { inp.name = inp.name.replace(/\[nav_items\]\[[^\]]*\]/, "[nav_items][" + i + "]"); });
+          item.querySelectorAll("[data-child]").forEach(function (ch, j) {
+            ch.querySelectorAll("input").forEach(function (inp) { inp.name = inp.name.replace(/\[nav_items\]\[[^\]]*\]\[children\]\[[^\]]*\]/, "[nav_items][" + i + "][children][" + j + "]"); });
+          });
+        });
+        preview();
+      }
+      function preview() {
+        live.innerHTML = "";
+        root.querySelectorAll("[data-item]").forEach(function (item) {
+          var l = item.querySelector(":scope > .nav-row .nav-in").value.trim(); if (!l) return;
+          var on = item.querySelector(":scope > .nav-row input[type=checkbox]").checked;
+          var kids = Array.prototype.filter.call(item.querySelectorAll("[data-child]"), function (c) { return c.querySelector(".nav-in").value.trim(); });
+          var chip = document.createElement("span"); chip.className = "chip" + (on ? "" : " is-off"); chip.textContent = l + (kids.length ? " ▾" : "");
+          if (kids.length) chip.title = kids.map(function (c) { return c.querySelector(".nav-in").value.trim(); }).join(", ");
+          live.appendChild(chip);
+        });
+      }
+      document.getElementById("nav-add").addEventListener("click", function () {
+        root.insertAdjacentHTML("beforeend", itemTpl.innerHTML.replace(/__i__/g, root.children.length)); renumber();
+        root.lastElementChild.querySelector(".nav-in").focus();
+      });
+      root.addEventListener("click", function (e) {
+        var b = e.target.closest("button"); if (!b) return;
+        if (b.classList.contains("nav-del")) { (b.closest("[data-child]") || b.closest("[data-item]")).remove(); renumber(); }
+        if (b.classList.contains("nav-sub-add")) {
+          var item = b.closest("[data-item]"), box = item.querySelector(".nav-children");
+          box.insertAdjacentHTML("beforeend", childTpl.innerHTML.replace(/__i__/g, 0).replace(/__j__/g, box.children.length)); renumber();
+          box.lastElementChild.querySelector(".nav-in").focus();
+        }
+      });
+      root.addEventListener("input", preview); root.addEventListener("change", preview); root.addEventListener("nav:renumber", renumber);
+      /* drag & drop: item di level yang sama */
+      var dragging = null;
+      root.addEventListener("mousedown", function (e) { var h = e.target.closest(".drag"); if (h) (h.closest("[data-child]") || h.closest("[data-item]")).draggable = true; });
+      root.addEventListener("dragstart", function (e) { dragging = e.target.closest("[data-child]") || e.target.closest("[data-item]"); e.dataTransfer.effectAllowed = "move"; });
+      root.addEventListener("dragend", function () { if (dragging) dragging.draggable = false; dragging = null; renumber(); });
+      root.addEventListener("dragover", function (e) {
+        if (!dragging) return; e.preventDefault();
+        var sel = dragging.hasAttribute("data-child") ? "[data-child]" : "[data-item]";
+        var over = e.target.closest(sel); if (!over || over === dragging || over.parentElement !== dragging.parentElement) return;
+        var r = over.getBoundingClientRect(); over.parentElement.insertBefore(dragging, (e.clientY - r.top) > r.height / 2 ? over.nextSibling : over);
+      });
+      renumber();
+    })();
+  </script>
+<% end %>

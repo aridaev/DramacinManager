@@ -1,0 +1,173 @@
+<% content_for :page_actions do %>
+  <%= link_to edit_admin_instance_path(@instance), class: "btn btn-sm" do %><%= dm_icon("compact", size: 16) %> <%= t("common.edit") %><% end %>
+  <%= link_to @instance.public_url, target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" do %><%= dm_icon("external", size: 16) %> <%= t("admin.instances.open_site") %><% end %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: @instance.display_name, subtitle: t("admin.instances.show_subtitle", name: @instance.name) } do %>
+  <% blank = tag.span("—", class: "muted") %>
+  <% status_css = @instance.active? ? "badge-success" : (@instance.paused? ? "badge-info" : "badge-muted") %>
+
+  <section class="inst-hero card">
+    <div class="inst-hero-brand">
+      <span class="inst-hero-logo">
+        <% if @instance.logo_url.present? %><%= image_tag @instance.logo_url, alt: "" %>
+        <% elsif @instance.icon_url.present? %><%= image_tag @instance.icon_url, alt: "" %>
+        <% else %><span class="inst-hero-initial"><%= @instance.display_name.to_s[0, 1].upcase %></span><% end %>
+      </span>
+      <div class="inst-hero-text">
+        <div class="inst-hero-title">
+          <strong><%= @instance.app_name.presence || @instance.display_name %></strong>
+          <span class="badge <%= status_css %>"><%= t("admin.instances.statuses.#{@instance.status}") %></span>
+          <span class="badge badge-muted"><%= @instance.template_info[:name] %></span>
+        </div>
+        <div class="inst-hero-sub">
+          <span><%= t("admin.instances.col_name") %>: <code><%= @instance.name %></code></span>
+          <% if @instance.title.present? %><span>·</span><span><%= @instance.title %></span><% end %>
+        </div>
+      </div>
+    </div>
+    <dl class="inst-hero-facts">
+      <div><dt><%= t("admin.instances.col_created_by") %></dt><dd><%= @instance.created_by&.email || "—" %></dd></div>
+      <div><dt><%= t("admin.instances.col_created_at") %></dt><dd><%= l(@instance.created_at, format: :short) %></dd></div>
+      <div><dt><%= t("admin.instances.col_updated_at") %></dt><dd><%= l(@instance.updated_at, format: :short) %></dd></div>
+      <div><dt><%= t("admin.domains.title") %></dt><dd><%= @instance.domains.active.count %> / <%= @instance.domains.count %></dd></div>
+      <div><dt><%= t("admin.instances.menu_count") %></dt><dd><%= @instance.nav_items.size %> / <%= @instance.nav_items_flat.size - @instance.nav_items.size %> sub</dd></div>
+    </dl>
+  </section>
+
+  <%= render "domains" %>
+
+  <section class="card">
+    <div class="card-head">
+      <h2><%= t("admin.instances.preview_title") %></h2>
+      <span class="muted" style="font-size:.76rem"><%= t("admin.instances.preview_hint") %></span>
+    </div>
+    <div class="site-mock">
+      <div class="site-mock-tab">
+        <% if @instance.icon_url.present? %><%= image_tag @instance.icon_url, alt: "", class: "site-mock-favicon" %><% else %><span class="site-mock-favicon site-mock-favicon-empty"></span><% end %>
+        <span><%= @instance.site_title.presence || @instance.app_name.presence || t("admin.instances.serp_title_placeholder") %></span>
+      </div>
+      <div class="site-mock-nav">
+        <span class="site-mock-brand">
+          <% if @instance.logo_url.present? %><%= image_tag @instance.logo_url, alt: "" %><% else %><strong><%= @instance.app_name.presence || @instance.display_name %></strong><% end %>
+        </span>
+        <nav class="site-mock-links">
+          <% @instance.nav_items.each do |it| %>
+            <span class="site-mock-link <%= 'is-off' if it['enabled'] == false %>">
+              <%= it["label"] %><% if it["children"].present? %> <small>▾</small><% end %>
+              <% if it["children"].present? %>
+                <span class="site-mock-dropdown">
+                  <% it["children"].each do |ch| %><span class="<%= 'is-off' if ch['enabled'] == false %>"><%= ch["label"] %><em><%= ch["url"] %></em></span><% end %>
+                </span>
+              <% end %>
+            </span>
+          <% end %>
+        </nav>
+      </div>
+      <div class="site-mock-body">
+        <span class="site-mock-hero"></span>
+        <span class="site-mock-cards"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div class="site-mock-footer">
+        <div class="site-mock-footer-row">
+          <span><%= @instance.footer_text.presence || blank %></span>
+          <span class="site-mock-footer-links">
+            <% @instance.footer_link_list.each do |label, url| %><a title="<%= url %>"><%= label %></a><% end %>
+          </span>
+        </div>
+        <div class="site-mock-copy"><%= @instance.copyright.presence || "© #{Date.current.year}" %></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="inst-detail-grid">
+    <section class="card">
+      <div class="card-head"><h2><%= t("admin.instances.sec_seo") %></h2><%= link_to t("common.edit"), edit_admin_instance_path(@instance, anchor: "sec-seo"), class: "btn btn-secondary btn-xs" %></div>
+      <div class="serp">
+        <div class="serp-title"><%= @instance.site_title.presence || @instance.app_name.presence || t("admin.instances.serp_title_placeholder") %></div>
+        <div class="serp-url">dracin.aridaev.com › <%= @instance.template_key %></div>
+        <div class="serp-desc"><%= @instance.meta_description.presence || t("admin.instances.serp_desc_placeholder") %></div>
+      </div>
+      <dl class="dl dl-tight">
+        <dt><%= t("admin.instances.f_site_title") %></dt><dd><%= @instance.site_title.presence || blank %> <span class="muted">(<%= @instance.site_title.to_s.length %>/70)</span></dd>
+        <dt><%= t("admin.instances.f_meta") %></dt><dd class="fw-400"><%= @instance.meta_description.presence || blank %> <span class="muted">(<%= @instance.meta_description.to_s.length %>/160)</span></dd>
+      </dl>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><%= t("admin.instances.sec_theme") %></h2><%= link_to t("common.edit"), edit_admin_instance_path(@instance, anchor: "sec-theme"), class: "btn btn-secondary btn-xs" %></div>
+      <div class="theme-swatches">
+        <% [ [ "theme_accent", t("admin.instances.f_accent") ], [ "theme_bg_dark", "#{t('admin.instances.f_bg')} (D)" ], [ "theme_surface_dark", "#{t('admin.instances.f_surface')} (D)" ], [ "theme_text_dark", "#{t('admin.instances.f_text')} (D)" ], [ "theme_bg_light", "#{t('admin.instances.f_bg')} (L)" ], [ "theme_surface_light", "#{t('admin.instances.f_surface')} (L)" ], [ "theme_text_light", "#{t('admin.instances.f_text')} (L)" ] ].each do |k, label| %>
+          <div class="swatch"><i style="background:<%= @instance.theme(k) %>"></i><span><%= label %></span><code><%= @instance.theme(k) %></code></div>
+        <% end %>
+      </div>
+      <dl class="dl dl-tight">
+        <dt><%= t("admin.instances.f_theme_default") %></dt><dd><%= t("admin.instances.theme_#{@instance.theme('theme_default')}") %></dd>
+        <dt><%= t("admin.instances.f_font") %></dt><dd><%= InstanceTheme::THEME_FONTS.dig(@instance.theme("theme_font"), :name) %></dd>
+        <dt><%= t("admin.instances.f_radius") %></dt><dd><%= t("admin.instances.radius_#{@instance.theme('theme_radius')}") %></dd>
+        <dt><%= t("admin.instances.sec_watermark") %></dt><dd class="fw-400 truncate"><% if @instance.watermark_src.present? %><%= image_tag @instance.watermark_src, alt: "", class: "provider-logo" %> <%= t("admin.instances.wm_pos.#{@instance.watermark_pos}") %> · <%= t("admin.instances.wm_size.#{@instance.watermark_size_key}") %> · <%= @instance.watermark_alpha %>%<% else %><%= blank %><% end %></dd>
+      </dl>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><%= t("admin.instances.sec_branding") %></h2><%= link_to t("common.edit"), edit_admin_instance_path(@instance, anchor: "sec-branding"), class: "btn btn-secondary btn-xs" %></div>
+      <div class="brand-preview">
+        <div class="brand-preview-box">
+          <% if @instance.icon_url.present? %><%= image_tag @instance.icon_url, alt: "", class: "preview-icon" %><% else %><span class="preview-empty">icon</span><% end %>
+          <span class="muted"><%= t("admin.instances.f_icon") %></span>
+        </div>
+        <div class="brand-preview-box brand-preview-box-wide">
+          <% if @instance.logo_url.present? %><%= image_tag @instance.logo_url, alt: "", class: "preview-logo" %><% else %><span class="preview-empty">logo</span><% end %>
+          <span class="muted"><%= t("admin.instances.f_logo") %></span>
+        </div>
+      </div>
+      <dl class="dl dl-tight">
+        <dt><%= t("admin.instances.f_app_name") %></dt><dd><%= @instance.app_name.presence || blank %></dd>
+        <dt><%= t("admin.instances.f_icon") %></dt><dd class="fw-400 truncate"><%= @instance.icon_url.present? ? link_to(@instance.icon_url, @instance.icon_url, target: "_blank", rel: "noopener") : blank %></dd>
+        <dt><%= t("admin.instances.f_logo") %></dt><dd class="fw-400 truncate"><%= @instance.logo_url.present? ? link_to(@instance.logo_url, @instance.logo_url, target: "_blank", rel: "noopener") : blank %></dd>
+      </dl>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><%= t("admin.instances.sec_nav") %></h2><%= link_to t("common.edit"), edit_admin_instance_path(@instance, anchor: "sec-nav"), class: "btn btn-secondary btn-xs" %></div>
+      <table class="table nav-detail">
+        <thead><tr><th><%= t("admin.instances.nav_label") %></th><th><%= t("admin.instances.nav_url") %></th><th><%= t("common.enabled") %></th></tr></thead>
+        <tbody>
+          <% @instance.nav_items.each do |it| %>
+            <tr><td><strong><%= it["label"] %></strong></td><td><code><%= it["url"] %></code></td><td><span class="dot <%= it['enabled'] == false ? 'is-off' : 'is-on' %>"></span></td></tr>
+            <% Array(it["children"]).each do |ch| %>
+              <tr class="nav-detail-child"><td><span class="muted">└</span> <%= ch["label"] %></td><td><code><%= ch["url"] %></code></td><td><span class="dot <%= ch['enabled'] == false ? 'is-off' : 'is-on' %>"></span></td></tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><%= t("admin.instances.sec_footer") %></h2><%= link_to t("common.edit"), edit_admin_instance_path(@instance, anchor: "sec-footer"), class: "btn btn-secondary btn-xs" %></div>
+      <dl class="dl dl-tight">
+        <dt><%= t("admin.instances.f_copyright") %></dt><dd><%= @instance.copyright.presence || blank %></dd>
+        <dt><%= t("admin.instances.f_footer_about") %></dt><dd class="fw-400"><%= @instance.footer_about.presence || blank %></dd>
+        <dt><%= t("admin.instances.f_social") %></dt><dd><% if @instance.social_links.any? %><% @instance.social_links.each do |sl| %><span class="auth-pill" style="border-color:<%= sl['color'] %>"><%= sl["name"] %></span> <% end %><% else %><%= blank %><% end %></dd>
+        <dt><%= t("admin.instances.f_footer_text") %></dt><dd class="fw-400"><%= @instance.footer_text.presence || blank %></dd>
+        <dt><%= t("admin.instances.f_footer_links") %></dt>
+        <dd class="fw-400">
+          <% if @instance.footer_link_list.any? %>
+            <% @instance.footer_link_list.each do |label, url| %><span class="auth-pill"><%= label %> → <%= url %></span> <% end %>
+          <% else %><%= blank %><% end %>
+        </dd>
+      </dl>
+    </section>
+  </div>
+
+  <details class="card inst-raw">
+    <summary><%= t("admin.instances.settings_title") %> <span class="muted">· <%= t("admin.instances.settings_hint") %></span></summary>
+    <% if @instance.notes.present? %><p style="margin-top:12px"><%= simple_format(@instance.notes) %></p><% end %>
+    <pre class="json-view"><%= JSON.pretty_generate(@instance.settings) %></pre>
+    <div class="actions-row">
+      <%= button_to t("admin.instances.regenerate"), regenerate_admin_instance_path(@instance), method: :patch, class: "btn btn-secondary btn-xs", form: { onsubmit: "return confirm(#{t('admin.instances.regenerate_confirm').to_json})" } %>
+      <%= button_to t("common.delete"), admin_instance_path(@instance), method: :delete, class: "btn btn-danger btn-xs", form: { onsubmit: "return confirm(#{t('common.confirm').to_json})" } %>
+    </div>
+  </details>
+
+  <p style="margin-top:16px"><%= link_to "← #{t('common.back')}", admin_instances_path, class: "btn btn-secondary btn-sm" %></p>
+<% end %>

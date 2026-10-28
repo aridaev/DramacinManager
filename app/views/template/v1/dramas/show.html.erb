@@ -1,0 +1,60 @@
+<% content_for :title, tv1_page_title(@drama.title, current_provider.name) %>
+<% content_for :description, @drama.synopsis.to_s.truncate(160) if @drama.synopsis.present? %>
+
+<article class="detail">
+  <div class="detail-poster">
+    <% if (ep = tv1_episode_label(@drama)) %><div class="episode-badge"><%= ep %></div><% end %>
+    <% if @drama.rating %><div class="rating-badge">★ <%= @drama.rating %></div><% end %>
+    <% first_ep = @episodes.find { |e| !e.locked } || @episodes.first %>
+    <% if first_ep %>
+      <%= link_to tv1_watch_path(@drama, first_ep.number), class: "detail-poster-link", aria: { label: t("template.v1.detail.watch_ep", number: first_ep.number) } do %>
+        <%= tv1_poster(@drama, lazy: false) %>
+        <span class="card-play"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+      <% end %>
+    <% else %>
+      <%= tv1_poster(@drama, lazy: false) %>
+    <% end %>
+  </div>
+
+  <div>
+    <p class="eyebrow"><%= current_provider.name %></p>
+    <h1 class="detail-title"><%= @drama.title %></h1>
+    <div class="detail-meta">
+      <% if @drama.episodes %><span class="is-accent"><%= t("template.v1.card.episodes", count: @drama.episodes) %></span><% end %>
+      <% if @drama.rating %><span>★ <%= @drama.rating %></span><% end %>
+      <% if @drama.language.present? %><span><%= @drama.language %></span><% end %>
+      <% if @drama.year %><span><%= @drama.year %></span><% end %>
+      <% if @drama.status.present? %><span><%= t("template.v1.status.#{@drama.status}", default: @drama.status.to_s.titleize) %></span><% end %>
+      <% @drama.genres.each do |g| %><%= link_to "##{g}", template_v1_genre_path(g.parameterize), class: "movie-tag", style: "font-size:.76rem;padding:4px 10px" %><% end %>
+    </div>
+    <% if @drama.synopsis.present? %><p class="detail-synopsis"><%= @drama.synopsis %></p><% end %>
+
+    <div class="detail-acts">
+      <% first = @episodes.find { |e| !e.locked } || @episodes.first %>
+      <% if first %>
+        <%= link_to tv1_watch_path(@drama, first.number), class: "btn" do %>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span><%= t("template.v1.detail.watch_ep", number: first.number) %></span>
+        <% end %>
+      <% end %>
+      <%= link_to t("template.v1.browse.back_home"), template_v1_root_path, class: "btn btn-outline" %>
+    </div>
+
+    <section class="section" style="margin-top:28px">
+      <div class="section-head">
+        <h2 class="section-title"><%= t("template.v1.detail.episodes") %><small><%= t("template.v1.sections.count", count: @episodes.size) %></small></h2>
+      </div>
+      <% if @episodes.empty? %>
+        <div class="empty-state"><p><%= t("template.v1.empty.episodes") %></p></div>
+      <% else %>
+        <div class="episode-grid">
+          <% @episodes.each do |ep| %>
+            <%= link_to ep.number, tv1_watch_path(@drama, ep.number), class: ["episode-btn", ("is-locked" if ep.locked)], title: ep.title %>
+          <% end %>
+        </div>
+      <% end %>
+    </section>
+  </div>
+</article>
+
+<%= render "template/v1/shared/seo_page_text" %>

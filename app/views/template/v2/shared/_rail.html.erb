@@ -1,0 +1,18 @@
+<% if items.any? %>
+<section class="section rail" data-rail>
+  <div class="section-head">
+    <div>
+      <% if local_assigns[:eyebrow] %><p class="eyebrow"><%= eyebrow %></p><% end %>
+      <h2 class="section-title"><%= title %></h2>
+    </div>
+    <div class="rail-ctl">
+      <% if local_assigns[:href] %><%= link_to tt("sections.see_all"), href, class: "section-more-link" %><% end %>
+      <button type="button" class="rail-arrow" data-rail-nav="prev" aria-label="prev">‹</button>
+      <button type="button" class="rail-arrow" data-rail-nav="next" aria-label="next">›</button>
+    </div>
+  </div>
+  <div class="rail-track">
+    <% items.each_with_index do |drama, j| %><%= render "template/v2/shared/card", drama: drama, lazy: j > 5 %><% end %>
+  </div>
+</section>
+<% end %>

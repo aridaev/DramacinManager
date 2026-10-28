@@ -1,0 +1,91 @@
+<% content_for :page_actions do %>
+  <%= link_to new_admin_custom_provider_path, class: "btn btn-sm" do %><%= dm_icon("plus", size: 16) %> <%= t("admin.custom_providers.new") %><% end %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.providers.title"), subtitle: t("admin.providers.subtitle") } do %>
+  <div class="card">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <strong><%= t("admin.providers.summary", enabled: @enabled_count, disabled: @total - @enabled_count, total: @total) %></strong>
+        <div class="filter-tabs">
+          <% { "all" => :filter_all, "short_drama" => :filter_short, "chinese_drama" => :filter_chinese, "enabled" => :filter_enabled, "disabled" => :filter_disabled }.each do |value, label| %>
+            <%= link_to t("admin.providers.#{label}"), admin_providers_path(filter: value), class: ["filter-tab", ("is-active" if @filter == value)] %>
+          <% end %>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <%= button_to t("admin.providers.enable_all"), enable_all_admin_providers_path, method: :patch, class: "btn btn-secondary btn-sm", form: { onsubmit: "return confirm(#{t('common.confirm').to_json})" } %>
+        <%= button_to t("admin.providers.disable_all"), disable_all_admin_providers_path, method: :patch, class: "btn btn-danger btn-sm", form: { onsubmit: "return confirm(#{t('common.confirm').to_json})" } %>
+        <%= button_to t("admin.providers.sync_status"), sync_status_admin_providers_path, method: :post, class: "btn btn-sm", disabled: !@api_configured, title: (@api_configured ? nil : t("admin.providers.api_key_missing")) %>
+      </div>
+    </div>
+
+    <% if @providers.empty? %>
+      <p class="muted"><%= t("admin.providers.empty") %></p>
+    <% else %>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><%= t("admin.providers.col_no") %></th>
+              <th><%= t("admin.providers.col_name") %></th>
+              <th><%= t("admin.providers.col_slug") %></th>
+              <th><%= t("admin.providers.col_category") %></th>
+              <th><%= t("admin.providers.col_status") %></th>
+              <th><%= t("admin.providers.col_adapter") %></th>
+              <th><%= t("admin.providers.col_source") %></th>
+              <th><%= t("admin.providers.col_latency") %></th>
+              <th><%= t("admin.providers.col_enabled") %></th>
+              <th class="col-action"><%= t("admin.providers.col_action") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @providers.each do |provider| %>
+              <tr class="<%= 'is-disabled' unless provider.enabled? %>">
+                <td class="muted"><%= provider.position %></td>
+                <td>
+                  <span class="provider-cell">
+                    <% if provider.logo_url.present? %><%= image_tag provider_logo_path(provider.slug), alt: "", class: "provider-logo", loading: "lazy" %><% end %>
+                    <strong><%= provider.name %></strong>
+                  </span>
+                </td>
+                <td>
+                  <code><%= provider.slug %></code>
+                  <% if provider.api_url.present? %><%= link_to "docs", provider.api_url, target: "_blank", rel: "noopener", class: "muted", style: "margin-left:6px;font-size:.75rem" %><% end %>
+                </td>
+                <td><%= t("providers.categories.#{provider.category}") %></td>
+                <td><%= provider_status_badge(provider) %></td>
+                <td><%= provider_adapter_badge(provider) %><% if provider.adapter_key.present? %> <span class="auth-pill" title="adapter"><%= provider.adapter_key %></span><% end %></td>
+                <td>
+                  <% if provider.api_source %><%= provider.api_source.name %><% else %><span class="muted">—</span><% end %>
+                  <% if provider.auth_mode.present? %><br><span class="auth-pill"><%= auth_mode_label(provider.auth_mode) %></span><% end %>
+                  <% if provider.custom? %><br><span class="badge badge-info"><%= t("admin.custom_providers.badge") %></span><% end %>
+                </td>
+                <td>
+                  <% if provider.last_latency_ms %>
+                    <span class="latency <%= provider.last_latency_ms < 1500 ? 'is-fast' : (provider.last_latency_ms > 5000 ? 'is-slow' : '') %>"><%= number_with_delimiter(provider.last_latency_ms) %> ms</span>
+                  <% else %><span class="muted">—</span><% end %>
+                </td>
+                <td>
+                  <span class="badge <%= provider.enabled? ? 'badge-success' : 'badge-muted' %>"><%= provider.enabled? ? t("common.enabled") : t("common.disabled") %></span>
+                </td>
+                <td class="col-action">
+                  <span class="inline-actions">
+                  <%= link_to t("common.edit"), edit_admin_custom_provider_path(provider), class: "btn btn-secondary btn-xs" %>
+                  <% if provider.custom? %>
+                    <%= button_to t("common.delete"), admin_custom_provider_path(provider), method: :delete, class: "btn btn-danger btn-xs", form: { onsubmit: "return confirm(#{t('common.confirm').to_json})" } %>
+                  <% end %>
+                  <% if provider.enabled? %>
+                    <%= button_to t("admin.providers.disable"), admin_provider_path(provider, enabled: false), method: :patch, class: "btn btn-secondary btn-xs" %>
+                  <% else %>
+                    <%= button_to t("admin.providers.enable"), admin_provider_path(provider, enabled: true), method: :patch, class: "btn btn-xs" %>
+                  <% end %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+<% end %>

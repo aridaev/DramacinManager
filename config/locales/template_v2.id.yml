@@ -1,0 +1,38 @@
+id:
+  template:
+    v2:
+      search_placeholder: "Cari drama, genre…"
+      nav:
+        collection: "Koleksi"
+      hero:
+        top_trending: "Top Trending"
+        play_now: "Putar Sekarang"
+        detail_info: "Detail Info"
+        fallback_desc: "Saksikan %{title} lengkap dengan subtitle Indonesia, kualitas HD, gratis dan selalu diperbarui."
+      sections:
+        popular_picks: "Pilihan drama populer"
+        new_added: "Baru ditambahkan"
+        most_wanted: "Paling Dicari Minggu Ini"
+        see_all: "Lihat semua"
+        explore_genres: "Jelajahi Genre"
+      footer:
+        explore: "Jelajahi"
+        popular_genres: "Genre populer"
+        info: "Informasi"
+        rights: "Hak cipta dilindungi."
+      genre_tile_sub: "Lihat koleksi drama"
+      detail:
+        sub_tag: "Sub Indo"
+        total_episodes: "Total episode"
+        language: "Bahasa"
+        year: "Tahun"
+        share: "Bagikan"
+        synopsis: "Sinopsis"
+        pick_episode: "Pilih episode %{title} (%{count} episode)"
+        faq: "Pertanyaan yang sering diajukan"
+        faq_q1: "Berapa jumlah episode %{title}?"
+        faq_a1: "Saat ini tersedia %{count} episode dan akan diperbarui mengikuti sumber resmi."
+        faq_q2: "Apakah %{title} bisa ditonton gratis di %{site}?"
+        faq_a2: "Ya. %{title} dapat ditonton gratis dengan subtitle Indonesia langsung dari browser, tanpa perlu akun."
+      watch:
+        of_total: "dari %{count} episode"

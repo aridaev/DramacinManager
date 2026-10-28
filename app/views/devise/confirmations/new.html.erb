@@ -1,0 +1,12 @@
+<%= render layout: "shared/auth_card", locals: { title: t("auth.confirmation.title"), subtitle: t("auth.confirmation.subtitle") } do %>
+  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: "form" }) do |f| %>
+    <div class="field">
+      <%= f.label :email, t("auth.email") %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: t("auth.email_placeholder"), value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit t("auth.confirmation.submit") %>
+    </div>
+  <% end %>
+<% end %>

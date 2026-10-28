@@ -1,0 +1,8 @@
+<% content_for :title, tv1_page_title(t("template.v1.no_provider.title")) %>
+<div class="empty-state" style="margin-top:40px">
+  <h2><%= t("template.v1.no_provider.title") %></h2>
+  <p><%= t("template.v1.no_provider.text") %></p>
+  <% if admin? %>
+    <%= link_to t("template.v1.no_provider.manage"), admin_providers_path, class: "btn btn-sm" %>
+  <% end %>
+</div>

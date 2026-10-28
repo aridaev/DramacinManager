@@ -1,0 +1,21 @@
+<main class="auth-shell">
+  <section class="auth-card">
+    <div class="brand-lockup">
+      <strong><%= t("app.name") %></strong>
+      <span><%= t("app.tagline") %></span>
+    </div>
+
+    <div class="auth-heading">
+      <h1><%= title %></h1>
+      <% if local_assigns[:subtitle].present? %><p><%= subtitle %></p><% end %>
+    </div>
+
+    <%= render "shared/flash" %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <%= yield %>
+
+    <%= render "devise/shared/links" %>
+    <%= render "shared/locale_switcher" %>
+  </section>
+</main>

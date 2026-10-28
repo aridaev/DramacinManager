@@ -1,0 +1,12 @@
+<article class="card">
+  <%= link_to tv1_drama_path(drama), class: "card-link", aria: { label: tt("card.open", title: drama.title) } do %>
+    <span class="poster-wrap">
+      <%= tv1_poster(drama, lazy: local_assigns.fetch(:lazy, true)) %>
+      <% if (ep = tv1_episode_label(drama)) %><span class="card-badge"><%= ep %></span><% end %>
+      <% if drama.rating %><span class="card-rating">★ <%= drama.rating %></span><% end %>
+      <span class="card-play"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+    </span>
+    <span class="card-title"><%= drama.title %></span>
+    <% if drama.genres.any? %><span class="card-sub"><%= drama.genres.first(2).join(" · ") %></span><% end %>
+  <% end %>
+</article>

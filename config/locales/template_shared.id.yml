@@ -1,0 +1,47 @@
+id:
+  tokenplus:
+    not_configured: "TokenPlus belum dikonfigurasi. Isi API Key di Pengaturan Situs."
+    empty_reply: "Balasan model kosong."
+    timeout: "TokenPlus tidak merespons (timeout)."
+    connection: "Tidak bisa terhubung ke tokenplus.net."
+    bad_json: "Model tidak mengembalikan JSON yang valid. Coba lagi atau ganti model."
+    keywords_missing: "Isi dulu Target Keywords (pisahkan dengan koma)."
+  template:
+    v1:
+      mtabs:
+        latest: "Terbaru"
+      seo:
+        read_more: "Baca selengkapnya"
+        read_less: "Tutup"
+      guard:
+        title: "DevTools terdeteksi"
+        text: "Tutup panel pengembang (F12) untuk melanjutkan menonton."
+      seo_default_html: |
+        <h2>Nonton Drama China Pendek Sub Indo Gratis di %{site}</h2>
+        <p>%{site} adalah tempat nonton drama China pendek (short drama) dengan subtitle Indonesia secara gratis, langsung dari browser tanpa perlu mengunduh aplikasi atau membuat akun. Semua judul tersusun rapi per genre dan per penyedia, diperbarui setiap hari, dan bisa diputar dalam kualitas HD baik di ponsel, tablet, maupun komputer. Kami merancang %{site} agar ringan, cepat dibuka, dan nyaman dipakai bahkan dengan koneksi seluler.</p>
+        <h3>Apa itu drama pendek dan kenapa begitu populer?</h3>
+        <p>Drama pendek adalah serial dengan episode berdurasi 1–3 menit yang dirancang untuk ditonton secara vertikal di layar ponsel. Satu judul biasanya terdiri dari 40–100 episode dengan alur yang padat: konflik langsung dimulai sejak menit pertama, tiap episode ditutup dengan kejutan, dan ceritanya mudah diikuti kapan saja — di perjalanan, saat istirahat, atau sebelum tidur. Tema yang paling banyak dicari antara lain CEO dan pernikahan kontrak, balas dendam, kelahiran kembali (rebirth), identitas tersembunyi, romansa manis, hingga fantasi dan laga.</p>
+        <h3>Cara menonton di %{site}</h3>
+        <ul>
+          <li>Pilih judul dari beranda, bagian <strong>Terbaru</strong>, atau cari lewat kolom pencarian.</li>
+          <li>Buka halaman detail untuk membaca sinopsis, melihat jumlah episode, dan memilih episode.</li>
+          <li>Tekan tombol putar; player mendukung pengaturan <strong>kualitas video</strong>, <strong>subtitle (CC)</strong>, kecepatan pemutaran, dan layar penuh.</li>
+          <li>Episode berikutnya diputar otomatis, dan posisi tontonan bisa dilanjutkan dari halaman detail.</li>
+        </ul>
+        <h3>Subtitle Indonesia dan dubbing</h3>
+        <p>Sebagian besar judul di %{site} dilengkapi teks terjemahan Bahasa Indonesia yang bisa diaktifkan atau dimatikan dari tombol CC di player. Beberapa penyedia juga menawarkan versi sulih suara (dubbing) sehingga penonton dapat memilih pengalaman yang paling nyaman. Jika sebuah judul tersedia dalam beberapa bahasa, pilihan subtitle akan muncul otomatis.</p>
+        <h3>Genre yang bisa kamu jelajahi</h3>
+        <p>Suka kisah romantis dengan bos dingin yang perlahan luluh? Coba genre <strong>Romance</strong> dan <strong>CEO</strong>. Ingin cerita yang memacu adrenalin? Ada <strong>Action</strong> dan <strong>Thriller</strong>. Untuk hiburan ringan tersedia <strong>Comedy</strong>, sementara pencinta plot twist bisa menjelajahi <strong>Revenge</strong>, <strong>Rebirth</strong>, dan <strong>Fantasy</strong>. Halaman genre menampilkan judul yang relevan beserta jumlah episode sehingga mudah memilih tontonan untuk maraton akhir pekan.</p>
+        <h3>Kenapa memilih %{site}?</h3>
+        <ul>
+          <li><strong>Gratis dan tanpa akun</strong> — langsung tonton, tanpa registrasi, tanpa langganan.</li>
+          <li><strong>Update harian</strong> dari beberapa penyedia resmi sekaligus, dengan pilihan penyedia tercepat.</li>
+          <li><strong>Kualitas HD</strong> dan streaming adaptif yang menyesuaikan kecepatan internet.</li>
+          <li><strong>Ramah ponsel</strong>: tampilan vertikal, tombol besar, navigasi bawah yang mudah dijangkau.</li>
+          <li><strong>Aman dan ringan</strong>: tanpa unduhan aplikasi, tanpa pop-up yang mengganggu.</li>
+        </ul>
+        <h3>Pilih penyedia dan kualitas sesuai jaringan</h3>
+        <p>%{site} menggabungkan katalog dari beberapa penyedia drama pendek sekaligus. Daftar penyedia diurutkan dari yang paling cepat merespons, sehingga pilihan pertama biasanya memberi pemutaran paling lancar. Jika suatu judul tidak tersedia di satu penyedia, cukup berpindah ke penyedia lain lewat menu — koleksi, episode, dan subtitle akan menyesuaikan secara otomatis tanpa perlu memuat ulang pengaturan apa pun.</p>
+        <h3>Tips agar streaming lancar</h3>
+        <p>Gunakan browser terbaru (Chrome, Safari, Firefox, atau Edge). Jika video terasa tersendat, turunkan kualitas dari menu HD di player atau ganti penyedia melalui pilihan di menu. Pastikan juga subtitle sudah dipilih sesuai bahasa yang diinginkan. Semua pengaturan tersebut diingat oleh browser untuk kunjungan berikutnya.</p>
+        <p>Selamat menonton di %{site} — temukan drama pendek favoritmu hari ini, dari romansa yang bikin baper sampai aksi balas dendam yang memuaskan. Halaman beranda selalu menampilkan judul yang sedang tren, jadi jangan lupa kembali setiap hari untuk episode terbaru.</p>

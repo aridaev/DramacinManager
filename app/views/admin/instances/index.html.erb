@@ -1,0 +1,53 @@
+<% content_for :page_actions do %>
+  <%= button_to admin_instances_path, method: :post, class: "btn btn-sm" do %><%= dm_icon("plus", size: 16) %> <%= t("admin.instances.create") %><% end %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.instances.title"), subtitle: t("admin.instances.subtitle") } do %>
+  <div class="stats">
+    <div class="stat"><span class="stat-label"><%= t("common.all") %></span><span class="stat-num"><%= @instances.size %></span></div>
+    <div class="stat is-ok"><span class="stat-label"><%= t("admin.instances.statuses.active") %></span><span class="stat-num"><%= @counts["active"].to_i %></span></div>
+    <div class="stat"><span class="stat-label"><%= t("admin.instances.statuses.paused") %></span><span class="stat-num"><%= @counts["paused"].to_i %></span></div>
+    <div class="stat is-bad"><span class="stat-label"><%= t("admin.instances.statuses.disabled") %></span><span class="stat-num"><%= @counts["disabled"].to_i %></span></div>
+  </div>
+
+  <div class="card">
+    <% if @instances.empty? %>
+      <p class="muted"><%= t("admin.instances.empty") %></p>
+    <% else %>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><%= t("admin.instances.col_name") %></th>
+              <th><%= t("admin.instances.col_title") %></th>
+              <th><%= t("admin.instances.sec_template") %></th>
+              <th><%= t("admin.instances.col_status") %></th>
+              <th><%= t("admin.domains.title") %></th>
+              <% if admin? %><th><%= t("admin.instances.col_created_by") %></th><% end %>
+              <th><%= t("admin.instances.col_created_at") %></th>
+              <th class="col-action"><%= t("admin.providers.col_action") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @instances.each do |i| %>
+              <tr class="<%= 'is-disabled' if i.disabled? %>">
+                <td><%= link_to i.name, admin_instance_path(i) %><code style="margin-left:6px"><%= i.id %></code></td>
+                <td><%= i.app_name.presence || i.title.presence || tag.span("—", class: "muted") %><% if i.title.present? && i.app_name.present? %><div class="muted" style="font-size:.74rem"><%= i.title %></div><% end %></td>
+                <td><code><%= i.template_key %></code></td>
+                <td><span class="badge <%= i.active? ? 'badge-success' : (i.paused? ? 'badge-info' : 'badge-muted') %>"><%= t("admin.instances.statuses.#{i.status}") %></span></td>
+                <td><% if i.domains.any? %><% d = i.primary_domain %><span class="dot <%= d.active? ? 'is-on' : 'is-off' %>"></span> <%= d.hostname %><% if i.domains.size > 1 %> <span class="muted">+<%= i.domains.size - 1 %></span><% end %><% else %><span class="muted">—</span><% end %></td>
+                <% if admin? %><td class="muted"><%= i.created_by&.email || "—" %></td><% end %>
+                <td class="muted"><%= l(i.created_at, format: :short) %></td>
+                <td class="col-action">
+                  <span class="inline-actions">
+                    <%= link_to t("common.edit"), edit_admin_instance_path(i), class: "btn btn-secondary btn-xs" %>
+                    <%= button_to t("common.delete"), admin_instance_path(i), method: :delete, class: "btn btn-danger btn-xs", form: { onsubmit: "return confirm(#{t('common.confirm').to_json})" } %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+<% end %>

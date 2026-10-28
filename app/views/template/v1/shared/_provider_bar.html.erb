@@ -1,0 +1,22 @@
+<div class="provider-bar">
+  <div class="provider-bar-inner">
+    <% if enabled_providers.any? %>
+      <%= form_with url: template_v1_root_path, method: :get, class: "provider-combo", data: { turbo: false } do |f| %>
+        <label class="provider-picker">
+          <span class="provider-dot <%= current_provider&.online? ? 'is-online' : (current_provider&.offline? ? 'is-offline' : '') %>"></span>
+          <span class="provider-picker-label"><%= t("template.v1.provider") %></span>
+          <%= select_tag :provider, options_from_collection_for_select(enabled_providers, :slug, :name, current_provider&.slug), class: "provider-select", data: { autosubmit: true }, aria: { label: t("template.v1.provider") } %>
+        </label>
+      <% end %>
+      <span class="provider-count"><%= t("template.v1.providers_enabled", count: enabled_providers.size) %></span>
+    <% else %>
+      <span class="provider-count"><%= t("template.v1.no_provider_short") %></span>
+    <% end %>
+
+    <div class="provider-chips">
+      <% enabled_providers.first(10).each do |p| %>
+        <%= link_to p.name, template_v1_provider_home_path(p.slug), class: ["chip", ("is-active" if p == current_provider)] %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+id:
+  template:
+    v1:
+      preview_bar: "Pratinjau branding instance \"%{name}\" — hanya terlihat olehmu."
+      preview_exit: "Keluar pratinjau"
+      genres_title: "Semua genre"
+      latest_title: "Terbaru"
+      inactive_text: "Situs ini sedang dijeda. Silakan kembali lagi nanti."

@@ -1,0 +1,62 @@
+<% content_for :page_actions do %>
+  <%= link_to new_admin_api_source_path, class: "btn btn-sm" do %><%= dm_icon("plus", size: 16) %> <%= t("admin.api_sources.new") %><% end %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.api_sources.title"), subtitle: t("admin.api_sources.subtitle") } do %>
+  <div class="card">
+    <% if @sources.empty? %>
+      <p class="muted"><%= t("admin.api_sources.empty") %></p>
+    <% else %>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><%= t("admin.api_sources.col_name") %></th>
+              <th><%= t("admin.api_sources.col_base_url") %></th>
+              <th><%= t("admin.api_sources.col_auth") %></th>
+              <th><%= t("admin.api_sources.col_key") %></th>
+              <th><%= t("admin.api_sources.col_providers") %></th>
+              <th><%= t("admin.api_sources.col_last_test") %></th>
+              <th class="col-action"><%= t("admin.providers.col_action") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @sources.each do |s| %>
+              <tr class="<%= 'is-disabled' unless s.enabled? %>">
+                <td>
+                  <strong><%= s.name %></strong>
+                  <% if s.is_default? %><span class="badge tag-default"><%= t("admin.api_sources.default") %></span><% end %>
+                  <% unless s.enabled? %><span class="badge badge-muted"><%= t("common.disabled") %></span><% end %>
+                  <div class="muted" style="font-size:.74rem"><code><%= s.slug %></code></div>
+                </td>
+                <td><code><%= s.base_url %></code><% if s.status_url %><div class="muted" style="font-size:.74rem"><%= s.status_path %></div><% end %></td>
+                <td><span class="auth-pill"><%= auth_mode_label(s.auth_mode) %><%= " (#{s.auth_param})" if s.auth_param.present? %></span></td>
+                <td><%= s.api_key.present? ? masked_secret(s.api_key) : tag.span(t("common.not_set"), class: "muted") %></td>
+                <td><%= @provider_counts[s.id].to_i %></td>
+                <td class="muted" style="font-size:.78rem">
+                  <% if s.last_tested_at %><%= l(s.last_tested_at, format: :short) %><br><%= s.last_test_result %><% else %><%= t("common.never") %><% end %>
+                </td>
+                <td class="col-action">
+                  <span class="inline-actions">
+                    <%= button_to t("admin.api_sources.test"), test_admin_api_source_path(s), method: :post, class: "btn btn-secondary btn-xs", disabled: !s.configured? %>
+                    <%= button_to t("admin.api_sources.sync"), sync_admin_api_source_path(s), method: :post, class: "btn btn-secondary btn-xs", disabled: !s.configured?, form: { onsubmit: "return confirm(#{t('admin.api_sources.sync_confirm').to_json})" } %>
+                    <%= link_to t("common.edit"), edit_admin_api_source_path(s), class: "btn btn-secondary btn-xs" %>
+                    <% unless s.is_default? %>
+                      <%= button_to t("admin.api_sources.make_default"), make_default_admin_api_source_path(s), method: :patch, class: "btn btn-secondary btn-xs" %>
+                      <%= button_to t("common.delete"), admin_api_source_path(s), method: :delete, class: "btn btn-danger btn-xs", form: { onsubmit: "return confirm(#{t('common.confirm').to_json})" } %>
+                    <% end %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <h2><%= t("admin.api_sources.how_title") %></h2>
+    <p><%= t("admin.api_sources.how_text_html") %></p>
+    <%= link_to new_admin_custom_provider_path, class: "btn btn-secondary btn-sm" do %><%= dm_icon("plus", size: 16) %> <%= t("admin.custom_providers.new") %><% end %>
+  </div>
+<% end %>

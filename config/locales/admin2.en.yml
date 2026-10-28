@@ -1,0 +1,296 @@
+en:
+  common:
+    edit: Edit
+    delete: Delete
+    errors_heading: 'Please fix the following:'
+  nav:
+    instances: Instances
+    skip: Skip to content
+    main_menu: Main menu
+    api_sources: API Sources
+    open_template: Open public site
+    density: Display density
+    compact: Compact
+    comfortable: Comfortable
+    site_settings: Site Settings
+  admin:
+    instances:
+      open_site: Open site
+      menu_count: Menus
+      preview_title: Site preview
+      preview_hint: hover a menu with ▾ to see its sub-menu
+      sec_template: Template
+      template_hint: Public site layout used by this instance
+      tpl_stable: stable
+      tpl_soon: Next template
+      tpl_soon_hint: Will appear here once added to Instance::TEMPLATES.
+      f_app_name_hint: used in navbar / tab title
+      serp_title_placeholder: Site title
+      serp_desc_placeholder: Meta description will show here.
+      nav_sub: Sub
+      nav_sub_add: Add sub-menu
+      nav_preview: Preview
+      sec_general: General
+      sec_branding: Branding
+      sec_seo: SEO
+      sec_footer: Footer
+      sec_nav: Navbar
+      f_app_name: App name
+      f_icon: Icon (favicon)
+      f_icon_hint: square image URL, PNG/SVG/ICO
+      f_logo: Logo
+      f_logo_hint: image URL, transparent SVG/PNG
+      f_site_title: Site title
+      f_site_title_hint: max 70 chars
+      f_meta: Meta description
+      f_meta_hint: max 160 chars
+      f_copyright: Copyright
+      f_footer_text: Footer text
+      f_footer_links: Footer links
+      f_footer_links_hint: 'one per line: Label | /url'
+      nav_add: Add menu item
+      nav_hint: Use Quick add for built-in pages or Add menu for your own links. Drag ☰ to reorder; each menu can have sub-menus (dropdown).
+      nav_label: Label
+      nav_url: URL
+      title: Instances
+      subtitle: Instance list. A random name is generated on create; instance logic comes later.
+      create: Create Instance
+      empty: No instances yet. Click Create Instance.
+      col_name: Name
+      col_title: Label
+      col_status: Status
+      col_created_by: Created by
+      col_created_at: Created
+      col_updated_at: Updated
+      show_subtitle: Instance %{name}
+      detail_title: Details
+      settings_title: Settings (JSON)
+      settings_hint: Instance configuration will be filled by upcoming logic.
+      edit_title: Edit instance %{name}
+      edit_subtitle: The random name is read-only; use Regenerate name on the detail page.
+      name_hint: auto-generated
+      title_placeholder: Optional label to recognise it
+      regenerate: Regenerate name
+      regenerate_confirm: Replace the instance name with a new random one?
+      created: Instance %{name} created.
+      updated: Instance %{name} saved.
+      regenerated: 'New name: %{name}.'
+      deleted: Instance %{name} deleted.
+      statuses:
+        active: Active
+        paused: Paused
+        disabled: Disabled
+      limit_reached: Limit of %{limit} instances per user reached.
+      access_disabled: Instance creation by users is currently disabled.
+      sec_theme: Theme & Colors
+      theme_hint: colors, font and corners for this instance's public site
+      theme_presets: Presets
+      theme_presets_hint: click to fill all colors, then fine-tune
+      f_accent: Accent color
+      f_accent_hint: buttons, active links, badges
+      f_theme_default: Default mode
+      f_theme_default_hint: visitors can still switch
+      theme_dark: Dark
+      theme_light: Light
+      f_bg: Background
+      f_surface: Surface (cards/navbar)
+      f_text: Text
+      f_font: Font
+      f_font_hint: Google fonts are loaded automatically
+      f_radius: Corners
+      f_radius_hint: roundness of cards & buttons
+      radius_sharp: Sharp
+      radius_normal: Normal
+      radius_round: Round
+      theme_preview: Preview
+      theme_preview_hint: updates live as you change colors
+      color_reset: Reset to default
+      sec_watermark: Video watermark
+      watermark_hint: logo shown over the player (overlay). Not burned into the video file — see note below.
+      f_watermark: Watermark image URL
+      f_watermark_hint: empty = use Logo, then Icon; transparent PNG works best
+      f_wm_position: Position
+      f_wm_opacity: Opacity
+      wm_none: no logo/watermark yet
+      wm_pos:
+        top-center: Top center
+        top-left: Top left
+        top-right: Top right
+        bottom-left: Bottom left
+        bottom-right: Bottom right
+      footer_hint: text, links, social media and the bottom bar of the footer
+      f_footer_text_hint: one sentence under the logo
+      f_copyright_hint: bottom line; empty = © year + name
+      f_footer_about: Short about
+      f_footer_about_hint: optional, 1–3 sentences under the tagline
+      f_footer_about_ph: Free short-drama streaming site, updated daily…
+      fl_add: Add link
+      fl_hint: Drag ☰ to reorder. ↗ = open in new tab. Empty rows are ignored.
+      quick_add: Quick add
+      f_social: Social media
+      f_social_hint: shown as buttons in the footer; leave unused ones blank
+      f_show_providers: Show active provider count
+      f_show_powered: Show 'Powered by DracinAPI'
+      nav_new_tab: Open in new tab
+      nav_reset: Reset default
+      nav_reset_hint: restore Home / Genre / Latest
+      nav_reset_confirm: Replace all menus with the defaults?
+      nav_genre_dropdown: + Genre (dropdown of all genres)
+      nav_legend: Type / in the URL field to see built-in pages. External URLs (https://…) are fine too.
+      f_wm_size: Size
+      wm_size:
+        small: Small
+        medium: Medium
+        large: Large
+        xlarge: Extra large
+      wm_download_note: 'Note: this watermark is a page overlay, so it is not kept if the video is downloaded. The browser download button & right-click on the video are disabled to discourage it. A permanent
+        watermark would require re-encoding the video (ffmpeg), which is heavy and not available on this server.'
+    dashboard:
+      stat_enabled: Enabled providers
+      stat_supported: '%{count} with adapter'
+      stat_sources: API sources
+      fastest_title: Fastest providers
+      fastest_hint: measured every 30 min
+      fastest_empty: No measurements yet. Run bin/rails dracin:latency.
+    providers:
+      col_source: Source
+      col_latency: Latency
+    api_sources:
+      title: API Sources
+      subtitle: External API hubs / vendors. Add more sources and link them to providers.
+      new: Add source
+      new_title: Add API source
+      edit_title: 'Edit source: %{name}'
+      form_subtitle: Base URL, authentication mode and API key (stored encrypted).
+      empty: No API sources yet.
+      default: Default
+      col_name: Name
+      col_base_url: Base URL
+      col_auth: Auth
+      col_key: Key
+      col_providers: Providers
+      col_last_test: Last test
+      test: Test
+      sync: Sync
+      sync_confirm: Pull the platform list from this source into the providers table?
+      make_default: Make default
+      f_name: Name
+      f_slug: Slug
+      f_slug_hint: lowercase, digits, dashes; leave blank to auto-generate
+      f_base_url: Base URL
+      f_base_url_hint: without trailing slash
+      f_auth_mode: Authentication mode
+      f_auth_param: Parameter name
+      f_auth_param_hint: 'query modes only (default: code / key)'
+      f_api_key: API key
+      f_api_key_keep: Leave blank to keep
+      f_status_path: Status path
+      f_status_path_hint: platform list endpoint, e.g. /api/status
+      f_notes: Notes
+      auth_modes:
+        inherit: Inherit from source / adapter default
+        header_x_token: Header x-token
+        query_code: Query ?code=
+        query_key: Query ?key=
+        bearer: 'Authorization: Bearer'
+        none: No auth
+      created: Source %{name} added.
+      updated: Source %{name} saved.
+      deleted: Source %{name} deleted.
+      cannot_delete_default: The default source cannot be deleted. Make another source default first.
+      default_set: '%{name} is now the default source.'
+      key_missing: This source has no API key yet.
+      test_success: Connected in %{ms} ms (%{count} entries).
+      test_failed: 'Connection failed: %{error}'
+      sync_success: '%{count} platforms synced from %{name}.'
+      how_title: Adding providers from another vendor
+      how_text_html: '1) Add an <strong>API source</strong> (base URL + auth + key). 2) Click <em>Sync</em> if the hub has a status endpoint, or 3) create a <strong>custom provider</strong>: point it at
+        the API host and pick the adapter (response schema) that matches. Effective key = provider key → source key → default key.'
+    custom_providers:
+      new: Add provider
+      new_title: Add provider
+      edit_title: 'Edit provider: %{name}'
+      form_subtitle: API host, source and provider-specific authentication.
+      badge: Custom
+      f_name: Name
+      f_slug: Slug
+      f_slug_hint: used in template URLs, must be unique
+      f_adapter: Adapter (API schema)
+      f_adapter_hint: pick the schema whose API responses match
+      f_adapter_same_slug: — same as slug —
+      f_api_url: API host
+      f_api_url_hint: leave blank for the adapter default host
+      f_source: API source
+      f_source_hint: key is taken from here when the provider key is empty
+      f_source_none: — none —
+      f_auth_mode: Authentication mode
+      f_auth_mode_hint: override for this provider only
+      f_api_key: Provider-specific key
+      f_api_key_hint: optional; overrides the source key
+      f_logo: Logo URL
+      created: Provider %{name} added.
+      updated: Provider %{name} saved.
+      deleted: Provider %{name} deleted.
+    site_settings:
+      title: Site Settings
+      subtitle: Global Cloudflare integration, VPS IP and instance policy.
+      cf_title: Cloudflare
+      cf_connected: Connected
+      cf_text_html: The token is used to <strong>create a zone</strong> when a user adds a domain to an instance, set <strong>SSL</strong>, and create <code>A @</code> + <code>CNAME www</code> records to
+        the VPS IP. The user then points their nameservers to the Cloudflare NS shown.
+      cf_token: API Token / Global API Key
+      cf_token_hint: API Token (recommended; permissions Zone:Read, Zone:Edit, DNS:Edit, Zone Settings:Edit, all zones) OR the Global API Key from the API Keys page. Leave blank to keep.
+      cf_account: Account ID
+      cf_account_hint: filled automatically on Test token when there is 1 account
+      vps_ip: VPS IP (origin)
+      vps_ip_hint: the A @ record will point here
+      ssl_mode: Cloudflare SSL mode
+      ssl_mode_hint: Flexible = origin may be HTTP
+      last_test: Last test
+      test_token: Test token
+      clear_token: Remove token
+      cf_token_page: Create token at Cloudflare ↗
+      updated: Site settings saved.
+      token_missing: Cloudflare token is not set.
+      token_ok: 'Token valid (%{status}). Accounts: %{accounts}.'
+      token_failed: 'Token failed: %{error}'
+      token_cleared: Cloudflare token removed.
+      inst_title: Instances for users
+      inst_text: The user role can create their own instances and only sees their own. Admins see all.
+      users_can_create: Allow the user role to create instances
+      max_per_user: Max instances per user
+      max_per_user_hint: 0 = unlimited
+      flow_title: Custom domain flow
+      flow_1: User adds a domain on the instance page → Cloudflare zone is created automatically.
+      flow_2: SSL is set to the mode above; A @ → VPS IP and CNAME www records are created (proxied).
+      flow_3: User points the nameservers at their registrar to the 2 Cloudflare NS shown.
+      flow_4: Click Check status; when the zone is active the domain becomes Active and serves the instance.
+      cf_email: Cloudflare account email
+      cf_email_hint: REQUIRED when using the Global API Key; leave blank for an API Token
+    domains:
+      title: Domains
+      hint: custom domain for this instance via Cloudflare
+      empty: No domains yet. Add one below.
+      add: Add domain
+      check: Check status
+      retry: Retry
+      copy: Copy
+      cf_not_ready: Cloudflare is not configured (token / VPS IP). Contact the admin.
+      created: 'Domain %{hostname} created. Point nameservers to: %{ns}'
+      provision_failed: 'Failed to create Cloudflare zone: %{error}'
+      now_active: '%{hostname} is now active on Cloudflare.'
+      still_pending: '%{hostname} is still waiting for NS (CF: %{cf}). Propagation can take up to 24h.'
+      retried: Provisioning for %{hostname} retried.
+      deleted: Domain %{hostname} deleted.
+      delete_confirm: Delete this domain and its Cloudflare zone?
+      active_text: Active. The site is reachable at
+      ns_instruction_html: 'At the registrar of <strong>%{hostname}</strong>, change the nameservers to:'
+      ns_note: After changing, click Check status. Cloudflare usually detects it within minutes up to 24 hours.
+      last_checked: Checked
+      statuses:
+        pending_ns: Waiting for NS
+        active: Active
+        error: Failed
+        removed: Removed
+  dashboard:
+    instances_text: 'Create and manage your site instances: branding, navbar and custom domain.'
