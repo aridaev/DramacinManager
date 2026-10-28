@@ -20,7 +20,8 @@
       <div class="member-offer">
         <h2><%= tt("members.offer_title") %></h2>
         <p class="member-price"><%= tt("members.offer_price", price: inst.adfree_price, days: inst.adfree_days) %></p>
-        <% if inst.adfree_instructions.present? %><div class="member-instr"><%= simple_format(h(inst.adfree_instructions)) %></div><% end %>
+        <p class="member-instr"><%= tt("members.offer_how") %></p>
+        <% if inst.adfree_site_href %><a class="btn member-site-btn" href="<%= inst.adfree_site_href %>" target="_blank" rel="noopener nofollow"><%= tt("members.offer_site_btn") %></a><% end %>
       </div>
 
       <% if @request %>
@@ -31,6 +32,7 @@
       <% else %>
         <%= form_with url: template_v1_member_deposit_path, method: :post, multipart: true, class: "member-form", data: { turbo: false } do |f| %>
           <h3><%= tt("members.upload_title") %></h3>
+          <p class="member-instr"><%= tt("members.upload_hint") %></p>
           <label class="member-field"><span><%= tt("members.note") %></span><%= f.text_field :note, maxlength: 200, placeholder: tt("members.note_ph") %></label>
           <label class="member-field"><span><%= tt("members.proof") %></span><%= f.file_field :proof, accept: "image/jpeg,image/png,image/webp", required: true %><small><%= tt("members.proof_hint") %></small></label>
           <button type="submit" class="btn"><%= tt("members.upload_btn") %></button>

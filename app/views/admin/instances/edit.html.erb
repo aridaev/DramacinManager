@@ -242,8 +242,8 @@
           </div>
         </div>
         <div class="field">
-          <div class="field-label-row"><%= f.label :adfree_instructions, t("admin.instances.f_adfree_instructions") %><span class="field-hint"><%= t("admin.instances.f_adfree_instructions_hint") %></span></div>
-          <%= f.text_area :adfree_instructions, rows: 3, maxlength: 600, placeholder: t("admin.instances.f_adfree_instructions_ph") %>
+          <div class="field-label-row"><%= f.label :adfree_site_url, t("admin.instances.f_adfree_site_url") %><span class="field-hint"><%= t("admin.instances.f_adfree_site_url_hint") %></span></div>
+          <%= f.url_field :adfree_site_url, placeholder: "https://..." %>
         </div>
         <% pend = @instance.deposit_requests.pending.count %>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">

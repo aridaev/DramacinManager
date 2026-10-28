@@ -16,7 +16,7 @@ class Instance < ApplicationRecord
   }.freeze
   # Halaman bawaan template (untuk pilihan cepat navbar/footer).
   PAGES = [ [ "/", "Beranda" ], [ "/genre", "Semua genre" ], [ "/latest", "Terbaru" ], [ "/search", "Cari" ] ].freeze
-  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url members_enabled adfree_price adfree_days adfree_instructions] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
+  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url members_enabled adfree_price adfree_days adfree_site_url] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
   WATERMARK_SIZES = %w[small medium large xlarge].freeze
   WATERMARK_POSITIONS = %w[top-center top-left top-right bottom-left bottom-right].freeze
   include InstanceTheme
@@ -59,6 +59,7 @@ class Instance < ApplicationRecord
   def adfree_days = adfree_days_setting.to_i.clamp(1, 3650)
   def adfree_days_setting = settings["adfree_days"].presence || 30
   def adfree_price = settings["adfree_price"].presence || "Rp 50.000"
+  def adfree_site_href = adfree_site_url.to_s.strip.then { |u| u.match?(%r{\Ahttps?://}i) ? u : nil }
   def ads_enabled? = ads_enabled == "1"
   def ads_seconds = ads_duration.to_i.clamp(ADS_DURATION_RANGE.min, ADS_DURATION_RANGE.max).then { |n| ads_duration.present? ? n : 6 }
   def ads_active? = ads_enabled? && (ads_title.present? || ads_text.present? || ads_image_url.present?)

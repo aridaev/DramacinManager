@@ -776,3 +776,4 @@ html.fake-fs .mtabs, html.fake-fs .preview-bar { display: none; }
 .member-badge.is-pending { background: rgba(255,176,32,.18); color: #ffb020; }
 .tv1-flash { margin: 12px 0; padding: 10px 14px; border-radius: 10px; background: rgba(47,191,113,.14); color: #2fbf71; font-size: .88rem; border: 1px solid rgba(47,191,113,.4); }
 .tv1-flash.is-alert { background: rgba(229,72,77,.12); color: #e5484d; border-color: rgba(229,72,77,.4); }
+.member-site-btn { justify-self: start; }
