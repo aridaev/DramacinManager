@@ -16,7 +16,7 @@ class Instance < ApplicationRecord
   }.freeze
   # Halaman bawaan template (untuk pilihan cepat navbar/footer).
   PAGES = [ [ "/", "Beranda" ], [ "/genre", "Semua genre" ], [ "/latest", "Terbaru" ], [ "/search", "Cari" ] ].freeze
-  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
+  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
   WATERMARK_SIZES = %w[small medium large xlarge].freeze
   WATERMARK_POSITIONS = %w[top-center top-left top-right bottom-left bottom-right].freeze
   include InstanceTheme
@@ -64,6 +64,17 @@ class Instance < ApplicationRecord
     self.settings = settings.merge("indexnow_key" => SecureRandom.hex(16)) if settings["indexnow_key"].blank?
   end
   # Kirim ke IndexNow di thread terpisah (tanpa worker Solid Queue) saat instance dengan domain aktif disimpan.
+  # Status job Generate SEO. Dianggap masih berjalan maks. 10 menit (jaga-jaga bila worker mati).
+  def seo_job_running?
+    return false unless seo_job_status == "running"
+    at = (Time.zone.parse(seo_job_at.to_s) rescue nil)
+    at.present? && at > 10.minutes.ago
+  end
+
+  def mark_seo_job!(status, info = nil)
+    update_columns(settings: settings.merge("seo_job_status" => status, "seo_job_info" => info.presence, "seo_job_at" => Time.current.iso8601), updated_at: Time.current)
+  end
+
   def submit_indexnow_later
     return unless indexnow_auto? && active? && (host = primary_host)
     Thread.new { Rails.application.executor.wrap { IndexNowSubmitter.new(self, host: host).call rescue nil } }

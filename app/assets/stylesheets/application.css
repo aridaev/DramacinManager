@@ -726,3 +726,6 @@ html[data-density="compact"] .nav-in { height: 30px; }
 .tpl-thumb[data-tpl] .tpl-thumb-bar { background: color-mix(in srgb, var(--tpl-bg) 70%, #fff 30%); opacity: .5; }
 .tpl-thumb[data-tpl="v2"] { padding-left: 14px; } .tpl-thumb[data-tpl="v2"]::before { content: ""; position: absolute; left: 4px; top: 4px; bottom: 4px; width: 7px; border-radius: 3px; background: color-mix(in srgb, var(--tpl-bg) 60%, #fff 40%); opacity: .5; }
 .tpl-thumb[data-tpl="v3"] .tpl-thumb-row i { background: #f0f0f0; border: 1px solid #e4e4e4; }
+
+.spin { display:inline-block; width:11px; height:11px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation: spin .8s linear infinite; vertical-align:-1px; }
+@keyframes spin { to { transform: rotate(360deg); } }

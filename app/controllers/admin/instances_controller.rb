@@ -3,7 +3,7 @@
 class Admin::InstancesController < ApplicationController
   layout "application"
   before_action :require_instance_access!
-  before_action :load_instance, only: [ :show, :edit, :update, :destroy, :regenerate, :generate_seo, :submit_indexnow ]
+  before_action :load_instance, only: [ :show, :edit, :update, :destroy, :regenerate, :generate_seo, :seo_status, :submit_indexnow ]
 
   def index
     @instances = scope.ordered.includes(:created_by, :domains)
@@ -50,10 +50,17 @@ class Admin::InstancesController < ApplicationController
     return redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), alert: t("tokenplus.keywords_missing") if @instance.seo_keyword_list.empty?
     client = TokenPlusClient.from_settings
     return redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), alert: t("admin.instances.ai_not_configured") unless client.configured?
-    SeoGenerator.new(@instance, client: client, locale: I18n.locale).call
-    redirect_to edit_admin_instance_path(@instance, anchor: "sec-seo"), notice: t("admin.instances.ai_done", model: client.model)
-  rescue SeoGenerator::Error, ActiveRecord::RecordInvalid => e
+    return redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), alert: t("admin.instances.ai_already_running") if @instance.seo_job_running?
+    @instance.mark_seo_job!("running", client.model)
+    GenerateSeoJob.perform_later(@instance.id, I18n.locale.to_s)
+    redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), notice: t("admin.instances.ai_queued", model: client.model)
+  rescue ActiveRecord::RecordInvalid => e
     redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), alert: t("admin.instances.ai_failed", error: e.message)
+  end
+
+  def seo_status
+    render json: { status: @instance.seo_job_status, info: @instance.seo_job_info, at: @instance.seo_job_at, running: @instance.seo_job_running?,
+                   generated_at: @instance.seo_generated_at }
   end
 
   def submit_indexnow

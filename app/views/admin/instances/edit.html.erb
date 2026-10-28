@@ -212,7 +212,7 @@
 
       <section class="card inst-sec" id="sec-ai">
         <div class="card-head"><h2><%= t("admin.instances.sec_ai") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.instances.ai_hint") %></span></div>
-        <% tp_ready = Setting.tokenplus_api_key.present? %>
+        <% tp_ready = Setting.tokenplus_api_key.present?; seo_running = @instance.seo_job_running?; seo_st = @instance.seo_job_status.to_s %>
         <% unless tp_ready %><p class="form-errors" style="margin-bottom:12px"><%= t("admin.instances.ai_not_configured") %> <% if admin? %><%= link_to t("admin.instances.ai_setup_link"), edit_admin_site_settings_path(anchor: "tokenplus") %><% end %></p><% end %>
         <div class="field">
           <div class="field-label-row"><%= f.label :seo_keywords, t("admin.instances.f_seo_keywords") %><span class="field-hint"><%= t("admin.instances.f_seo_keywords_hint") %></span></div>
@@ -220,9 +220,17 @@
           <span class="field-hint"><%= t("admin.instances.kw_auto_hint") %></span>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <button type="submit" class="btn btn-sm" formaction="<%= generate_seo_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" <%= "disabled" unless tp_ready %> onclick="if(!confirm(this.dataset.confirm))return false;useGlobalCsrf(this.form)" data-confirm="<%= t('admin.instances.ai_generate_confirm') %>"><%= dm_icon("plug", size: 16) %> <%= t("admin.instances.ai_generate") %></button>
+          <button type="submit" class="btn btn-sm" formaction="<%= generate_seo_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" <%= "disabled" unless tp_ready && !seo_running %> onclick="if(!confirm(this.dataset.confirm))return false;useGlobalCsrf(this.form)" data-confirm="<%= t('admin.instances.ai_generate_confirm') %>"><%= dm_icon("plug", size: 16) %> <%= t("admin.instances.ai_generate") %></button>
           <% if tp_ready %><span class="muted" style="font-size:.78rem"><%= Setting.tokenplus_model %></span><% end %>
           <% if @instance.seo_generated_at.present? %><span class="muted" style="font-size:.78rem"><%= t("admin.instances.ai_last", time: (I18n.l(Time.zone.parse(@instance.seo_generated_at), format: :short) rescue @instance.seo_generated_at)) %></span><% end %>
+          <% if seo_st.present? %>
+          <span id="seo-job-status" class="muted" style="font-size:.78rem" data-url="<%= seo_status_admin_instance_path(@instance) %>" data-running="<%= seo_running ? 1 : 0 %>">
+            <% if seo_running %><span class="spin"></span> <%= t("admin.instances.ai_status_running", model: @instance.seo_job_info) %>
+            <% elsif seo_st == "ok" %><%= t("admin.instances.ai_status_ok", model: @instance.seo_job_info) %>
+            <% elsif seo_st == "failed" %><span style="color:#e5484d"><%= t("admin.instances.ai_status_failed", error: @instance.seo_job_info) %></span>
+            <% else %><span style="color:#e5484d"><%= t("admin.instances.ai_status_stale") %></span><% end %>
+          </span>
+          <% end %>
         </div>
       </section>
 
@@ -506,6 +514,17 @@
   <script>
     (function () {
       /* tab bagian: scroll + highlight */
+      // Status Generate SEO: polling tiap 5 detik selama job berjalan, lalu muat ulang halaman.
+      (function () {
+        var s = document.getElementById("seo-job-status"); if (!s || s.dataset.running !== "1") return;
+        var tick = function () {
+          fetch(s.dataset.url, { headers: { Accept: "application/json" }, credentials: "same-origin" }).then(function (r) { return r.json(); }).then(function (j) {
+            if (j.running) { setTimeout(tick, 5000); return; }
+            location.hash = j.status === "ok" ? "sec-seo" : "sec-ai"; location.reload();
+          }).catch(function () { setTimeout(tick, 8000); });
+        };
+        setTimeout(tick, 5000);
+      })();
       // Tombol formaction (generate_seo, submit_indexnow) menuju URL lain ? pakai token CSRF global, bukan per-form.
       window.useGlobalCsrf = function (form) { var m = document.querySelector('meta[name="csrf-token"]'), i = form && form.querySelector('input[name="authenticity_token"]'); if (m && i) i.value = m.content; };
       var tabs = document.querySelectorAll(".inst-tab"), secs = document.querySelectorAll(".inst-sec");

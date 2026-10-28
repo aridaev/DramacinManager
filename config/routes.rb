@@ -41,7 +41,7 @@ Rails.application.routes.draw do
       post :test_connection
     end
     resources :instances, only: [ :index, :show, :create, :edit, :update, :destroy ] do
-      member { patch :regenerate; patch :generate_seo; match :submit_indexnow, via: [ :post, :patch ] }
+      member { patch :regenerate; patch :generate_seo; get :seo_status; match :submit_indexnow, via: [ :post, :patch ] }
       resources :domains, only: [ :create, :destroy ] do
         member { post :refresh; post :retry }
       end
