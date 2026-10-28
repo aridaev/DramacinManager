@@ -220,7 +220,7 @@
           <span class="field-hint"><%= t("admin.instances.kw_auto_hint") %></span>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <button type="submit" class="btn btn-sm" formaction="<%= generate_seo_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" <%= "disabled" unless tp_ready %> onclick="return confirm(this.dataset.confirm)" data-confirm="<%= t('admin.instances.ai_generate_confirm') %>"><%= dm_icon("plug", size: 16) %> <%= t("admin.instances.ai_generate") %></button>
+          <button type="submit" class="btn btn-sm" formaction="<%= generate_seo_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" <%= "disabled" unless tp_ready %> onclick="if(!confirm(this.dataset.confirm))return false;useGlobalCsrf(this.form)" data-confirm="<%= t('admin.instances.ai_generate_confirm') %>"><%= dm_icon("plug", size: 16) %> <%= t("admin.instances.ai_generate") %></button>
           <% if tp_ready %><span class="muted" style="font-size:.78rem"><%= Setting.tokenplus_model %></span><% end %>
           <% if @instance.seo_generated_at.present? %><span class="muted" style="font-size:.78rem"><%= t("admin.instances.ai_last", time: (I18n.l(Time.zone.parse(@instance.seo_generated_at), format: :short) rescue @instance.seo_generated_at)) %></span><% end %>
         </div>
@@ -250,7 +250,7 @@
           <label class="check-row"><%= f.check_box :indexnow_auto, { checked: @instance.indexnow_auto? }, "1", "0" %> <%= t("admin.instances.f_indexnow_auto") %></label>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <button type="submit" class="btn btn-sm btn-secondary" formaction="<%= submit_indexnow_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" <%= "disabled" unless host %>><%= dm_icon("check", size: 16) %> <%= t("admin.instances.indexnow_submit") %></button>
+          <button type="submit" class="btn btn-sm btn-secondary" formaction="<%= submit_indexnow_admin_instance_path(@instance) %>" formmethod="post" data-turbo="false" onclick="useGlobalCsrf(this.form)" <%= "disabled" unless host %>><%= dm_icon("check", size: 16) %> <%= t("admin.instances.indexnow_submit") %></button>
           <% if @instance.indexnow_last.present? %><span class="muted" style="font-size:.78rem"><%= t("admin.instances.indexnow_last", status: @instance.indexnow_last) %></span><% end %>
         </div>
       </section>
@@ -506,6 +506,8 @@
   <script>
     (function () {
       /* tab bagian: scroll + highlight */
+      // Tombol formaction (generate_seo, submit_indexnow) menuju URL lain ? pakai token CSRF global, bukan per-form.
+      window.useGlobalCsrf = function (form) { var m = document.querySelector('meta[name="csrf-token"]'), i = form && form.querySelector('input[name="authenticity_token"]'); if (m && i) i.value = m.content; };
       var tabs = document.querySelectorAll(".inst-tab"), secs = document.querySelectorAll(".inst-sec");
       tabs.forEach(function (t) { t.addEventListener("click", function (e) { e.preventDefault(); document.getElementById(t.dataset.sec).scrollIntoView({ behavior: "smooth", block: "start" }); }); });
       if ("IntersectionObserver" in window) {
