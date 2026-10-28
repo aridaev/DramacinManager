@@ -86,6 +86,7 @@
     <div class="menu-backdrop" id="tv3-backdrop"></div>
 
     <main class="main wrap">
+      <% if flash[:notice].present? || flash[:alert].present? %><div class="tv1-flash <%= flash[:alert].present? ? 'is-alert' : '' %>" role="status"><%= flash[:alert].presence || flash[:notice] %></div><% end %>
       <%= yield %>
     </main>
 

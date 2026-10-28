@@ -10,6 +10,7 @@ class SeoController < ActionController::Base
     lines = [ "User-agent: *", "Allow: /", "Disallow: /admin", "Disallow: /users", "Disallow: /covers", "Disallow: /provider_logos",
               "Disallow: /*/stream/", "Disallow: /*/subtitle", "Disallow: /*?preview_instance=", "" ]
     if inst
+      lines << "Disallow: /akun"
       lines << "Sitemap: #{request.base_url}/sitemap.xml"
     else
       # Host utama hanya untuk admin/pratinjau template: jangan diindeks.

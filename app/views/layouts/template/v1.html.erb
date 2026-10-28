@@ -101,6 +101,7 @@
     </header>
 
     <main class="container">
+      <% if flash[:notice].present? || flash[:alert].present? %><div class="tv1-flash <%= flash[:alert].present? ? 'is-alert' : '' %>" role="status"><%= flash[:alert].presence || flash[:notice] %></div><% end %>
       <%= yield %>
     </main>
 

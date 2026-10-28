@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="<%= seo_desc %>">
     <meta name="keywords" content="<%= tv1_keywords.join(", ") %>">
-    <% if on_instance_host? %>
+    <% if on_instance_host? && controller_name != "members" %>
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow">
     <% else %>

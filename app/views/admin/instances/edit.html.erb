@@ -6,7 +6,7 @@
   <%= form_with model: [:admin, @instance], id: "instance-form", class: "inst-layout" do |f| %>
     <aside class="inst-side">
       <nav class="inst-tabs" aria-label="Bagian">
-        <% { general: "grid", template: "layers", branding: "box", theme: "palette", watermark: "box", ads: "clock", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
+        <% { general: "grid", template: "layers", branding: "box", theme: "palette", watermark: "box", ads: "clock", members: "user", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
           <a href="#sec-<%= k %>" class="inst-tab <%= 'is-active' if i.zero? %>" data-sec="sec-<%= k %>"><%= dm_icon(ic, size: 16) %><span><%= t("admin.instances.sec_#{k}") %></span></a>
         <% end %>
       </nav>
@@ -223,6 +223,33 @@
           </div>
         </div>
         <% if @instance.ads_enabled? && !@instance.ads_active? %><p class="form-errors"><%= t("admin.instances.ads_need_content") %></p><% end %>
+      </section>
+
+      <section class="card inst-sec" id="sec-members">
+        <div class="card-head"><h2><%= t("admin.instances.sec_members") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.instances.members_hint") %></span></div>
+        <div class="field">
+          <label class="check-row"><%= f.check_box :members_enabled, { checked: @instance.members_enabled? }, "1", "0" %> <%= t("admin.instances.f_members_enabled") %></label>
+        </div>
+        <% if @instance.members_enabled? && !@instance.ads_enabled? %><p class="form-errors" style="margin-bottom:12px"><%= t("admin.instances.members_need_ads") %></p><% end %>
+        <div class="form-row form-row-3">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :adfree_price, t("admin.instances.f_adfree_price") %><span class="field-hint"><%= t("admin.instances.f_adfree_price_hint") %></span></div>
+            <%= f.text_field :adfree_price, value: @instance.adfree_price, maxlength: 40 %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :adfree_days, t("admin.instances.f_adfree_days") %></div>
+            <%= f.number_field :adfree_days, value: @instance.adfree_days, min: 1, max: 3650, step: 1 %>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :adfree_instructions, t("admin.instances.f_adfree_instructions") %><span class="field-hint"><%= t("admin.instances.f_adfree_instructions_hint") %></span></div>
+          <%= f.text_area :adfree_instructions, rows: 3, maxlength: 600, placeholder: t("admin.instances.f_adfree_instructions_ph") %>
+        </div>
+        <% pend = @instance.deposit_requests.pending.count %>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <%= link_to admin_instance_members_path(@instance), class: "btn btn-sm btn-secondary" do %><%= dm_icon("user", size: 14) %> <%= t("admin.instances.members_manage") %><% end %>
+          <% if pend > 0 %><span class="badge badge-danger"><%= t("admin.instances.members_pending", n: pend) %></span><% end %>
+        </div>
       </section>
 
       <section class="card inst-sec" id="sec-seo">

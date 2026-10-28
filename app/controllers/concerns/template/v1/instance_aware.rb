@@ -3,7 +3,7 @@
 module Template::V1::InstanceAware
   extend ActiveSupport::Concern
 
-  ROUTE_NAMES = %w[root search genres latest genre stream subtitle drama watch provider_home sitemap robots].freeze
+  ROUTE_NAMES = %w[root search genres latest genre stream subtitle drama watch provider_home sitemap robots member member_login member_register member_logout member_deposit].freeze
 
   # Mengganti helper template_v1_*_path → site_*_path saat melayani domain instance.
   # Dipakai di controller template v1 (termasuk streams/subtitles) dan sebagai view helper.
@@ -43,7 +43,7 @@ module Template::V1::InstanceAware
     include RouteOverrides
     helper RouteOverrides
     helper_method :tpl, :current_instance, :tv1_site_name, :tv1_meta_description, :tv1_icon_url, :tv1_logo_url,
-                  :tv1_nav_items, :tv1_footer_text, :tv1_footer_links, :tv1_copyright
+                  :tv1_nav_items, :tv1_footer_text, :tv1_footer_links, :tv1_copyright, :current_member, :member_session_key, :show_ads?
     before_action :set_preview_instance
     before_action :require_active_instance!
   end
@@ -59,7 +59,28 @@ module Template::V1::InstanceAware
   def tv1_meta_description = current_instance&.meta_description.presence || t("template.v1.meta_description")
   def tv1_icon_url         = current_instance&.icon_url.presence || "/icon.svg"
   def tv1_logo_url         = current_instance&.logo_url.presence
-  def tv1_nav_items        = current_instance ? current_instance.nav_items.select { |it| it["enabled"] != false } : []
+  def tv1_nav_items
+    return [] unless current_instance
+    items = current_instance.nav_items.select { |it| it["enabled"] != false }
+    if current_instance.members_enabled?
+      items = default_nav_items if items.empty?
+      items += [ { "label" => (current_member ? current_member.username : I18n.t("template.v1.members.nav")), "url" => "/akun", "enabled" => true } ]
+    end
+    items
+  end
+
+  def default_nav_items
+    [ { "label" => I18n.t("template.v1.nav.home"), "url" => "/" }, { "label" => I18n.t("template.v1.nav.genre"), "url" => "/genre" }, { "label" => I18n.t("template.v1.nav.latest", default: "Terbaru"), "url" => "/latest" } ]
+  end
+
+  # Akun penonton (Member) per instance — sesi terpisah dari Devise.
+  def member_session_key = "tv1_member_#{current_instance&.id}"
+  def current_member
+    return @current_member if defined?(@current_member)
+    @current_member = (current_instance&.members_enabled? && (id = session[member_session_key])) ? current_instance.members.find_by(id: id) : nil
+  end
+  # Iklan pra-tayang tampil bila diaktifkan dan penonton bukan member bebas iklan.
+  def show_ads? = current_instance&.ads_active? && !current_member&.adfree?
   def tv1_footer_text      = current_instance&.footer_text.presence || t("template.v1.footer.tagline")
   def tv1_footer_links     = current_instance ? current_instance.footer_link_list : []
   def tv1_copyright        = current_instance&.copyright.presence

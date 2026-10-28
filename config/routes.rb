@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     get "subtitle", to: "subtitles#show", as: :subtitle
     get ":provider/drama/:id", to: "dramas#show", as: :drama
     get ":provider/drama/:id/watch/:ep", to: "dramas#watch", as: :watch
+    get "akun", to: "members#show", as: :member
+    post "akun/login", to: "members#login", as: :member_login
+    post "akun/register", to: "members#register", as: :member_register
+    delete "akun/logout", to: "members#logout", as: :member_logout
+    post "akun/deposit", to: "members#deposit", as: :member_deposit
   end
 
   # Domain kustom instance (tabel domains) → template instance dilayani di root host tersebut.
@@ -44,6 +49,9 @@ Rails.application.routes.draw do
       member { patch :regenerate; patch :generate_seo; get :seo_status; match :submit_indexnow, via: [ :post, :patch ] }
       resources :domains, only: [ :create, :destroy ] do
         member { post :refresh; post :retry }
+      end
+      resources :members, only: [ :index, :destroy ] do
+        member { post :approve; post :reject; post :grant; post :revoke }
       end
     end
     resource :site_settings, only: [ :edit, :update ] do

@@ -1,0 +1,70 @@
+<% inst = current_instance; tab = params[:tab] == "register" ? "register" : "login" %>
+<section class="member">
+  <div class="member-box">
+    <% if @member %>
+      <div class="member-head">
+        <h1><%= tt("members.title") %></h1>
+        <p class="member-user"><%= tt("members.logged_as", name: @member.username) %> ·
+          <%= button_to tt("members.logout"), template_v1_member_logout_path, method: :delete, class: "member-link", form: { style: "display:inline", data: { turbo: false } } %></p>
+      </div>
+
+      <% if @member.adfree? %>
+        <div class="member-status is-ok">
+          <strong><%= tt("members.adfree_active") %></strong>
+          <span><%= tt("members.adfree_until", date: I18n.l(@member.adfree_until, format: :long), days: @member.adfree_days_left) %></span>
+        </div>
+      <% else %>
+        <div class="member-status"><strong><%= tt("members.adfree_inactive") %></strong></div>
+      <% end %>
+
+      <div class="member-offer">
+        <h2><%= tt("members.offer_title") %></h2>
+        <p class="member-price"><%= tt("members.offer_price", price: inst.adfree_price, days: inst.adfree_days) %></p>
+        <% if inst.adfree_instructions.present? %><div class="member-instr"><%= simple_format(h(inst.adfree_instructions)) %></div><% end %>
+      </div>
+
+      <% if @request %>
+        <div class="member-status is-wait">
+          <strong><%= tt("members.pending_title") %></strong>
+          <span><%= tt("members.pending_text", time: I18n.l(@request.created_at, format: :short)) %></span>
+        </div>
+      <% else %>
+        <%= form_with url: template_v1_member_deposit_path, method: :post, multipart: true, class: "member-form", data: { turbo: false } do |f| %>
+          <h3><%= tt("members.upload_title") %></h3>
+          <label class="member-field"><span><%= tt("members.note") %></span><%= f.text_field :note, maxlength: 200, placeholder: tt("members.note_ph") %></label>
+          <label class="member-field"><span><%= tt("members.proof") %></span><%= f.file_field :proof, accept: "image/jpeg,image/png,image/webp", required: true %><small><%= tt("members.proof_hint") %></small></label>
+          <button type="submit" class="btn"><%= tt("members.upload_btn") %></button>
+        <% end %>
+      <% end %>
+
+      <% if @history.any? %>
+        <h3 class="member-hist-title"><%= tt("members.history") %></h3>
+        <ul class="member-hist">
+          <% @history.each do |r| %>
+            <li><span><%= I18n.l(r.created_at, format: :short) %></span><span class="member-badge is-<%= r.status %>"><%= tt("members.status_#{r.status}") %></span><span><%= r.days ? tt("members.days", n: r.days) : "" %></span></li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% else %>
+      <h1><%= tt("members.title") %></h1>
+      <p class="member-intro"><%= tt("members.intro", price: inst.adfree_price, days: inst.adfree_days) %></p>
+      <div class="member-tabs">
+        <a href="<%= template_v1_member_path %>" class="<%= 'is-active' if tab == 'login' %>"><%= tt("members.login") %></a>
+        <a href="<%= template_v1_member_path(tab: 'register') %>" class="<%= 'is-active' if tab == 'register' %>"><%= tt("members.register") %></a>
+      </div>
+      <% if tab == "register" %>
+        <%= form_with url: template_v1_member_register_path, method: :post, class: "member-form", data: { turbo: false } do |f| %>
+          <label class="member-field"><span><%= tt("members.username") %></span><%= f.text_field :username, required: true, autocomplete: "username", pattern: "[a-zA-Z0-9_.]{3,30}", placeholder: tt("members.username_ph") %><small><%= tt("members.username_hint") %></small></label>
+          <label class="member-field"><span><%= tt("members.password") %></span><%= f.password_field :password, required: true, minlength: 4, autocomplete: "new-password" %></label>
+          <button type="submit" class="btn"><%= tt("members.register") %></button>
+        <% end %>
+      <% else %>
+        <%= form_with url: template_v1_member_login_path, method: :post, class: "member-form", data: { turbo: false } do |f| %>
+          <label class="member-field"><span><%= tt("members.username") %></span><%= f.text_field :username, required: true, autocomplete: "username" %></label>
+          <label class="member-field"><span><%= tt("members.password") %></span><%= f.password_field :password, required: true, autocomplete: "current-password" %></label>
+          <button type="submit" class="btn"><%= tt("members.login") %></button>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</section>

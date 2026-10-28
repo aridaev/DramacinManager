@@ -6,7 +6,7 @@
   <div class="watch-main">
     <div class="player-wrap">
       <% if @play_url.present? %>
-        <video id="tv1-player" controls playsinline <%= "autoplay" unless current_instance&.ads_active? %> preload="metadata" poster="<%= @drama.cover %>" controlsList="nodownload noremoteplayback nofullscreen" disablePictureInPicture oncontextmenu="return false"
+        <video id="tv1-player" controls playsinline <%= "autoplay" unless show_ads? %> preload="metadata" poster="<%= @drama.cover %>" controlsList="nodownload noremoteplayback nofullscreen" disablePictureInPicture oncontextmenu="return false"
                data-src="<%= @play_url %>" data-format="<%= @stream.format %>" data-sources="<%= @sources.to_json %>" data-lang="<%= I18n.locale %>">
           <% @subtitles.each do |s| %><track kind="subtitles" srclang="<%= s[:lang] %>" label="<%= s[:label] %>" src="<%= s[:src] %>"<%= " default" if s[:lang].to_s == I18n.locale.to_s %>><% end %>
         </video>

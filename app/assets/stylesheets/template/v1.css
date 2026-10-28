@@ -742,3 +742,37 @@ html.fake-fs .mtabs, html.fake-fs .preview-bar { display: none; }
 .player-ad-count { font-size: .78rem; color: #bbb; font-variant-numeric: tabular-nums; }
 .player-ad-count.is-ready { color: #fff; }
 @media (max-width: 640px) { .player-ad { padding: 10px; } .player-ad-box { gap: 7px; } .player-ad-box img { max-height: 26vh; } }
+
+.player-ad-cta { font-size: .8rem; color: #ffd166; text-decoration: underline; }
+/* halaman akun penonton (bebas iklan) */
+.member { display: grid; place-items: start center; padding: 24px 0 40px; }
+.member-box { width: min(100%, 520px); background: var(--s1); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; gap: 14px; }
+.member-box h1 { margin: 0; font-size: 1.3rem; }
+.member-box h2 { margin: 0; font-size: 1rem; }
+.member-box h3 { margin: 0; font-size: .95rem; }
+.member-intro, .member-user { margin: 0; color: var(--t2); font-size: .9rem; line-height: 1.5; }
+.member-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
+.member-tabs a { padding: 8px 14px; border-radius: 8px 8px 0 0; color: var(--t2); font-weight: 700; font-size: .88rem; text-decoration: none; }
+.member-tabs a.is-active { color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+.member-form { display: grid; gap: 12px; }
+.member-field { display: grid; gap: 5px; font-size: .84rem; color: var(--t2); }
+.member-field input { width: 100%; height: 42px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: inherit; font: inherit; }
+.member-field input[type="file"] { height: auto; padding: 9px 12px; }
+.member-field small { color: var(--t2); font-size: .74rem; }
+.member-status { display: grid; gap: 3px; padding: 12px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); font-size: .88rem; color: var(--t2); }
+.member-status.is-ok { border-color: #2fbf71; color: #2fbf71; }
+.member-status.is-wait { border-color: #ffb020; color: #ffb020; }
+.member-offer { display: grid; gap: 6px; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--accent); }
+.member-price { margin: 0; font-weight: 800; color: var(--accent); }
+.member-instr { font-size: .86rem; line-height: 1.5; color: var(--t2); }
+.member-instr p { margin: 0 0 6px; }
+.member-link { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; font: inherit; text-decoration: underline; }
+.member-hist-title { margin-top: 4px; }
+.member-hist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: .84rem; }
+.member-hist li { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; background: var(--bg); }
+.member-badge { padding: 2px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700; background: var(--line); }
+.member-badge.is-approved { background: rgba(47,191,113,.18); color: #2fbf71; }
+.member-badge.is-rejected { background: rgba(229,72,77,.18); color: #e5484d; }
+.member-badge.is-pending { background: rgba(255,176,32,.18); color: #ffb020; }
+.tv1-flash { margin: 12px 0; padding: 10px 14px; border-radius: 10px; background: rgba(47,191,113,.14); color: #2fbf71; font-size: .88rem; border: 1px solid rgba(47,191,113,.4); }
+.tv1-flash.is-alert { background: rgba(229,72,77,.12); color: #e5484d; border-color: rgba(229,72,77,.4); }
