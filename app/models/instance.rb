@@ -16,7 +16,7 @@ class Instance < ApplicationRecord
   }.freeze
   # Halaman bawaan template (untuk pilihan cepat navbar/footer).
   PAGES = [ [ "/", "Beranda" ], [ "/genre", "Semua genre" ], [ "/latest", "Terbaru" ], [ "/search", "Cari" ] ].freeze
-  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url members_enabled adfree_price adfree_days adfree_site_url] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
+  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url members_enabled adfree_site_url] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
   WATERMARK_SIZES = %w[small medium large xlarge].freeze
   WATERMARK_POSITIONS = %w[top-center top-left top-right bottom-left bottom-right].freeze
   include InstanceTheme
@@ -56,9 +56,23 @@ class Instance < ApplicationRecord
   # Iklan pra-tayang: overlay beberapa detik sebelum video diputar (teks + tombol/link, bisa diatur per instance).
   ADS_DURATION_RANGE = (3..30)
   def members_enabled? = members_enabled == "1"
-  def adfree_days = adfree_days_setting.to_i.clamp(1, 3650)
-  def adfree_days_setting = settings["adfree_days"].presence || 30
-  def adfree_price = settings["adfree_price"].presence || "Rp 50.000"
+  # Paket deposit: beberapa pilihan {price (teks), days}. Fallback ke adfree_price/adfree_days lama.
+  def adfree_packages
+    raw = settings["adfree_packages"]
+    list = raw.is_a?(Array) ? raw.map { |p| { "price" => p["price"].to_s.strip, "days" => p["days"].to_i } }.select { |p| p["price"].present? && p["days"] > 0 } : []
+    list.presence || [ { "price" => settings["adfree_price"].presence || "Rp 50.000", "days" => (settings["adfree_days"].presence || 30).to_i.clamp(1, 3650) } ]
+  end
+
+  def adfree_packages=(raw)
+    arr = raw.is_a?(Hash) ? raw.sort_by { |k, _| k.to_s.match?(/\A\d+\z/) ? k.to_i : 10**9 }.map(&:last) : Array(raw)
+    items = arr.map { |p| p = p.respond_to?(:to_h) ? p.to_h.stringify_keys : {}; { "price" => p["price"].to_s.strip.first(40), "days" => p["days"].to_i.clamp(0, 3650) } }
+                .select { |p| p["price"].present? && p["days"] > 0 }.first(12)
+    self.settings = settings.merge("adfree_packages" => items)
+  end
+
+  def adfree_package(idx) = idx.to_s.match?(/\A\d+\z/) ? adfree_packages[idx.to_i] : nil
+  def adfree_days  = adfree_packages.first["days"]
+  def adfree_price = adfree_packages.first["price"]
   def adfree_site_href = adfree_site_url.to_s.strip.then { |u| u.match?(%r{\Ahttps?://}i) ? u : nil }
   def ads_enabled? = ads_enabled == "1"
   def ads_seconds = ads_duration.to_i.clamp(ADS_DURATION_RANGE.min, ADS_DURATION_RANGE.max).then { |n| ads_duration.present? ? n : 6 }

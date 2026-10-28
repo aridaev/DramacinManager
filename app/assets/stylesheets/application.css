@@ -729,3 +729,29 @@ html[data-density="compact"] .nav-in { height: 30px; }
 
 .spin { display:inline-block; width:11px; height:11px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation: spin .8s linear infinite; vertical-align:-1px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* tombol dengan badge hitungan (mis. pengajuan deposit menunggu) */
+.btn-badge { position: relative; overflow: visible; }
+.count-badge { position: absolute; top: -8px; right: -8px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #e5484d; color: #fff; font-size: .68rem; font-weight: 800; line-height: 1; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px var(--surface, #fff); }
+/* builder paket deposit */
+.pkg-row { display: grid; grid-template-columns: minmax(140px, 1fr) 110px auto 32px; gap: 8px; align-items: center; }
+/* halaman member: filter, statistik, grafik */
+.mem-filter { margin-bottom: var(--sp-4); }
+.mem-filter-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.mem-periods { display: inline-flex; gap: 6px; flex-wrap: wrap; align-self: flex-end; padding-bottom: 6px; }
+.mem-periods .chip-btn.is-active { border-style: solid; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+.mem-f { display: grid; gap: 4px; font-size: .74rem; color: var(--text-muted); }
+.mem-f input, .mem-f select { height: 34px; padding: 0 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; font-size: .82rem; min-width: 120px; }
+.mem-stat-sub { font-size: .72rem; margin-top: 2px; }
+.stat-num.mem-money { font-size: 1.15rem; }
+.mem-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.mem-chart { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+.mem-chart-head { display: flex; justify-content: space-between; gap: 8px; font-size: .82rem; margin-bottom: 6px; }
+.mem-chart-head .muted { font-size: .72rem; }
+.mem-svg { width: 100%; height: auto; display: block; }
+.mem-grid { stroke: var(--border); stroke-width: 1; }
+.mem-axis { font-size: 10px; fill: var(--text-muted); }
+.mem-bar { fill: var(--primary); opacity: .9; }
+.mem-bar.is-zero { fill: var(--border); }
+.mem-share { display: inline-block; width: 120px; height: 8px; border-radius: 999px; background: var(--border); vertical-align: middle; overflow: hidden; }
+.mem-share span { display: block; height: 100%; background: var(--primary); }

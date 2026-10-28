@@ -1,19 +1,24 @@
 <% if show_ads? %>
-  <% inst = current_instance %>
-  <div class="player-ad" id="tv1-ad" data-seconds="<%= inst.ads_seconds %>" data-countdown="<%= t("ads.countdown", n: "{n}") %>" role="dialog" aria-label="<%= t("ads.label") %>">
-    <div class="player-ad-box">
-      <span class="player-ad-tag"><%= t("ads.label") %></span>
-      <% if inst.ads_image_url.present? %>
-        <% if inst.ads_button_href %><a href="<%= inst.ads_button_href %>" target="_blank" rel="nofollow sponsored noopener"><img src="<%= inst.ads_image_url %>" alt="<%= inst.ads_title %>" loading="eager" referrerpolicy="no-referrer"></a>
-        <% else %><img src="<%= inst.ads_image_url %>" alt="<%= inst.ads_title %>" loading="eager" referrerpolicy="no-referrer"><% end %>
+  <% inst = current_instance; href = inst.ads_button_href; img = inst.ads_image_url.presence %>
+  <div class="player-ad <%= 'has-img' if img %>" id="tv1-ad" data-seconds="<%= inst.ads_seconds %>" data-countdown="<%= t("ads.countdown", n: "{n}") %>" role="dialog" aria-label="<%= t("ads.label") %>">
+    <% if img %><div class="player-ad-bg" style="background-image:url('<%= j img %>')" aria-hidden="true"></div><% end %>
+    <span class="player-ad-tag"><%= t("ads.label") %></span>
+    <div class="player-ad-count" id="tv1-ad-count"><%= t("ads.countdown", n: inst.ads_seconds) %></div>
+    <div class="player-ad-inner">
+      <% if img %>
+        <div class="player-ad-media">
+          <% if href %><a href="<%= href %>" target="_blank" rel="nofollow sponsored noopener"><img src="<%= img %>" alt="<%= inst.ads_title %>" loading="eager" referrerpolicy="no-referrer"></a>
+          <% else %><img src="<%= img %>" alt="<%= inst.ads_title %>" loading="eager" referrerpolicy="no-referrer"><% end %>
+        </div>
       <% end %>
-      <% if inst.ads_title.present? %><h3><%= inst.ads_title %></h3><% end %>
-      <% if inst.ads_text.present? %><p><%= simple_format(h(inst.ads_text), {}, wrapper_tag: "span") %></p><% end %>
-      <% if inst.ads_button_href %>
-        <a class="btn player-ad-btn" href="<%= inst.ads_button_href %>" target="_blank" rel="nofollow sponsored noopener"><%= inst.ads_button_text.presence || t("ads.button_default") %></a>
-      <% end %>
-      <% if inst.members_enabled? %><a class="player-ad-cta" href="<%= template_v1_member_path %>"><%= tt("members.ad_cta") %></a><% end %>
-      <div class="player-ad-count" id="tv1-ad-count"><%= t("ads.countdown", n: inst.ads_seconds) %></div>
+      <div class="player-ad-body">
+        <% if inst.ads_title.present? %><h3><%= inst.ads_title %></h3><% end %>
+        <% if inst.ads_text.present? %><p><%= inst.ads_text.to_s.strip.gsub(/\s+/, " ") %></p><% end %>
+        <div class="player-ad-actions">
+          <% if href %><a class="btn player-ad-btn" href="<%= href %>" target="_blank" rel="nofollow sponsored noopener"><%= inst.ads_button_text.presence || t("ads.button_default") %></a><% end %>
+          <% if inst.members_enabled? %><a class="player-ad-cta" href="<%= template_v1_member_path %>"><%= tt("members.ad_cta") %></a><% end %>
+        </div>
+      </div>
     </div>
   </div>
 <% end %>

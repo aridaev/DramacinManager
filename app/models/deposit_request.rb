@@ -17,6 +17,7 @@ class DepositRequest < ApplicationRecord
   scope :ordered, -> { order(Arel.sql("CASE status WHEN 0 THEN 0 ELSE 1 END"), created_at: :desc) }
 
   after_destroy :delete_proof_file
+  before_save { self.amount_value = amount.to_s.gsub(/\D/, "").presence&.to_i }
 
   def proof_url = proof_path.present? ? "/uploads/proofs/#{proof_path}" : nil
   def proof_file = proof_path.present? ? PROOF_DIR.join(proof_path) : nil
@@ -34,10 +35,10 @@ class DepositRequest < ApplicationRecord
   end
 
   def approve!(grant_days = nil)
-    d = (grant_days.presence || days.presence || instance.adfree_days).to_i
+    d = (grant_days.presence || days.presence || instance.adfree_days).to_i.clamp(1, 3650)
     transaction do
-      update!(status: :approved, days: d, reviewed_at: Time.current)
       member.grant_adfree!(d)
+      update!(status: :approved, days: d, reviewed_at: Time.current, adfree_until: member.adfree_until)
     end
     delete_proof_file
   end

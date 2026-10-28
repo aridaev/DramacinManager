@@ -231,15 +231,28 @@
           <label class="check-row"><%= f.check_box :members_enabled, { checked: @instance.members_enabled? }, "1", "0" %> <%= t("admin.instances.f_members_enabled") %></label>
         </div>
         <% if @instance.members_enabled? && !@instance.ads_enabled? %><p class="form-errors" style="margin-bottom:12px"><%= t("admin.instances.members_need_ads") %></p><% end %>
-        <div class="form-row form-row-3">
-          <div class="field">
-            <div class="field-label-row"><%= f.label :adfree_price, t("admin.instances.f_adfree_price") %><span class="field-hint"><%= t("admin.instances.f_adfree_price_hint") %></span></div>
-            <%= f.text_field :adfree_price, value: @instance.adfree_price, maxlength: 40 %>
+        <div class="field">
+          <div class="field-label-row"><label><%= t("admin.instances.f_packages") %></label><span class="field-hint"><%= t("admin.instances.f_packages_hint") %></span></div>
+          <div class="nav-builder" id="pkg-builder">
+            <input type="hidden" name="instance[adfree_packages][z][price]" value="">
+            <% @instance.adfree_packages.each_with_index do |p, i| %>
+              <div class="pkg-row" data-pkg>
+                <input type="text" name="instance[adfree_packages][<%= i %>][price]" value="<%= p["price"] %>" placeholder="<%= t("admin.instances.pkg_price_ph") %>" class="nav-in" maxlength="40">
+                <input type="number" name="instance[adfree_packages][<%= i %>][days]" value="<%= p["days"] %>" min="1" max="3650" step="1" class="nav-in" placeholder="<%= t("admin.instances.pkg_days_ph") %>">
+                <span class="muted"><%= t("admin.members.days") %></span>
+                <button type="button" class="btn btn-danger btn-xs pkg-del" title="<%= t("common.delete") %>">✕</button>
+              </div>
+            <% end %>
           </div>
-          <div class="field">
-            <div class="field-label-row"><%= f.label :adfree_days, t("admin.instances.f_adfree_days") %></div>
-            <%= f.number_field :adfree_days, value: @instance.adfree_days, min: 1, max: 3650, step: 1 %>
-          </div>
+          <template id="pkg-tpl">
+            <div class="pkg-row" data-pkg>
+              <input type="text" name="instance[adfree_packages][__i__][price]" placeholder="<%= t("admin.instances.pkg_price_ph") %>" class="nav-in" maxlength="40">
+              <input type="number" name="instance[adfree_packages][__i__][days]" min="1" max="3650" step="1" class="nav-in" placeholder="<%= t("admin.instances.pkg_days_ph") %>">
+              <span class="muted"><%= t("admin.members.days") %></span>
+              <button type="button" class="btn btn-danger btn-xs pkg-del">✕</button>
+            </div>
+          </template>
+          <div style="margin-top:8px"><button type="button" class="chip chip-btn" id="pkg-add"><%= t("admin.instances.pkg_add") %></button></div>
         </div>
         <div class="field">
           <div class="field-label-row"><%= f.label :adfree_site_url, t("admin.instances.f_adfree_site_url") %><span class="field-hint"><%= t("admin.instances.f_adfree_site_url_hint") %></span></div>
@@ -559,6 +572,11 @@
         root.innerHTML = ""; <%= Instance::DEFAULT_NAV.map { |n| [ n["label"], n["url"] ] }.to_json.html_safe %>.forEach(function (n) { addNav(n[0], n[1]); });
       });
 
+      var pk = document.getElementById("pkg-builder"), pkTpl = document.getElementById("pkg-tpl"), pkAdd = document.getElementById("pkg-add");
+      if (pk && pkTpl && pkAdd) {
+        pkAdd.addEventListener("click", function () { var i = Date.now(); pk.insertAdjacentHTML("beforeend", pkTpl.innerHTML.replace(/__i__/g, i)); var r = pk.lastElementChild.querySelector("input"); if (r) r.focus(); });
+        pk.addEventListener("click", function (e) { if (e.target.classList.contains("pkg-del")) e.target.closest("[data-pkg]").remove(); });
+      }
       var fl = document.getElementById("fl-builder"), flTpl = document.getElementById("fl-tpl");
       function flRenumber() { fl.querySelectorAll("[data-fl]").forEach(function (row, i) { row.querySelectorAll("input").forEach(function (inp) { inp.name = inp.name.replace(/\[footer_links\]\[[^\]]*\]/, "[footer_links][" + i + "]"); }); }); }
       function flAdd(label, url) {

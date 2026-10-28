@@ -136,31 +136,72 @@ module TemplateV1Helper
   def tv1_seo_root_url = request.base_url + tv1_nav_url("/")
 
   def tv1_seo_jsonld
-    site = tv1_site_name; root = tv1_seo_root_url
-    graph = [ { "@type" => "WebSite", "@id" => "#{root}#website", "url" => root, "name" => site, "inLanguage" => I18n.locale.to_s,
-                "potentialAction" => { "@type" => "SearchAction", "target" => "#{request.base_url}#{tv1_nav_url('/search')}?q={search_term_string}", "query-input" => "required name=search_term_string" } },
-              { "@type" => "Organization", "@id" => "#{root}#org", "name" => site, "url" => root, "logo" => tv1_logo_url.presence || (request.base_url + tv1_icon_url) } ]
+    site = tv1_site_name; root = tv1_seo_root_url; base = request.base_url; lang = I18n.locale.to_s
+    canon = tv1_canonical_url; desc = tv1_seo_description; title = tv1_seo_title; img = tv1_seo_image
+    logo = tv1_logo_url.presence || (base + tv1_icon_url); logo = base + logo unless logo.start_with?("http")
+    org = { "@type" => "Organization", "@id" => "#{root}#org", "name" => site, "url" => root,
+            "logo" => { "@type" => "ImageObject", "@id" => "#{root}#logo", "url" => logo, "contentUrl" => logo } }
+    same_as = current_instance ? current_instance.social_links.map { |s| s["url"] } : []
+    org["sameAs"] = same_as if same_as.any?
+    website = { "@type" => "WebSite", "@id" => "#{root}#website", "url" => root, "name" => site, "description" => (respond_to?(:tv1_meta_description) ? tv1_meta_description.to_s.squish.truncate(158).presence : nil),
+                "inLanguage" => lang, "publisher" => { "@id" => org["@id"] },
+                "potentialAction" => { "@type" => "SearchAction", "target" => { "@type" => "EntryPoint", "urlTemplate" => "#{base}#{tv1_nav_url('/search')}?q={search_term_string}" }, "query-input" => "required name=search_term_string" } }.compact
+    graph = [ website, org ]
+    page = { "@type" => "WebPage", "@id" => "#{canon}#webpage", "url" => canon, "name" => title, "description" => desc, "inLanguage" => lang,
+             "isPartOf" => { "@id" => website["@id"] }, "about" => { "@id" => org["@id"] },
+             "primaryImageOfPage" => { "@type" => "ImageObject", "url" => img }, "breadcrumb" => { "@id" => "#{canon}#breadcrumb" } }
     crumbs = [ [ tt("nav.home"), root ] ]
     case tv1_seo_page
     when "detail", "watch"
-      crumbs << [ current_provider.name, request.base_url + tv1_nav_url("/nonton/#{current_provider.slug}") ]
-      crumbs << [ @drama.title, request.base_url + tv1_drama_path(@drama) ]
-      series = { "@type" => "TVSeries", "@id" => "#{request.base_url}#{tv1_drama_path(@drama)}#series", "name" => @drama.title, "url" => request.base_url + tv1_drama_path(@drama),
-                 "image" => @drama.cover, "description" => @drama.synopsis.to_s.truncate(300), "genre" => Array(@drama.genres).first(5), "inLanguage" => @drama.language,
-                 "numberOfEpisodes" => @drama.episodes, "productionCompany" => { "@type" => "Organization", "name" => current_provider.name } }.compact
-      series["aggregateRating"] = { "@type" => "AggregateRating", "ratingValue" => @drama.rating, "bestRating" => 10, "ratingCount" => 100 } if @drama.rating.to_f.positive?
+      drama_url = base + tv1_drama_path(@drama)
+      crumbs << [ current_provider.name, base + tv1_nav_url("/nonton/#{current_provider.slug}") ]
+      crumbs << [ @drama.title, drama_url ]
+      series = { "@type" => "TVSeries", "@id" => "#{drama_url}#series", "name" => @drama.title, "url" => drama_url, "image" => @drama.cover, "thumbnailUrl" => @drama.cover,
+                 "description" => @drama.synopsis.to_s.squish.truncate(300).presence, "genre" => Array(@drama.genres).first(5).presence, "inLanguage" => @drama.language.presence,
+                 "numberOfEpisodes" => @drama.episodes.presence, "numberOfSeasons" => 1, "datePublished" => (@drama.year.to_s if @drama.year.to_s.match?(/\A\d{4}\z/)),
+                 "productionCompany" => { "@type" => "Organization", "name" => current_provider.name }, "publisher" => { "@id" => org["@id"] },
+                 "potentialAction" => { "@type" => "WatchAction", "target" => { "@type" => "EntryPoint", "urlTemplate" => drama_url, "actionPlatform" => %w[http://schema.org/DesktopWebPlatform http://schema.org/MobileWebPlatform] } } }.compact
+      series["aggregateRating"] = { "@type" => "AggregateRating", "ratingValue" => @drama.rating, "bestRating" => 10, "worstRating" => 1, "ratingCount" => 100 } if @drama.rating.to_f.positive?
+      eps = Array(@episodes).first(60)
+      series["episode"] = eps.map { |e| { "@type" => "TVEpisode", "episodeNumber" => e.number, "name" => tt("watch.title", title: @drama.title, number: e.number), "url" => base + tv1_watch_path(@drama, e.number) } } if eps.any?
       graph << series
+      page["mainEntity"] = { "@id" => series["@id"] }
       if tv1_seo_page == "watch"
-        crumbs << [ tt("watch.title", title: @drama.title, number: @episode_number), tv1_canonical_url ]
-        graph << { "@type" => "TVEpisode", "name" => tt("watch.title", title: @drama.title, number: @episode_number), "episodeNumber" => @episode_number,
-                   "url" => tv1_canonical_url, "image" => @drama.cover, "partOfSeries" => { "@id" => series["@id"] } }
+        ep_name = tt("watch.title", title: @drama.title, number: @episode_number); thumb = @episode&.thumbnail.presence || @drama.cover
+        dur = tv1_iso_duration(@episode&.duration)
+        crumbs << [ ep_name, canon ]
+        video = { "@type" => "VideoObject", "@id" => "#{canon}#video", "name" => ep_name, "description" => desc, "thumbnailUrl" => [ thumb ].compact, "uploadDate" => Time.current.beginning_of_day.iso8601,
+                  "duration" => dur, "embedUrl" => canon, "url" => canon, "inLanguage" => @drama.language.presence, "isFamilyFriendly" => true, "publisher" => { "@id" => org["@id"] } }.compact
+        graph << { "@type" => "TVEpisode", "@id" => "#{canon}#episode", "name" => ep_name, "episodeNumber" => @episode_number, "url" => canon, "image" => thumb, "description" => desc,
+                   "timeRequired" => dur, "partOfSeries" => { "@id" => series["@id"] }, "partOfSeason" => { "@type" => "TVSeason", "seasonNumber" => 1, "partOfSeries" => { "@id" => series["@id"] } },
+                   "video" => { "@id" => video["@id"] }, "potentialAction" => { "@type" => "WatchAction", "target" => canon } }.compact
+        graph << video
+        page["mainEntity"] = { "@id" => "#{canon}#episode" }
       end
     when "latest", "genre", "genres", "search", "provider"
-      crumbs << [ tv1_seo_title.split(" · ").first, tv1_canonical_url ]
-      graph << { "@type" => "CollectionPage", "name" => tv1_seo_title, "url" => tv1_canonical_url, "isPartOf" => { "@id" => "#{root}#website" } }
+      crumbs << [ title.split(" · ").first, canon ]
+      page["@type"] = "CollectionPage"
+      items = Array(@result&.items.presence || (@sections ? @sections.flat_map(&:items) : nil)).first(30)
+      if items.any? && items.first.respond_to?(:title)
+        page["mainEntity"] = { "@type" => "ItemList", "numberOfItems" => items.size,
+                               "itemListElement" => items.each_with_index.map { |d, i| { "@type" => "ListItem", "position" => i + 1, "name" => d.title, "url" => base + tv1_drama_path(d), "image" => d.cover }.compact } }
+      end
     end
-    graph << { "@type" => "BreadcrumbList", "itemListElement" => crumbs.each_with_index.map { |(n, u), i| { "@type" => "ListItem", "position" => i + 1, "name" => n, "item" => u } } } if crumbs.size > 1
+    graph << page
+    graph << { "@type" => "BreadcrumbList", "@id" => "#{canon}#breadcrumb", "itemListElement" => crumbs.each_with_index.map { |(n, u), i| { "@type" => "ListItem", "position" => i + 1, "name" => n, "item" => u } } }
     { "@context" => "https://schema.org", "@graph" => graph }.to_json
+  end
+
+  # Durasi episode (detik, "m:ss", atau "h:mm:ss") → ISO 8601 "PT1M30S"; nil jika tidak dikenali.
+  def tv1_iso_duration(raw)
+    secs = case raw
+           when Integer, Float then raw.to_i
+           when /\A\d+\z/ then raw.to_i
+           when /\A(\d+):(\d{1,2})(?::(\d{1,2}))?\z/ then $3 ? ($1.to_i * 3600 + $2.to_i * 60 + $3.to_i) : ($1.to_i * 60 + $2.to_i)
+           end
+    return nil unless secs.to_i.positive?
+    h, r = secs.divmod(3600); m, s = r.divmod(60)
+    "PT#{"#{h}H" if h > 0}#{"#{m}M" if m > 0}#{"#{s}S" if s > 0 || (h.zero? && m.zero?)}"
   end
 
   # Teks SEO on-page untuk halaman selain beranda (menyebut penyedia, judul, keyword, dan tautan ke beranda).

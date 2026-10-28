@@ -8,6 +8,7 @@ class Admin::InstancesController < ApplicationController
   def index
     @instances = scope.ordered.includes(:created_by, :domains)
     @counts = scope.group(:status).count
+    @pending_counts = DepositRequest.pending.where(instance_id: scope.select(:id)).group(:instance_id).count
   end
 
   def show; end
@@ -37,6 +38,7 @@ class Admin::InstancesController < ApplicationController
     @instance.assign_attributes(instance_params.except(:nav_items, :footer_links))
     @instance.nav_items = params.dig(:instance, :nav_items).to_unsafe_h if params.dig(:instance, :nav_items).present?
     @instance.footer_links = params.dig(:instance, :footer_links).to_unsafe_h if params.dig(:instance, :footer_links).present?
+    @instance.adfree_packages = params.dig(:instance, :adfree_packages).to_unsafe_h if params.dig(:instance, :adfree_packages).present?
     if @instance.save
       redirect_to admin_instance_path(@instance), notice: t("admin.instances.updated", name: @instance.name)
     else
@@ -50,6 +52,7 @@ class Admin::InstancesController < ApplicationController
     @instance.assign_attributes(instance_params.except(:nav_items, :footer_links))
     @instance.nav_items = params.dig(:instance, :nav_items).to_unsafe_h if params.dig(:instance, :nav_items).present?
     @instance.footer_links = params.dig(:instance, :footer_links).to_unsafe_h if params.dig(:instance, :footer_links).present?
+    @instance.adfree_packages = params.dig(:instance, :adfree_packages).to_unsafe_h if params.dig(:instance, :adfree_packages).present?
     return (load_domains; render(:edit, status: :unprocessable_entity)) unless @instance.save
     return redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), alert: t("tokenplus.keywords_missing") if @instance.seo_keyword_list.empty?
     client = TokenPlusClient.from_settings

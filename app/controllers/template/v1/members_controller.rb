@@ -37,7 +37,9 @@ class Template::V1::MembersController < Template::V1::BaseController
   end
 
   def deposit
-    req = current_member.deposit_requests.new(instance: current_instance, days: current_instance.adfree_days, amount: current_instance.adfree_price, note: params[:note].to_s.strip.first(200))
+    pkg = current_instance.adfree_package(params[:package])
+    return redirect_to(template_v1_member_path, alert: t("members.bad_package")) unless pkg
+    req = current_member.deposit_requests.new(instance: current_instance, days: pkg["days"], amount: pkg["price"], note: params[:note].to_s.strip.first(200))
     req.attach_proof(params[:proof])
     if req.errors.empty? && req.save
       redirect_to template_v1_member_path, notice: tt("members.deposit_sent")

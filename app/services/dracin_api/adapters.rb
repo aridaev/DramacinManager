@@ -5,6 +5,9 @@ module DracinApi
     REGISTRY = {
       "cubetv"     => "DracinApi::Adapters::Cubetv",
       "dramabite"    => "DracinApi::Adapters::Dramabite",
+      "dotdrama"   => "DracinApi::Adapters::Dotdrama",
+      "rapidtv"    => "DracinApi::Adapters::Rapidtv",
+      # "raptdrama" => "DracinApi::Adapters::Raptdrama", # upstream detail/episodes kosong (Okt 2026); aktifkan bila sudah pulih
       "dramabox"   => "DracinApi::Adapters::Dramabox",
       "dramawave"  => "DracinApi::Adapters::Dramawave",
       "flextv"     => "DracinApi::Adapters::Flextv",

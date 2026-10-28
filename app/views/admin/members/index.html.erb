@@ -1,25 +1,84 @@
 <% content_for :page_actions do %>
   <%= link_to edit_admin_instance_path(@instance, anchor: "sec-members"), class: "btn btn-sm btn-secondary" do %><%= dm_icon("box", size: 16) %> <%= t("admin.members.back_to_instance") %><% end %>
+  <%= link_to admin_instances_path, class: "btn btn-sm btn-secondary" do %><%= dm_icon("grid", size: 16) %> <%= t("admin.instances.title") %><% end %>
 <% end %>
-<%= render layout: "shared/app_shell", locals: { title: t("admin.members.title", name: @instance.name), subtitle: t("admin.members.subtitle", price: @instance.adfree_price, days: @instance.adfree_days) } do %>
+<% money = ->(v) { v.to_i > 0 ? "Rp #{number_with_delimiter(v.to_i, delimiter: '.')}" : "—" } %>
+<% ts = ->(t) { t ? l(t, format: :full) : "—" } %>
+<% pkgs = @instance.adfree_packages %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.members.title", name: @instance.display_name), subtitle: t("admin.members.subtitle_pk", packages: pkgs.map { |p| "#{p['price']} / #{p['days']} #{t('admin.members.days')}" }.join(" · ")) } do %>
+
+  <%# ---------- Filter ---------- %>
+  <%= form_with url: admin_instance_members_path(@instance), method: :get, class: "card mem-filter", data: { turbo: false } do |f| %>
+    <div class="mem-filter-row">
+      <span class="mem-periods">
+        <% Admin::MembersController::PERIODS.each do |p| %>
+          <%= link_to t("admin.members.period_days", n: p), admin_instance_members_path(@instance, request.query_parameters.except(:from, :to).merge(period: p)), class: ["chip chip-btn", ("is-active" if !@custom && @period == p)] %>
+        <% end %>
+      </span>
+      <label class="mem-f"><span><%= t("admin.members.f_from") %></span><input type="date" name="from" value="<%= @from.to_date %>"></label>
+      <label class="mem-f"><span><%= t("admin.members.f_to") %></span><input type="date" name="to" value="<%= @to.to_date %>"></label>
+      <label class="mem-f"><span><%= t("admin.members.f_status") %></span>
+        <select name="status"><option value=""><%= t("common.all") %></option><% %w[pending approved rejected].each do |s| %><option value="<%= s %>" <%= "selected" if @status == s %>><%= t("admin.members.status_#{s}") %></option><% end %></select></label>
+      <label class="mem-f"><span><%= t("admin.members.f_pkg") %></span>
+        <select name="pkg"><option value=""><%= t("common.all") %></option><% @package_options.each do |d| %><option value="<%= d %>" <%= "selected" if @pkg == d %>><%= d %> <%= t("admin.members.days") %></option><% end %></select></label>
+      <label class="mem-f"><span><%= t("admin.members.f_mstatus") %></span>
+        <select name="mstatus"><option value=""><%= t("common.all") %></option><% { "adfree" => "adfree", "expired" => "expired", "none" => "with_ads" }.each do |k, lab| %><option value="<%= k %>" <%= "selected" if @mstatus == k %>><%= t("admin.members.#{lab}") %></option><% end %></select></label>
+      <label class="mem-f"><span><%= t("admin.members.f_q") %></span><input type="search" name="q" value="<%= @q %>" placeholder="username" maxlength="30"></label>
+      <span class="inline-actions">
+        <button type="submit" class="btn btn-sm"><%= t("admin.members.filter") %></button>
+        <%= link_to t("admin.members.reset"), admin_instance_members_path(@instance), class: "btn btn-sm btn-secondary" %>
+      </span>
+    </div>
+    <p class="muted" style="font-size:.74rem;margin:8px 0 0"><%= t("admin.members.range_text", from: l(@from.to_date, format: :long), to: l(@to.to_date, format: :long)) %></p>
+  <% end %>
+
+  <%# ---------- Statistik ---------- %>
   <div class="stats">
     <div class="stat is-bad"><span class="stat-label"><%= t("admin.members.stat_pending") %></span><span class="stat-num"><%= @pending.size %></span></div>
-    <div class="stat is-ok"><span class="stat-label"><%= t("admin.members.stat_adfree") %></span><span class="stat-num"><%= @members.count(&:adfree?) %></span></div>
-    <div class="stat"><span class="stat-label"><%= t("admin.members.stat_members") %></span><span class="stat-num"><%= @members.size %></span></div>
+    <div class="stat is-ok"><span class="stat-label"><%= t("admin.members.stat_approved_period") %></span><span class="stat-num"><%= @stat_approved %></span><span class="muted mem-stat-sub"><%= t("admin.members.stat_total", n: @stat_approved_all) %></span></div>
+    <div class="stat is-ok"><span class="stat-label"><%= t("admin.members.stat_revenue_period") %></span><span class="stat-num mem-money"><%= money.(@stat_revenue) %></span><span class="muted mem-stat-sub"><%= t("admin.members.stat_total", n: money.(@stat_revenue_all)) %></span></div>
+    <div class="stat"><span class="stat-label"><%= t("admin.members.stat_rejected_period") %></span><span class="stat-num"><%= @stat_rejected %></span></div>
+    <div class="stat"><span class="stat-label"><%= t("admin.members.stat_new_members") %></span><span class="stat-num"><%= @stat_new_members %></span><span class="muted mem-stat-sub"><%= t("admin.members.stat_total", n: @stat_members) %></span></div>
+    <div class="stat is-ok"><span class="stat-label"><%= t("admin.members.stat_adfree") %></span><span class="stat-num"><%= @stat_adfree %></span></div>
+  </div>
+
+  <%# ---------- Grafik ---------- %>
+  <div class="mem-charts">
+    <%= render "chart", title: t("admin.members.chart_deposits"), rows: @series, idx: 1, fmt: ->(v) { v.to_s } %>
+    <%= render "chart", title: t("admin.members.chart_revenue"), rows: @series, idx: 2, fmt: money %>
+    <%= render "chart", title: t("admin.members.chart_members"), rows: @reg_series, idx: 1, fmt: ->(v) { v.to_s } %>
   </div>
 
   <div class="card">
-    <div class="card-head"><h2><%= t("admin.members.pending_title") %></h2></div>
+    <div class="card-head"><h2><%= t("admin.members.by_package") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.members.by_package_hint") %></span></div>
+    <% if @by_package.empty? %><p class="muted"><%= t("admin.members.none_in_period") %></p><% else %>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th><%= t("admin.members.col_package") %></th><th><%= t("admin.members.col_count") %></th><th><%= t("admin.members.col_revenue") %></th><th><%= t("admin.members.col_share") %></th></tr></thead>
+      <tbody>
+        <% total = @by_package.sum { |_, c, _| c.to_i } %>
+        <% @by_package.each do |d, c, sum| pk = pkgs.find { |p| p["days"].to_i == d.to_i } %>
+          <tr><td><strong><%= d %> <%= t("admin.members.days") %></strong><% if pk %> <span class="muted">(<%= pk["price"] %>)</span><% end %></td><td><%= c %></td><td><%= money.(sum) %></td>
+            <td><div class="mem-share"><span style="width:<%= total > 0 ? (c.to_i * 100.0 / total).round : 0 %>%"></span></div> <%= total > 0 ? (c.to_i * 100.0 / total).round : 0 %>%</td></tr>
+        <% end %>
+      </tbody>
+    </table></div>
+    <% end %>
+  </div>
+
+  <%# ---------- Pending ---------- %>
+  <div class="card" id="pending">
+    <div class="card-head"><h2><%= t("admin.members.pending_title") %> <% if @pending.any? %><span class="badge badge-danger"><%= @pending.size %></span><% end %></h2></div>
     <% if @pending.empty? %>
       <p class="muted"><%= t("admin.members.pending_empty") %></p>
     <% else %>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th><%= t("admin.members.col_user") %></th><th><%= t("admin.members.col_time") %></th><th><%= t("admin.members.col_note") %></th><th><%= t("admin.members.col_proof") %></th><th class="col-action"><%= t("admin.providers.col_action") %></th></tr></thead>
+        <thead><tr><th><%= t("admin.members.col_user") %></th><th><%= t("admin.members.col_package") %></th><th><%= t("admin.members.col_time") %></th><th><%= t("admin.members.col_note") %></th><th><%= t("admin.members.col_proof") %></th><th class="col-action"><%= t("admin.providers.col_action") %></th></tr></thead>
         <tbody>
           <% @pending.each do |r| %>
             <tr>
-              <td><strong><%= r.member.username %></strong><br><span class="muted" style="font-size:.76rem"><%= r.amount.presence || "—" %></span></td>
-              <td><%= I18n.l(r.created_at, format: :short) %></td>
+              <td><strong><%= r.member.username %></strong><br><span class="muted" style="font-size:.76rem"><%= r.member.adfree? ? t("admin.members.adfree_until_short", time: ts.(r.member.adfree_until)) : t("admin.members.with_ads") %></span></td>
+              <td><%= r.amount.presence || "—" %><br><span class="muted" style="font-size:.76rem"><%= r.days %> <%= t("admin.members.days") %></span></td>
+              <td><%= ts.(r.created_at) %></td>
               <td><%= r.note.presence || "—" %></td>
               <td><% if r.proof_url %><a href="<%= r.proof_url %>" target="_blank" rel="noopener"><img src="<%= r.proof_url %>" alt="" style="height:56px;border-radius:6px;object-fit:cover"></a><% else %>—<% end %></td>
               <td class="col-action">
@@ -27,36 +86,63 @@
                   <input type="number" name="days" value="<%= r.days || @instance.adfree_days %>" min="1" max="3650" style="width:72px" aria-label="<%= t("admin.members.days") %>"> <span class="muted" style="font-size:.76rem"><%= t("admin.members.days") %></span>
                   <button type="submit" class="btn btn-sm"><%= dm_icon("check", size: 14) %> <%= t("admin.members.approve") %></button>
                 <% end %>
-                <%= button_to t("admin.members.reject"), reject_admin_instance_member_path(@instance, r), method: :post, class: "btn btn-sm btn-danger", form: { style: "display:inline", data: { turbo: false, turbo_confirm: t("admin.members.reject_confirm") }, onsubmit: "return confirm(this.dataset.turboConfirm)" } %>
+                <%= button_to t("admin.members.reject"), reject_admin_instance_member_path(@instance, r), method: :post, class: "btn btn-sm btn-danger", form: { style: "display:inline", data: { turbo: false }, onsubmit: "return confirm(#{t('admin.members.reject_confirm').to_json})" } %>
               </td>
             </tr>
           <% end %>
         </tbody>
       </table></div>
+      <p class="muted" style="font-size:.74rem;margin:8px 0 0"><%= t("admin.members.approve_hint") %></p>
     <% end %>
   </div>
 
+  <%# ---------- Riwayat (terfilter) ---------- %>
   <div class="card">
-    <div class="card-head"><h2><%= t("admin.members.members_title") %></h2></div>
+    <div class="card-head"><h2><%= t("admin.members.history_title") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.members.rows", n: @history_count, shown: [ @history_count, 300 ].min) %></span></div>
+    <% if @history.empty? %><p class="muted"><%= t("admin.members.none_in_period") %></p><% else %>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th><%= t("admin.members.col_user") %></th><th><%= t("admin.members.col_status") %></th><th><%= t("admin.members.col_package") %></th><th><%= t("admin.members.col_time") %></th><th><%= t("admin.members.col_reviewed") %></th><th><%= t("admin.members.col_until") %></th><th><%= t("admin.members.col_note") %></th></tr></thead>
+      <tbody>
+        <% @history.each do |r| %>
+          <tr>
+            <td><%= r.member.username %></td>
+            <td><span class="badge <%= r.approved? ? 'badge-success' : (r.rejected? ? 'badge-danger' : 'badge-info') %>"><%= t("admin.members.status_#{r.status}") %></span></td>
+            <td><%= r.amount.presence || "—" %> <span class="muted">/ <%= r.days || "—" %> <%= t("admin.members.days") %></span></td>
+            <td><%= ts.(r.created_at) %></td>
+            <td><%= ts.(r.reviewed_at) %></td>
+            <td><%= r.approved? ? ts.(r.adfree_until) : "—" %></td>
+            <td><%= r.note.presence || "—" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table></div>
+    <% end %>
+  </div>
+
+  <%# ---------- Member ---------- %>
+  <div class="card">
+    <div class="card-head"><h2><%= t("admin.members.members_title") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.members.rows", n: @members_count, shown: [ @members_count, 300 ].min) %></span></div>
     <% if @members.empty? %>
       <p class="muted"><%= t("admin.members.members_empty") %></p>
     <% else %>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th><%= t("admin.members.col_user") %></th><th><%= t("admin.members.col_status") %></th><th><%= t("admin.members.col_until") %></th><th><%= t("admin.members.col_last_login") %></th><th class="col-action"><%= t("admin.providers.col_action") %></th></tr></thead>
+        <thead><tr><th><%= t("admin.members.col_user") %></th><th><%= t("admin.members.col_status") %></th><th><%= t("admin.members.col_until") %></th><th><%= t("admin.members.col_deposits") %></th><th><%= t("admin.members.col_joined") %></th><th><%= t("admin.members.col_last_login") %></th><th class="col-action"><%= t("admin.providers.col_action") %></th></tr></thead>
         <tbody>
           <% @members.each do |m| %>
             <tr>
-              <td><strong><%= m.username %></strong><br><span class="muted" style="font-size:.76rem"><%= t("admin.members.joined", time: I18n.l(m.created_at, format: :short)) %></span></td>
+              <td><strong><%= m.username %></strong></td>
               <td><% if m.adfree? %><span class="badge badge-success"><%= t("admin.members.adfree") %></span><% elsif m.adfree_until %><span class="badge badge-danger"><%= t("admin.members.expired") %></span><% else %><span class="badge badge-muted"><%= t("admin.members.with_ads") %></span><% end %></td>
-              <td><%= m.adfree_until ? I18n.l(m.adfree_until, format: :short) : "—" %><% if m.adfree? %> <span class="muted" style="font-size:.76rem">(<%= t("admin.members.days_left", n: m.adfree_days_left) %>)</span><% end %></td>
-              <td><%= m.last_login_at ? I18n.l(m.last_login_at, format: :short) : "—" %></td>
+              <td><%= ts.(m.adfree_until) %><% if m.adfree? %><br><span class="muted" style="font-size:.76rem"><%= t("admin.members.time_left", s: m.adfree_left_text) %></span><% end %></td>
+              <td><%= m.approved_count %> <span class="muted">· <%= money.(m.approved_total) %></span></td>
+              <td><%= ts.(m.created_at) %></td>
+              <td><%= ts.(m.last_login_at) %></td>
               <td class="col-action">
                 <%= form_with url: grant_admin_instance_member_path(@instance, m), method: :post, data: { turbo: false }, html: { style: "display:inline-flex;gap:6px;align-items:center" } do %>
                   <input type="number" name="days" value="<%= @instance.adfree_days %>" min="1" max="3650" style="width:72px" aria-label="<%= t("admin.members.days") %>">
                   <button type="submit" class="btn btn-sm btn-secondary"><%= t("admin.members.grant") %></button>
                 <% end %>
                 <% if m.adfree? %><%= button_to t("admin.members.revoke"), revoke_admin_instance_member_path(@instance, m), method: :post, class: "btn btn-sm btn-secondary", form: { style: "display:inline", data: { turbo: false } } %><% end %>
-                <%= button_to t("common.delete", default: "Hapus"), admin_instance_member_path(@instance, m), method: :delete, class: "btn btn-sm btn-danger", form: { style: "display:inline", data: { turbo: false }, onsubmit: "return confirm('#{j t('admin.members.delete_confirm')}')" } %>
+                <%= button_to t("common.delete", default: "Hapus"), admin_instance_member_path(@instance, m), method: :delete, class: "btn btn-sm btn-danger", form: { style: "display:inline", data: { turbo: false }, onsubmit: "return confirm(#{t('admin.members.delete_confirm').to_json})" } %>
               </td>
             </tr>
           <% end %>
@@ -64,18 +150,4 @@
       </table></div>
     <% end %>
   </div>
-
-  <% if @recent.any? %>
-  <div class="card">
-    <div class="card-head"><h2><%= t("admin.members.history_title") %></h2></div>
-    <div class="table-wrap"><table class="table">
-      <thead><tr><th><%= t("admin.members.col_user") %></th><th><%= t("admin.members.col_status") %></th><th><%= t("admin.members.days") %></th><th><%= t("admin.members.col_reviewed") %></th><th><%= t("admin.members.col_note") %></th></tr></thead>
-      <tbody>
-        <% @recent.each do |r| %>
-          <tr><td><%= r.member.username %></td><td><span class="badge <%= r.approved? ? 'badge-success' : 'badge-danger' %>"><%= t("admin.members.status_#{r.status}") %></span></td><td><%= r.days || "—" %></td><td><%= r.reviewed_at ? I18n.l(r.reviewed_at, format: :short) : "—" %></td><td><%= r.note.presence || "—" %></td></tr>
-        <% end %>
-      </tbody>
-    </table></div>
-  </div>
-  <% end %>
 <% end %>

@@ -382,19 +382,35 @@ html.fake-fs .mtabs, html.fake-fs .preview-bar { display: none; }
 @media (max-width: 640px) { .player-fs-big { width: 38px; height: 38px; top: 8px; right: 8px; } }
 
 /* iklan pra-tayang (overlay di atas pemutar, menahan video sampai hitung mundur selesai) */
-.player-ad { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; padding: 16px; background: rgba(0,0,0,.82); backdrop-filter: blur(4px); color: #fff; text-align: center; }
+/* Iklan pra-tayang: memenuhi seluruh area player, tanpa scroll; gambar di kiri (landscape) / atas (portrait), teks mengecil mengikuti ruang. */
+.player-ad { position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; overflow: hidden; background: #000; color: #fff; text-align: center; container-type: size; }
 .player-ad[hidden] { display: none; }
-.player-ad-box { display: grid; gap: 10px; justify-items: center; max-width: min(92%, 480px); max-height: 100%; overflow: auto; }
-.player-ad-tag { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,.14); color: #ddd; }
-.player-ad-box img { max-width: 100%; max-height: 38vh; border-radius: 10px; object-fit: contain; }
-.player-ad-box h3 { margin: 0; font-size: clamp(1rem, 2.6vw, 1.35rem); line-height: 1.25; }
-.player-ad-box p { margin: 0; font-size: clamp(.82rem, 2vw, .95rem); line-height: 1.5; color: #e6e6e6; }
-.player-ad-btn { margin-top: 2px; }
-.player-ad-count { font-size: .78rem; color: #bbb; font-variant-numeric: tabular-nums; }
-.player-ad-count.is-ready { color: #fff; }
-@media (max-width: 640px) { .player-ad { padding: 10px; } .player-ad-box { gap: 7px; } .player-ad-box img { max-height: 26vh; } }
-
-.player-ad-cta { font-size: .8rem; color: #ffd166; text-decoration: underline; }
+.player-ad-bg { position: absolute; inset: -20px; background-size: cover; background-position: center; filter: blur(22px) brightness(.35); transform: scale(1.1); pointer-events: none; }
+.player-ad-tag { position: absolute; top: 10px; left: 12px; z-index: 2; font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,.18); color: #eee; }
+.player-ad-count { position: absolute; top: 8px; right: 12px; z-index: 2; font-size: .74rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: rgba(0,0,0,.55); color: #ddd; font-variant-numeric: tabular-nums; }
+.player-ad-count.is-ready { color: #fff; background: rgba(47,191,113,.7); }
+.player-ad-inner { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(6px, 1.5cqh, 14px); padding: clamp(28px, 7cqh, 40px) clamp(10px, 3cqw, 28px) clamp(10px, 3cqh, 20px); }
+.player-ad-media { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; width: 100%; }
+.player-ad-media a { display: contents; }
+.player-ad-media img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+.player-ad-body { flex: 0 0 auto; display: grid; gap: clamp(3px, 1cqh, 8px); justify-items: center; max-width: 100%; }
+.player-ad-body h3 { margin: 0; font-size: clamp(.9rem, 4.2cqh, 1.4rem); line-height: 1.2; }
+.player-ad-body p { margin: 0; font-size: clamp(.72rem, 3cqh, .95rem); line-height: 1.35; color: #e6e6e6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.player-ad-actions { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; justify-content: center; }
+.player-ad-btn { margin: 0; }
+.player-ad-cta { font-size: clamp(.7rem, 2.8cqh, .82rem); color: #ffd166; text-decoration: underline; }
+@container (min-aspect-ratio: 4/3) and (min-width: 560px) {
+  .player-ad-inner { flex-direction: row; gap: clamp(14px, 3cqw, 36px); padding-top: clamp(30px, 8cqh, 44px); }
+  .player-ad-media { flex: 1 1 55%; height: 100%; }
+  .player-ad-body { flex: 1 1 45%; text-align: left; justify-items: start; }
+  .player-ad-actions { justify-content: flex-start; }
+  .player-ad-body h3 { font-size: clamp(1rem, 6cqh, 1.8rem); }
+  .player-ad-body p { font-size: clamp(.8rem, 3.6cqh, 1.05rem); -webkit-line-clamp: 3; }
+}
+.player-ad:not(.has-img) .player-ad-inner { flex-direction: column; }
+.player-ad:not(.has-img) .player-ad-body { text-align: center; justify-items: center; }
+.player-ad:not(.has-img) .player-ad-actions { justify-content: center; }
+@container (max-height: 240px) { .player-ad-body p { display: none; } .player-ad-inner { gap: 4px; } }
 /* halaman akun penonton (bebas iklan) */
 .member { display: grid; place-items: start center; padding: 24px 0 40px; }
 .member-box { width: min(100%, 520px); background: var(--s1); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; gap: 14px; }
@@ -428,3 +444,16 @@ html.fake-fs .mtabs, html.fake-fs .preview-bar { display: none; }
 .tv1-flash { margin: 12px 0; padding: 10px 14px; border-radius: 10px; background: rgba(47,191,113,.14); color: #2fbf71; font-size: .88rem; border: 1px solid rgba(47,191,113,.4); }
 .tv1-flash.is-alert { background: rgba(229,72,77,.12); color: #e5484d; border-color: rgba(229,72,77,.4); }
 .member-site-btn { justify-self: start; }
+.member-pkgs { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.member-pkgs li { display: flex; gap: 8px; align-items: baseline; padding: 8px 12px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); font-size: .9rem; }
+.member-pkgs strong { color: var(--accent); }
+.member-pkgs span { color: var(--t2); font-size: .84rem; }
+.member-pick { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.member-pick-item { display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; }
+.member-pick-item:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.member-pick-item input { margin: 0; accent-color: var(--accent); }
+.member-pick-item span { display: grid; line-height: 1.2; }
+.member-pick-item strong { color: var(--accent); font-size: .92rem; }
+.member-pick-item small { color: var(--t2); font-size: .74rem; }
+.member-hist li { flex-wrap: wrap; }
+.member-hist-until { flex-basis: 100%; color: var(--t2); font-size: .76rem; }

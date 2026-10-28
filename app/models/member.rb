@@ -15,9 +15,22 @@ class Member < ApplicationRecord
 
   def adfree? = adfree_until.present? && adfree_until > Time.current
   def adfree_days_left = adfree? ? ((adfree_until - Time.current) / 1.day).ceil : 0
+
+  # "3 hari 4 jam" / "4 jam 10 menit" / "10 menit"
+  def adfree_left_text
+    return "" unless adfree?
+    d, r = (adfree_until - Time.current).to_i.divmod(86_400); h, r = r.divmod(3_600); m = r / 60
+    if d > 0 then I18n.t("template.v1.members.left_days", d: d, h: h)
+    elsif h > 0 then I18n.t("template.v1.members.left_hours", h: h, m: m)
+    else I18n.t("template.v1.members.left_minutes", m: m)
+    end
+  end
+
+  def approved_count = deposit_requests.select(&:approved?).size
+  def approved_total = deposit_requests.sum { |r| r.approved? ? r.amount_value.to_i : 0 }
   def pending_request = deposit_requests.pending.order(created_at: :desc).first
 
-  # Perpanjang dari sisa masa aktif (bukan dari hari ini) agar deposit berulang tidak hangus.
+  # Dihitung dari waktu approve; bila masih aktif, diperpanjang dari sisa masa aktif agar tidak hangus.
   def grant_adfree!(days)
     base = adfree? ? adfree_until : Time.current
     update!(adfree_until: base + days.to_i.days)

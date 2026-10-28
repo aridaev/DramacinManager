@@ -39,6 +39,8 @@
                 <td class="muted"><%= l(i.created_at, format: :short) %></td>
                 <td class="col-action">
                   <span class="inline-actions">
+                    <% pend = @pending_counts[i.id].to_i %>
+                    <%= link_to admin_instance_members_path(i), class: "btn btn-secondary btn-xs btn-badge", title: (pend > 0 ? t("admin.instances.members_pending", n: pend) : t("admin.instances.members_manage")) do %><%= dm_icon("user", size: 14) %> <%= t("admin.instances.members_btn") %><% if pend > 0 %><span class="count-badge"><%= pend %></span><% end %><% end %>
                     <%= link_to t("common.edit"), edit_admin_instance_path(i), class: "btn btn-secondary btn-xs" %>
                     <%= button_to t("common.delete"), admin_instance_path(i), method: :delete, class: "btn btn-danger btn-xs", form: { onsubmit: "return confirm(#{t('common.confirm').to_json})" } %>
                   </span>

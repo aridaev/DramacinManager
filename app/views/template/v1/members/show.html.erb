@@ -1,4 +1,4 @@
-<% inst = current_instance; tab = params[:tab] == "register" ? "register" : "login" %>
+<% inst = current_instance; tab = params[:tab] == "register" ? "register" : "login"; pkgs = inst.adfree_packages %>
 <section class="member">
   <div class="member-box">
     <% if @member %>
@@ -11,15 +11,19 @@
       <% if @member.adfree? %>
         <div class="member-status is-ok">
           <strong><%= tt("members.adfree_active") %></strong>
-          <span><%= tt("members.adfree_until", date: I18n.l(@member.adfree_until, format: :long), days: @member.adfree_days_left) %></span>
+          <span><%= tt("members.adfree_until", date: I18n.l(@member.adfree_until, format: :full), left: @member.adfree_left_text) %></span>
         </div>
+      <% elsif @member.adfree_until %>
+        <div class="member-status"><strong><%= tt("members.adfree_expired", date: I18n.l(@member.adfree_until, format: :full)) %></strong></div>
       <% else %>
         <div class="member-status"><strong><%= tt("members.adfree_inactive") %></strong></div>
       <% end %>
 
       <div class="member-offer">
         <h2><%= tt("members.offer_title") %></h2>
-        <p class="member-price"><%= tt("members.offer_price", price: inst.adfree_price, days: inst.adfree_days) %></p>
+        <ul class="member-pkgs">
+          <% pkgs.each do |p| %><li><strong><%= p["price"] %></strong> <span>→ <%= tt("members.offer_days", days: p["days"]) %></span></li><% end %>
+        </ul>
         <p class="member-instr"><%= tt("members.offer_how") %></p>
         <% if inst.adfree_site_href %><a class="btn member-site-btn" href="<%= inst.adfree_site_href %>" target="_blank" rel="noopener nofollow"><%= tt("members.offer_site_btn") %></a><% end %>
       </div>
@@ -27,12 +31,19 @@
       <% if @request %>
         <div class="member-status is-wait">
           <strong><%= tt("members.pending_title") %></strong>
-          <span><%= tt("members.pending_text", time: I18n.l(@request.created_at, format: :short)) %></span>
+          <span><%= tt("members.pending_text", time: I18n.l(@request.created_at, format: :full)) %> · <%= @request.amount %> / <%= tt("members.days", n: @request.days) %></span>
         </div>
       <% else %>
         <%= form_with url: template_v1_member_deposit_path, method: :post, multipart: true, class: "member-form", data: { turbo: false } do |f| %>
           <h3><%= tt("members.upload_title") %></h3>
           <p class="member-instr"><%= tt("members.upload_hint") %></p>
+          <div class="member-field"><span><%= tt("members.pick_package") %></span>
+            <div class="member-pick">
+              <% pkgs.each_with_index do |p, i| %>
+                <label class="member-pick-item"><input type="radio" name="package" value="<%= i %>" <%= "checked" if i.zero? %> required><span><strong><%= p["price"] %></strong><small><%= tt("members.offer_days", days: p["days"]) %></small></span></label>
+              <% end %>
+            </div>
+          </div>
           <label class="member-field"><span><%= tt("members.note") %></span><%= f.text_field :note, maxlength: 200, placeholder: tt("members.note_ph") %></label>
           <label class="member-field"><span><%= tt("members.proof") %></span><%= f.file_field :proof, accept: "image/jpeg,image/png,image/webp", required: true %><small><%= tt("members.proof_hint") %></small></label>
           <button type="submit" class="btn"><%= tt("members.upload_btn") %></button>
@@ -43,13 +54,21 @@
         <h3 class="member-hist-title"><%= tt("members.history") %></h3>
         <ul class="member-hist">
           <% @history.each do |r| %>
-            <li><span><%= I18n.l(r.created_at, format: :short) %></span><span class="member-badge is-<%= r.status %>"><%= tt("members.status_#{r.status}") %></span><span><%= r.days ? tt("members.days", n: r.days) : "" %></span></li>
+            <li>
+              <span><%= I18n.l(r.created_at, format: :full) %></span>
+              <span class="member-badge is-<%= r.status %>"><%= tt("members.status_#{r.status}") %></span>
+              <span><%= r.amount.presence %><%= r.days ? " / #{tt('members.days', n: r.days)}" : "" %></span>
+              <% if r.approved? && r.adfree_until %><span class="member-hist-until"><%= tt("members.hist_until", date: I18n.l(r.adfree_until, format: :full)) %></span><% end %>
+            </li>
           <% end %>
         </ul>
       <% end %>
     <% else %>
       <h1><%= tt("members.title") %></h1>
-      <p class="member-intro"><%= tt("members.intro", price: inst.adfree_price, days: inst.adfree_days) %></p>
+      <p class="member-intro"><%= tt("members.intro") %></p>
+      <ul class="member-pkgs">
+        <% pkgs.each do |p| %><li><strong><%= p["price"] %></strong> <span>→ <%= tt("members.offer_days", days: p["days"]) %></span></li><% end %>
+      </ul>
       <div class="member-tabs">
         <a href="<%= template_v1_member_path %>" class="<%= 'is-active' if tab == 'login' %>"><%= tt("members.login") %></a>
         <a href="<%= template_v1_member_path(tab: 'register') %>" class="<%= 'is-active' if tab == 'register' %>"><%= tt("members.register") %></a>

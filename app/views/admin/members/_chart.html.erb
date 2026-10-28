@@ -1,0 +1,17 @@
+<%# Grafik batang SVG sederhana tanpa pustaka. rows: [[Date, v...]], idx: kolom nilai, fmt: lambda format nilai. %>
+<% max = rows.map { |r| r[idx].to_i }.max.to_i
+   w = 720; h = 170; pad_l = 40; pad_b = 22; n = [ rows.size, 1 ].max; bw = (w - pad_l - 4).to_f / n
+   step = n > 45 ? (n / 12.0).ceil : (n > 14 ? 3 : 1) %>
+<div class="mem-chart">
+  <div class="mem-chart-head"><strong><%= title %></strong><span class="muted"><%= t("admin.members.chart_sum", v: fmt.(rows.sum { |r| r[idx].to_i })) %></span></div>
+  <svg viewBox="0 0 <%= w %> <%= h %>" class="mem-svg" role="img" aria-label="<%= title %>">
+    <% [ 0.0, 0.5, 1.0 ].each do |g| y = (h - pad_b) - (h - pad_b - 12) * g %>
+      <line x1="<%= pad_l %>" y1="<%= y.round(1) %>" x2="<%= w %>" y2="<%= y.round(1) %>" class="mem-grid"></line>
+      <text x="<%= pad_l - 4 %>" y="<%= (y + 3).round(1) %>" class="mem-axis" text-anchor="end"><%= max > 0 ? (max * g).round : 0 %></text>
+    <% end %>
+    <% rows.each_with_index do |r, i| v = r[idx].to_i; bh = max > 0 ? ((h - pad_b - 12) * v / max.to_f) : 0; x = pad_l + i * bw %>
+      <rect x="<%= (x + bw * 0.15).round(1) %>" y="<%= (h - pad_b - bh).round(1) %>" width="<%= [ bw * 0.7, 1 ].max.round(1) %>" height="<%= bh.round(1) %>" rx="2" class="mem-bar <%= 'is-zero' if v.zero? %>"><title><%= l(r[0], format: :long) %>: <%= fmt.(v) %></title></rect>
+      <% if i % step == 0 || i == n - 1 %><text x="<%= (x + bw / 2).round(1) %>" y="<%= h - 6 %>" class="mem-axis" text-anchor="middle"><%= r[0].strftime(n > 60 ? "%d/%m" : "%d") %></text><% end %>
+    <% end %>
+  </svg>
+</div>
