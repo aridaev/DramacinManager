@@ -14,21 +14,14 @@ class Admin::SiteSettingsController < Admin::BaseController
     @tp_status = Setting.get(Setting::TP_STATUS)
     @tp_auto_model = Setting.tokenplus_auto_model?
     @tp_models = (Rails.cache.read("tokenplus_models") || []) | TokenPlusClient::SUGGESTED_MODELS
-    @gsc = Setting.gsc_verification
-    @indexnow_key = Setting.indexnow_key
-    @indexnow_last = Setting.get(Setting::INDEXNOW_LAST)
-    @main_host = Setting.main_host
   end
 
   def update
-    p = params.fetch(:site, {}).permit(:cloudflare_api_token, :cloudflare_account_id, :cloudflare_auth_email, :vps_ip, :cloudflare_ssl_mode, :users_can_create_instances, :max_instances_per_user, :tokenplus_api_key, :tokenplus_model, :tokenplus_auto_model, :gsc_verification, :main_host)
+    p = params.fetch(:site, {}).permit(:cloudflare_api_token, :cloudflare_account_id, :cloudflare_auth_email, :vps_ip, :cloudflare_ssl_mode, :users_can_create_instances, :max_instances_per_user, :tokenplus_api_key, :tokenplus_model, :tokenplus_auto_model)
     Setting.set(Setting::CF_API_TOKEN, p[:cloudflare_api_token].to_s.strip) if p[:cloudflare_api_token].present?
     Setting.set(Setting::CF_ACCOUNT_ID, p[:cloudflare_account_id].to_s.strip)
     Setting.set(Setting::CF_AUTH_EMAIL, p[:cloudflare_auth_email].to_s.strip.downcase)
     Setting.set(Setting::VPS_IP, p[:vps_ip].to_s.strip)
-    gsc = p[:gsc_verification].to_s.strip; gsc = $1 if gsc =~ /content=["']([^"']+)["']/
-    Setting.set(Setting::GSC_VERIFY, gsc)
-    Setting.set(Setting::MAIN_HOST, p[:main_host].to_s.strip.downcase.sub(%r{\Ahttps?://}, "").sub(%r{/.*}, "").presence || "dracin.aridaev.com")
     Setting.set(Setting::TP_API_KEY, p[:tokenplus_api_key].to_s.strip) if p[:tokenplus_api_key].present?
     Setting.set(Setting::TP_MODEL, p[:tokenplus_model].to_s.strip.presence || TokenPlusClient::DEFAULT_MODEL)
     Setting.set(Setting::TP_AUTO_MODEL, p[:tokenplus_auto_model].to_s == "1" ? "1" : "0")
@@ -73,14 +66,6 @@ class Admin::SiteSettingsController < Admin::BaseController
   def clear_tokenplus
     Setting.set(Setting::TP_API_KEY, nil); Setting.set(Setting::TP_STATUS, nil)
     redirect_to edit_admin_site_settings_path, notice: t("admin.site_settings.tp_cleared")
-  end
-
-  def submit_indexnow
-    total = 0; code = nil
-    Instance::TEMPLATES.each_key { |tpl| r = IndexNowSubmitter.new(nil, host: Setting.main_host, tpl: tpl).call; total += r[:count]; code = r[:code] }
-    redirect_to edit_admin_site_settings_path(anchor: "seo"), notice: t("admin.site_settings.indexnow_ok", count: total, code: code)
-  rescue IndexNowSubmitter::Error => e
-    redirect_to edit_admin_site_settings_path(anchor: "seo"), alert: t("admin.site_settings.indexnow_failed", error: e.message)
   end
 
   def clear_cloudflare

@@ -6,16 +6,14 @@ class IndexNowSubmitter
   class Error < StandardError; end
   ENDPOINT = URI("https://api.indexnow.org/indexnow")
 
-  # instance nil = host utama (Setting.indexnow_key, prefix /template/v1).
-  def initialize(instance = nil, host: nil, tpl: "v1")
+  def initialize(instance, host: nil)
     @instance = instance
-    @host = host || instance&.domains&.active&.first&.hostname
-    @tpl = tpl
+    @host = host || instance.primary_host
   end
 
-  def key = @instance ? @instance.indexnow_key : Setting.indexnow_key
+  def key = @instance.indexnow_key
   def base_url = "https://#{@host}"
-  def prefix = @instance ? "" : "/template/#{@tpl}"
+  def prefix = ""
 
   def call
     raise Error, I18n.t("indexnow.no_host") if @host.blank?
@@ -46,19 +44,10 @@ class IndexNowSubmitter
         Rails.logger.warn("[IndexNow] #{d.hostname}: #{e.message}")
       end
     end
-    main = Setting.main_host
-    return if main.blank?
-    Instance::TEMPLATES.each_key do |tpl|
-      new(nil, host: main, tpl: tpl).call
-    rescue Error => e
-      Rails.logger.warn("[IndexNow] #{main}/#{tpl}: #{e.message}")
-    end
   end
 
   private
   def remember(status)
-    if @instance then @instance.update_columns(settings: @instance.settings.merge("indexnow_last" => status), updated_at: Time.current)
-    else Setting.set(Setting::INDEXNOW_LAST, status)
-    end
+    @instance.update_columns(settings: @instance.settings.merge("indexnow_last" => status), updated_at: Time.current)
   end
 end

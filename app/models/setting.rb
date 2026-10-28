@@ -10,10 +10,6 @@ class Setting < ApplicationRecord
   TP_MODEL         = "tokenplus.model"
   TP_STATUS        = "tokenplus.status"
   TP_AUTO_MODEL    = "tokenplus.auto_model"
-  GSC_VERIFY       = "seo.gsc_verification"
-  INDEXNOW_KEY     = "seo.indexnow_key"
-  INDEXNOW_LAST    = "seo.indexnow_last"
-  MAIN_HOST        = "site.main_host"
   VPS_IP           = "site.vps_ip"
   USERS_CAN_CREATE = "site.users_can_create_instances"
   MAX_PER_USER     = "site.max_instances_per_user"
@@ -40,11 +36,6 @@ class Setting < ApplicationRecord
   def self.cloudflare_auth_email = get(CF_AUTH_EMAIL)
   def self.cloudflare_ssl_mode   = get(CF_SSL_MODE, "flexible")
   def self.vps_ip                = get(VPS_IP)
-  def self.gsc_verification      = get(GSC_VERIFY)
-  def self.main_host             = get(MAIN_HOST, "dracin.aridaev.com")
-  def self.indexnow_key
-    get(INDEXNOW_KEY) || set(INDEXNOW_KEY, SecureRandom.hex(16)).value
-  end
   def self.tokenplus_api_key     = get(TP_API_KEY)
   def self.tokenplus_model       = get(TP_MODEL, TokenPlusClient::DEFAULT_MODEL)
   def self.tokenplus_auto_model? = get(TP_AUTO_MODEL, "1") == "1"

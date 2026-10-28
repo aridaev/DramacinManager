@@ -48,7 +48,6 @@ Rails.application.routes.draw do
     end
     resource :site_settings, only: [ :edit, :update ] do
       post :test_tokenplus
-      post :submit_indexnow
       delete :clear_tokenplus
       post :test_cloudflare
       delete :clear_cloudflare

@@ -3,11 +3,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="<%= seo_desc %>">
     <meta name="keywords" content="<%= tv1_keywords.join(", ") %>">
+    <% if on_instance_host? %>
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow">
+    <% else %>
+    <meta name="robots" content="noindex, nofollow">
+    <% end %>
     <link rel="canonical" href="<%= seo_canon %>">
-    <link rel="sitemap" type="application/xml" href="<%= request.base_url + tv1_nav_url("/sitemap.xml") %>">
-    <% if (gsc = current_instance&.gsc_verification.presence || (current_instance.nil? && Setting.gsc_verification.presence)) %><meta name="google-site-verification" content="<%= gsc %>"><% end %>
+    <% if on_instance_host? %><link rel="sitemap" type="application/xml" href="<%= request.base_url %>/sitemap.xml"><% end %>
+    <% if (gsc = current_instance&.gsc_verification.presence) %><meta name="google-site-verification" content="<%= gsc %>"><% end %>
     <% if (bing = current_instance&.bing_verification.presence) %><meta name="msvalidate.01" content="<%= bing %>"><% end %>
     <meta property="og:type" content="<%= %w[detail watch].include?(tv1_seo_page) ? "video.tv_show" : "website" %>">
     <meta property="og:site_name" content="<%= tv1_site_name %>">

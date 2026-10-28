@@ -42,33 +42,6 @@
       </div>
     </div>
 
-    <div class="card" id="seo">
-      <div class="card-head"><h2><%= dm_icon("external", size: 18) %> <%= t("admin.site_settings.seo_title") %></h2></div>
-      <p><%= t("admin.site_settings.seo_text_html", host: @main_host) %></p>
-      <div class="form-row">
-        <div class="field">
-          <div class="field-label-row"><%= f.label :main_host, "Host utama" %></div>
-          <%= f.text_field :main_host, value: @main_host, placeholder: "dracin.aridaev.com" %>
-        </div>
-        <div class="field">
-          <div class="field-label-row"><%= f.label :gsc_verification, t("admin.site_settings.gsc") %><span class="field-hint"><%= t("admin.site_settings.gsc_hint") %></span></div>
-          <%= f.text_field :gsc_verification, value: @gsc, placeholder: "google-site-verification code", autocomplete: "off" %>
-        </div>
-      </div>
-      <div class="field">
-        <div class="field-label-row"><label><%= t("admin.site_settings.sitemap_urls") %></label></div>
-        <div class="muted" style="font-size:.8rem;line-height:1.8">
-          <code>https://<%= @main_host %>/robots.txt</code><br>
-          <% Instance::TEMPLATES.each_key do |k| %><code>https://<%= @main_host %>/template/<%= k %>/sitemap.xml</code><br><% end %>
-          <%= t("admin.site_settings.indexnow_key") %>: <code><%= @indexnow_key %></code> → <code>https://<%= @main_host %>/<%= @indexnow_key %>.txt</code>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <button type="submit" class="btn btn-secondary btn-sm" form="indexnow-form"><%= t("admin.site_settings.indexnow_submit") %></button>
-        <% if @indexnow_last.present? %><span class="muted" style="font-size:.78rem"><%= @indexnow_last %></span><% end %>
-      </div>
-    </div>
-
     <div class="card" id="tokenplus">
       <div class="card-head">
         <h2><%= dm_icon("plug", size: 18) %> <%= t("admin.site_settings.tp_title") %></h2>
@@ -127,6 +100,5 @@
   <%= form_with url: test_cloudflare_admin_site_settings_path, method: :post, id: "cf-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
   <%= form_with url: test_tokenplus_admin_site_settings_path, method: :post, id: "tp-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
   <%= form_with url: clear_tokenplus_admin_site_settings_path, method: :delete, id: "tp-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm('#{j t('common.confirm', default: 'Yakin?')}')" } do %><% end %>
-  <%= form_with url: submit_indexnow_admin_site_settings_path, method: :post, id: "indexnow-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
   <%= form_with url: clear_cloudflare_admin_site_settings_path, method: :delete, id: "cf-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('common.confirm').to_json})" } do %><% end %>
 <% end %>

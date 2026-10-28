@@ -1,15 +1,5 @@
 en:
   admin:
-    site_settings:
-      seo_title: "Main host SEO (Search Console, sitemap, IndexNow)"
-      seo_text_html: "Applies to the main host <code>%{host}</code>. Each instance has its own SEO settings on the instance edit page."
-      gsc: "Google Search Console — verification code"
-      gsc_hint: "Paste the <code>content=\"…\"</code> value from the Search Console HTML meta tag, or the whole tag; the code is extracted automatically."
-      indexnow_key: "IndexNow key"
-      indexnow_submit: "Submit all sitemaps to IndexNow now"
-      indexnow_ok: "IndexNow OK — %{count} URLs submitted (HTTP %{code})."
-      indexnow_failed: "IndexNow failed: %{error}"
-      sitemap_urls: "Sitemap & robots"
     instances:
       sec_search: "Search Console & Indexing"
       search_hint: "Google Search Console / Bing verification, automatic sitemap, robots.txt and IndexNow (Bing, Yandex, Naver, Seznam)."

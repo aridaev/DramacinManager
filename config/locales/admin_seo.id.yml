@@ -1,15 +1,5 @@
 id:
   admin:
-    site_settings:
-      seo_title: "SEO host utama (Search Console, sitemap, IndexNow)"
-      seo_text_html: "Berlaku untuk host utama <code>%{host}</code>. Tiap instance punya pengaturan SEO sendiri di halaman edit instance."
-      gsc: "Google Search Console — kode verifikasi"
-      gsc_hint: "Tempel isi <code>content=\"…\"</code> dari tag meta HTML Search Console, atau tempel seluruh tag; kode diambil otomatis."
-      indexnow_key: "IndexNow key"
-      indexnow_submit: "Kirim semua sitemap ke IndexNow sekarang"
-      indexnow_ok: "IndexNow OK — %{count} URL dikirim (HTTP %{code})."
-      indexnow_failed: "IndexNow gagal: %{error}"
-      sitemap_urls: "Sitemap & robots"
     instances:
       sec_search: "Search Console & Indexing"
       search_hint: "Verifikasi Google Search Console / Bing, sitemap otomatis, robots.txt, dan IndexNow (Bing, Yandex, Naver, Seznam)."

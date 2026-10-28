@@ -12,12 +12,14 @@ class SeoController < ActionController::Base
     if inst
       lines << "Sitemap: #{request.base_url}/sitemap.xml"
     else
-      Instance::TEMPLATES.each_key { |k| lines << "Sitemap: #{request.base_url}/template/#{k}/sitemap.xml" }
+      # Host utama hanya untuk admin/pratinjau template: jangan diindeks.
+      lines = [ "User-agent: *", "Disallow: /", "" ]
     end
     render plain: lines.join("\n") + "\n", content_type: "text/plain"
   end
 
   def sitemap
+    return head :not_found unless InstanceHost.resolve(request.env)
     xml = Rails.cache.fetch([ "sitemap", request.host, params[:tpl], params[:part].to_s, I18n.locale ], expires_in: SITEMAP_TTL) do
       builder = SitemapBuilder.new(base_url: request.base_url, prefix: prefix)
       params[:part].present? ? builder.part(params[:part]) : builder.index
@@ -29,8 +31,8 @@ class SeoController < ActionController::Base
 
   def indexnow_key
     inst = InstanceHost.resolve(request.env)
-    key = inst ? inst.indexnow_key : Setting.indexnow_key
-    return head :not_found unless key.present? && params[:key] == key
+    return head :not_found unless inst&.indexnow_key.present? && params[:key] == inst.indexnow_key
+    key = inst.indexnow_key
     render plain: key, content_type: "text/plain"
   end
 
