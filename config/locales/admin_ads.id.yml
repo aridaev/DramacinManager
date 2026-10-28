@@ -1,0 +1,19 @@
+id:
+  admin:
+    instances:
+      sec_ads: "Iklan"
+      ads_hint: "Iklan pra-tayang: tampil beberapa detik di atas pemutar sebelum setiap video diputar. Teks, tombol, dan link bisa diatur di sini."
+      f_ads_enabled: "Tampilkan iklan sebelum setiap video"
+      f_ads_duration: "Durasi (detik)"
+      f_ads_duration_hint: "disarankan 5–7 detik"
+      f_ads_title: "Judul iklan"
+      f_ads_title_ph: "Promo spesial minggu ini"
+      f_ads_text: "Teks iklan"
+      f_ads_text_hint: "maks. 400 karakter, baris baru diperbolehkan"
+      f_ads_text_ph: "Dapatkan bonus 100% untuk member baru. Klaim sekarang!"
+      f_ads_button_text: "Label tombol"
+      f_ads_button_url: "Link tombol (href)"
+      f_ads_button_url_hint: "harus diawali https://; dibuka di tab baru"
+      f_ads_image: "Gambar banner (opsional)"
+      f_ads_image_hint: "URL gambar; ikut diberi link bila tombol diisi"
+      ads_need_content: "Iklan aktif tetapi belum ada judul, teks, atau gambar — isi minimal salah satu agar tampil."

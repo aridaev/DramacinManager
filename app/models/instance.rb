@@ -16,7 +16,7 @@ class Instance < ApplicationRecord
   }.freeze
   # Halaman bawaan template (untuk pilihan cepat navbar/footer).
   PAGES = [ [ "/", "Beranda" ], [ "/genre", "Semua genre" ], [ "/latest", "Terbaru" ], [ "/search", "Cari" ] ].freeze
-  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
+  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
   WATERMARK_SIZES = %w[small medium large xlarge].freeze
   WATERMARK_POSITIONS = %w[top-center top-left top-right bottom-left bottom-right].freeze
   include InstanceTheme
@@ -51,6 +51,13 @@ class Instance < ApplicationRecord
   validates :watermark_opacity, numericality: { only_integer: true, greater_than_or_equal_to: 10, less_than_or_equal_to: 100, message: "harus 10–100" }, allow_blank: true
 
   # Logo watermark di atas video: pakai watermark_url, fallback ke logo lalu icon.
+  # Iklan pra-tayang: overlay beberapa detik sebelum video diputar (teks + tombol/link, bisa diatur per instance).
+  ADS_DURATION_RANGE = (3..30)
+  def ads_enabled? = ads_enabled == "1"
+  def ads_seconds = ads_duration.to_i.clamp(ADS_DURATION_RANGE.min, ADS_DURATION_RANGE.max).then { |n| ads_duration.present? ? n : 6 }
+  def ads_active? = ads_enabled? && (ads_title.present? || ads_text.present? || ads_image_url.present?)
+  def ads_button_href = ads_button_url.to_s.strip.then { |u| u.match?(%r{\Ahttps?://}i) ? u : nil }
+
   def watermark_src = watermark_url.presence || logo_url.presence || icon_url.presence
   def watermark_pos = watermark_position.presence || "top-center"
   def watermark_alpha = (watermark_opacity.presence || 70).to_i

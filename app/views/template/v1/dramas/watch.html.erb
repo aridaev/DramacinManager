@@ -4,13 +4,14 @@
   <div>
     <div class="player-wrap">
       <% if @play_url.present? %>
-        <video id="tv1-player" controls playsinline autoplay preload="metadata" poster="<%= @drama.cover %>" controlsList="nodownload noremoteplayback nofullscreen" disablePictureInPicture oncontextmenu="return false"
+        <video id="tv1-player" controls playsinline <%= "autoplay" unless current_instance&.ads_active? %> preload="metadata" poster="<%= @drama.cover %>" controlsList="nodownload noremoteplayback nofullscreen" disablePictureInPicture oncontextmenu="return false"
                data-src="<%= @play_url %>" data-format="<%= @stream.format %>"
                data-sources="<%= @sources.to_json %>" data-lang="<%= I18n.locale %>">
           <% @subtitles.each do |s| %>
             <track kind="subtitles" srclang="<%= s[:lang] %>" label="<%= s[:label] %>" src="<%= s[:src] %>"<%= " default" if s[:lang].to_s == I18n.locale.to_s %>>
           <% end %>
         </video>
+        <%= render "template/v1/shared/player_ad" %>
         <button type="button" class="player-fs-big" id="tv1-fs-big" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
         <div class="player-loading" id="tv1-loading" aria-hidden="true"><span></span></div>
         <% if current_instance&.watermark_src.present? %>

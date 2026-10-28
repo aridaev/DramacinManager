@@ -6,7 +6,7 @@
   <%= form_with model: [:admin, @instance], id: "instance-form", class: "inst-layout" do |f| %>
     <aside class="inst-side">
       <nav class="inst-tabs" aria-label="Bagian">
-        <% { general: "grid", template: "layers", branding: "box", theme: "palette", watermark: "box", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
+        <% { general: "grid", template: "layers", branding: "box", theme: "palette", watermark: "box", ads: "clock", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
           <a href="#sec-<%= k %>" class="inst-tab <%= 'is-active' if i.zero? %>" data-sec="sec-<%= k %>"><%= dm_icon(ic, size: 16) %><span><%= t("admin.instances.sec_#{k}") %></span></a>
         <% end %>
       </nav>
@@ -188,6 +188,42 @@
           <span class="field-hint"><%= t("admin.instances.f_protect_source_hint") %></span>
         </div>
 </section>
+
+      <section class="card inst-sec" id="sec-ads">
+        <div class="card-head"><h2><%= t("admin.instances.sec_ads") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.instances.ads_hint") %></span></div>
+        <div class="form-row form-row-3">
+          <div class="field">
+            <label class="check-row"><%= f.check_box :ads_enabled, { checked: @instance.ads_enabled? }, "1", "0" %> <%= t("admin.instances.f_ads_enabled") %></label>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :ads_duration, t("admin.instances.f_ads_duration") %><span class="field-hint"><%= t("admin.instances.f_ads_duration_hint") %></span></div>
+            <%= f.number_field :ads_duration, value: @instance.ads_seconds, min: Instance::ADS_DURATION_RANGE.min, max: Instance::ADS_DURATION_RANGE.max, step: 1 %>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :ads_title, t("admin.instances.f_ads_title") %></div>
+          <%= f.text_field :ads_title, maxlength: 90, placeholder: t("admin.instances.f_ads_title_ph") %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :ads_text, t("admin.instances.f_ads_text") %><span class="field-hint"><%= t("admin.instances.f_ads_text_hint") %></span></div>
+          <%= f.text_area :ads_text, rows: 3, maxlength: 400, placeholder: t("admin.instances.f_ads_text_ph") %>
+        </div>
+        <div class="form-row form-row-3">
+          <div class="field">
+            <div class="field-label-row"><%= f.label :ads_button_text, t("admin.instances.f_ads_button_text") %></div>
+            <%= f.text_field :ads_button_text, maxlength: 40, placeholder: t("ads.button_default") %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :ads_button_url, t("admin.instances.f_ads_button_url") %><span class="field-hint"><%= t("admin.instances.f_ads_button_url_hint") %></span></div>
+            <%= f.url_field :ads_button_url, placeholder: "https://..." %>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><%= f.label :ads_image_url, t("admin.instances.f_ads_image") %><span class="field-hint"><%= t("admin.instances.f_ads_image_hint") %></span></div>
+            <%= f.url_field :ads_image_url, placeholder: "https://.../banner.jpg" %>
+          </div>
+        </div>
+        <% if @instance.ads_enabled? && !@instance.ads_active? %><p class="form-errors"><%= t("admin.instances.ads_need_content") %></p><% end %>
+      </section>
 
       <section class="card inst-sec" id="sec-seo">
         <div class="card-head"><h2><%= t("admin.instances.sec_seo") %></h2></div>

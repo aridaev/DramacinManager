@@ -1,4 +1,8 @@
 id:
+  ads:
+    label: "Iklan"
+    countdown: "Video dimulai dalam %{n} detik"
+    button_default: "Kunjungi"
   tokenplus:
     not_configured: "TokenPlus belum dikonfigurasi. Isi API Key di Pengaturan Situs."
     empty_reply: "Balasan model kosong."

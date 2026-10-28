@@ -1,4 +1,8 @@
 en:
+  ads:
+    label: "Advertisement"
+    countdown: "Video starts in %{n} seconds"
+    button_default: "Visit"
   tokenplus:
     not_configured: "TokenPlus is not configured. Add the API Key in Site Settings."
     empty_reply: "The model returned an empty reply."

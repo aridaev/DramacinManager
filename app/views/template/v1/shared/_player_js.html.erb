@@ -12,6 +12,18 @@
       let hls = null;
       const isHls = (u) => /\.m3u8(\?|$)/.test(u);
 
+      // ---- iklan pra-tayang: tahan pemutaran sampai hitung mundur selesai, lalu putar video.
+      const ad = document.getElementById("tv1-ad");
+      let adActive = !!ad;
+      if (ad) {
+        const count = document.getElementById("tv1-ad-count"), tpl = ad.dataset.countdown || "{n}";
+        let left = Math.max(1, parseInt(ad.dataset.seconds, 10) || 6);
+        const finish = () => { adActive = false; ad.hidden = true; ad.remove(); video.play().catch(() => {}); };
+        const tick = () => { left -= 1; if (left <= 0) { finish(); return; } if (count) count.textContent = tpl.replace("{n}", left); setTimeout(tick, 1000); };
+        setTimeout(tick, 1000);
+        video.addEventListener("play", () => { if (adActive) video.pause(); });
+      }
+
       function load(url, resume) {
         const t = resume ? video.currentTime : 0, wasPlaying = resume ? !video.paused : true;
         if (hls) { hls.destroy(); hls = null; }
@@ -31,7 +43,7 @@
         } else {
           video.src = url;
         }
-        video.addEventListener("loadedmetadata", () => { if (t > 0) video.currentTime = t; if (wasPlaying) video.play().catch(() => {}); }, { once: true });
+        video.addEventListener("loadedmetadata", () => { if (t > 0) video.currentTime = t; if (wasPlaying && !adActive) video.play().catch(() => {}); }, { once: true });
       }
 
       // ---- kualitas: beberapa file (MP4/HLS per resolusi) ATAU level di dalam satu HLS

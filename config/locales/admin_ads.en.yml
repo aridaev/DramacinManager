@@ -1,0 +1,19 @@
+en:
+  admin:
+    instances:
+      sec_ads: "Ads"
+      ads_hint: "Pre-roll ad: shown for a few seconds over the player before every video. Text, button and link are configured here."
+      f_ads_enabled: "Show an ad before every video"
+      f_ads_duration: "Duration (seconds)"
+      f_ads_duration_hint: "5–7 seconds recommended"
+      f_ads_title: "Ad title"
+      f_ads_title_ph: "Special promo this week"
+      f_ads_text: "Ad text"
+      f_ads_text_hint: "max. 400 characters, line breaks allowed"
+      f_ads_text_ph: "Get a 100% bonus for new members. Claim now!"
+      f_ads_button_text: "Button label"
+      f_ads_button_url: "Button link (href)"
+      f_ads_button_url_hint: "must start with https://; opens in a new tab"
+      f_ads_image: "Banner image (optional)"
+      f_ads_image_hint: "image URL; linked too when the button URL is set"
+      ads_need_content: "Ads are enabled but there is no title, text or image yet — fill at least one so it shows."
