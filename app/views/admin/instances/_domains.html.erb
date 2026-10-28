@@ -1,6 +1,8 @@
-<section class="card" id="sec-domains">
+<%# Kartu Domain. Dipakai di halaman edit instance; semua form diletakkan tersembunyi SETELAH kartu
+    (tombol memakai atribut form="…") agar tidak bersarang di dalam form utama instance. %>
+<section class="card inst-sec" id="sec-domains">
   <div class="card-head">
-    <h2><%= dm_icon("external", size: 18) %> <%= t("admin.domains.title") %></h2>
+    <h2><%= t("admin.domains.title") %></h2>
     <span class="muted" style="font-size:.76rem"><%= t("admin.domains.hint") %></span>
   </div>
 
@@ -22,11 +24,11 @@
               <% if d.cf_status.present? %><span class="auth-pill" title="status zone Cloudflare">CF: <%= d.cf_status %></span><% end %>
             </div>
             <span class="inline-actions">
-              <%= button_to t("admin.domains.check"), refresh_admin_instance_domain_path(@instance, d), method: :post, class: "btn btn-secondary btn-xs", disabled: d.cf_zone_id.blank? %>
+              <button type="submit" form="dom-refresh-<%= d.id %>" class="btn btn-secondary btn-xs" <%= "disabled" if d.cf_zone_id.blank? %>><%= t("admin.domains.check") %></button>
               <% if d.error? || d.cf_zone_id.blank? %>
-                <%= button_to t("admin.domains.retry"), retry_admin_instance_domain_path(@instance, d), method: :post, class: "btn btn-secondary btn-xs", disabled: !@cf_ready %>
+                <button type="submit" form="dom-retry-<%= d.id %>" class="btn btn-secondary btn-xs" <%= "disabled" unless @cf_ready %>><%= t("admin.domains.retry") %></button>
               <% end %>
-              <%= button_to t("common.delete"), admin_instance_domain_path(@instance, d, delete_zone: 1), method: :delete, class: "btn btn-danger btn-xs", form: { onsubmit: "return confirm(#{t('admin.domains.delete_confirm').to_json})" } %>
+              <button type="submit" form="dom-delete-<%= d.id %>" class="btn btn-danger btn-xs"><%= t("common.delete") %></button>
             </span>
           </div>
 
@@ -50,15 +52,8 @@
     <p class="muted"><%= t("admin.domains.empty") %></p>
   <% end %>
 
-  <%= form_with model: [:admin, @instance, @domain], class: "domain-add" do |f| %>
-    <%= f.text_field :hostname, placeholder: "contoh.com", required: true, autocomplete: "off", disabled: !@cf_ready %>
-    <%= f.submit t("admin.domains.add"), class: "btn btn-sm", disabled: !@cf_ready %>
-  <% end %>
+  <div class="domain-add">
+    <input type="text" name="domain[hostname]" form="dom-add-form" placeholder="contoh.com" required autocomplete="off" <%= "disabled" unless @cf_ready %>>
+    <button type="submit" form="dom-add-form" class="btn btn-sm" <%= "disabled" unless @cf_ready %>><%= t("admin.domains.add") %></button>
+  </div>
 </section>
-<script>
-  document.querySelectorAll(".copy-ns").forEach(function (b) {
-    b.addEventListener("click", function () {
-      navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy).then(function () { var t = b.textContent; b.textContent = "✓"; setTimeout(function () { b.textContent = t; }, 1200); });
-    });
-  });
-</script>

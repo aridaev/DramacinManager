@@ -35,6 +35,7 @@ id:
       sec_seo: SEO
       sec_footer: Footer
       sec_nav: Navbar
+      sec_domains: Domain
       f_app_name: Nama aplikasi
       f_icon: Ikon (favicon)
       f_icon_hint: URL gambar persegi, PNG/SVG/ICO

@@ -35,6 +35,7 @@ en:
       sec_seo: SEO
       sec_footer: Footer
       sec_nav: Navbar
+      sec_domains: Domains
       f_app_name: App name
       f_icon: Icon (favicon)
       f_icon_hint: square image URL, PNG/SVG/ICO

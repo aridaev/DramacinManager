@@ -34,7 +34,12 @@
     </dl>
   </section>
 
-  <%= render "domains" %>
+  <section class="card">
+    <div class="card-head"><h2><%= t("admin.domains.title") %></h2><%= link_to t("common.edit"), edit_admin_instance_path(@instance, anchor: "sec-domains"), class: "btn btn-secondary btn-xs" %></div>
+    <% if @instance.domains.any? %>
+      <% @instance.domains.ordered.each do |d| %><span class="auth-pill"><%= d.hostname %> · <%= t("admin.domains.statuses.#{d.status}") %></span> <% end %>
+    <% else %><p class="muted"><%= t("admin.domains.empty") %></p><% end %>
+  </section>
 
   <section class="card">
     <div class="card-head">

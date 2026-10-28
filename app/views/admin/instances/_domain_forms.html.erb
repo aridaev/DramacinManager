@@ -1,0 +1,13 @@
+<%= form_with url: admin_instance_domains_path(@instance), method: :post, id: "dom-add-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
+<% @domains.each do |d| %>
+  <%= form_with url: refresh_admin_instance_domain_path(@instance, d), method: :post, id: "dom-refresh-#{d.id}", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: retry_admin_instance_domain_path(@instance, d), method: :post, id: "dom-retry-#{d.id}", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: admin_instance_domain_path(@instance, d, delete_zone: 1), method: :delete, id: "dom-delete-#{d.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.domains.delete_confirm', hostname: d.hostname).to_json})" } do %><% end %>
+<% end %>
+<script>
+  document.querySelectorAll(".copy-ns").forEach(function (b) {
+    b.addEventListener("click", function () {
+      navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy).then(function () { var t = b.textContent; b.textContent = "✓"; setTimeout(function () { b.textContent = t; }, 1200); });
+    });
+  });
+</script>

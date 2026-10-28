@@ -10,9 +10,10 @@ class Admin::InstancesController < ApplicationController
     @counts = scope.group(:status).count
   end
 
-  def show
+  def show; end
+
+  def load_domains
     @domains = @instance.domains.ordered
-    @domain = Domain.new
     @cf_ready = CloudflareClient.from_settings.configured? && Setting.vps_ip.present?
   end
 
@@ -28,7 +29,9 @@ class Admin::InstancesController < ApplicationController
     redirect_to edit_admin_instance_path(instance), notice: t("admin.instances.created", name: instance.name)
   end
 
-  def edit; end
+  def edit
+    load_domains
+  end
 
   def update
     @instance.assign_attributes(instance_params.except(:nav_items, :footer_links))
@@ -37,6 +40,7 @@ class Admin::InstancesController < ApplicationController
     if @instance.save
       redirect_to admin_instance_path(@instance), notice: t("admin.instances.updated", name: @instance.name)
     else
+      load_domains
       render :edit, status: :unprocessable_entity
     end
   end
@@ -46,7 +50,7 @@ class Admin::InstancesController < ApplicationController
     @instance.assign_attributes(instance_params.except(:nav_items, :footer_links))
     @instance.nav_items = params.dig(:instance, :nav_items).to_unsafe_h if params.dig(:instance, :nav_items).present?
     @instance.footer_links = params.dig(:instance, :footer_links).to_unsafe_h if params.dig(:instance, :footer_links).present?
-    return render(:edit, status: :unprocessable_entity) unless @instance.save
+    return (load_domains; render(:edit, status: :unprocessable_entity)) unless @instance.save
     return redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), alert: t("tokenplus.keywords_missing") if @instance.seo_keyword_list.empty?
     client = TokenPlusClient.from_settings
     return redirect_to edit_admin_instance_path(@instance, anchor: "sec-ai"), alert: t("admin.instances.ai_not_configured") unless client.configured?
