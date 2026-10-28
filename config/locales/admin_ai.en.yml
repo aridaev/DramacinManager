@@ -12,6 +12,9 @@ en:
       tp_missing: "TokenPlus API Key is empty."
       tp_ok: "TokenPlus OK — %{count} models available."
       tp_failed: "TokenPlus test failed: %{error}"
+      tp_auto_model: "Auto-select the best Claude model (Opus → Sonnet) when testing"
+      tp_auto_picked: "model picked: %{model}"
+      tp_saved: "TokenPlus API Key saved."
       tp_cleared: "TokenPlus API Key removed."
     instances:
       sec_ai: "AI SEO"

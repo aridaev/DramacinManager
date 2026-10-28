@@ -12,6 +12,9 @@ id:
       tp_missing: "API Key TokenPlus belum diisi."
       tp_ok: "TokenPlus OK — %{count} model tersedia."
       tp_failed: "Tes TokenPlus gagal: %{error}"
+      tp_auto_model: "Pilih otomatis model Claude terbaik (Opus → Sonnet) saat tes koneksi"
+      tp_auto_picked: "model terpilih: %{model}"
+      tp_saved: "TokenPlus API Key tersimpan."
       tp_cleared: "API Key TokenPlus dihapus."
     instances:
       sec_ai: "AI SEO"

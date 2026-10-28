@@ -17,7 +17,7 @@ class SeoGenerator
     raise Error, I18n.t("tokenplus.keywords_missing") if keywords.empty?
     provs = Provider.enabled.supported.by_latency.to_a.first(6).map(&:name)
     keywords = (keywords + provs.flat_map { |n| [ "Nonton #{n}", "Streaming #{n} sub indo" ] }).uniq.first(20)
-    raw = @client.chat([ { role: "system", content: system_prompt }, { role: "user", content: user_prompt(keywords) } ], temperature: 0.7, max_tokens: 6000, json: true)
+    raw = @client.chat([ { role: "system", content: system_prompt }, { role: "user", content: user_prompt(keywords) } ], temperature: 0.85, max_tokens: 6000, json: true)
     data = parse_json(raw)
     apply!(data)
     data
@@ -33,6 +33,14 @@ class SeoGenerator
       You are a senior SEO copywriter for streaming websites (short Chinese/Asian dramas with subtitles).
       Always answer with ONE valid JSON object only, no markdown fences, no commentary.
       Write all human-readable text in #{lang_name}. Never mention login, account, registration, VIP or payment.
+
+      WRITING STYLE — must read like a real person wrote it, not an AI:
+      - Conversational, warm, second person ("kamu"/"you"), with concrete examples (name a typical plot, a typical binge moment).
+      - Vary sentence length; mix short punchy lines with longer ones. Use contractions and everyday phrasing.
+      - No filler or clichés: never write "dalam era digital", "di dunia yang serba cepat", "tak dapat dipungkiri", "in today's fast-paced world", "unlock", "elevate", "seamless", "delve", "dive into", "revolutionary", "game-changer".
+      - No keyword stuffing: each keyword appears naturally at most 2–3 times across the whole article. Prefer synonyms and natural variations.
+      - Avoid starting consecutive paragraphs the same way. Avoid lists of adjectives. One <ul> list max, 4–6 items, each item a full sentence.
+      - Write like a helpful friend who watches a lot of short dramas, not like a brochure.
     TXT
   end
 

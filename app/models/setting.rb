@@ -9,6 +9,7 @@ class Setting < ApplicationRecord
   TP_API_KEY       = "tokenplus.api_key"
   TP_MODEL         = "tokenplus.model"
   TP_STATUS        = "tokenplus.status"
+  TP_AUTO_MODEL    = "tokenplus.auto_model"
   GSC_VERIFY       = "seo.gsc_verification"
   INDEXNOW_KEY     = "seo.indexnow_key"
   INDEXNOW_LAST    = "seo.indexnow_last"
@@ -46,6 +47,7 @@ class Setting < ApplicationRecord
   end
   def self.tokenplus_api_key     = get(TP_API_KEY)
   def self.tokenplus_model       = get(TP_MODEL, TokenPlusClient::DEFAULT_MODEL)
+  def self.tokenplus_auto_model? = get(TP_AUTO_MODEL, "1") == "1"
   def self.users_can_create_instances? = get(USERS_CAN_CREATE, "1") == "1"
   def self.max_instances_per_user = get(MAX_PER_USER, "3").to_i
   def self.dracin_api_key      = ApiSource.default&.api_key.presence || get(DRACIN_API_KEY)

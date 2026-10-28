@@ -5,9 +5,18 @@ class TokenPlusClient
   class Error < StandardError; end
 
   BASE_URL = "https://tokenplus.net".freeze
-  DEFAULT_MODEL = "deepseek-v4-flash".freeze
+  DEFAULT_MODEL = "claude-sonnet-4-5".freeze
   # Pilihan cepat di admin; model lain bisa diketik manual (lihat daftar dari tombol "Tes & muat model").
-  SUGGESTED_MODELS = %w[deepseek-v4-flash deepseek-v3.2 gpt-4o-mini gpt-4.1-mini gpt-5-mini gemini-2.5-flash claude-sonnet-4-5 qwen3-235b-a22b].freeze
+  SUGGESTED_MODELS = %w[claude-opus-4-5 claude-opus-4-1 claude-sonnet-4-5 claude-sonnet-4 gpt-5 gpt-4.1 gemini-2.5-pro deepseek-v4-flash].freeze
+
+  # Pilih Claude terbaik dari daftar model: Opus versi tertinggi, lalu Sonnet tertinggi (abaikan varian "thinking"/tanggal lama bila ada yang polos).
+  def self.best_claude(models)
+    pick = lambda do |family|
+      cands = models.grep(/\Aclaude[-_.]?#{family}/i).reject { |m| m.match?(/thinking|preview|legacy/i) }
+      cands.max_by { |m| v = m.scan(/\d+(?:\.\d+)?/).map(&:to_f); [ v[0] || 0, v[1] || 0, m.match?(/\d{8}/) ? 0 : 1 ] }
+    end
+    pick.call("opus") || pick.call("sonnet")
+  end
   OPEN_TIMEOUT = 10
   READ_TIMEOUT = 170
 

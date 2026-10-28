@@ -93,14 +93,25 @@
       speed.addEventListener("change", () => { video.playbackRate = +speed.value; pref("tv1_speed", speed.value); });
       // Fullscreen pada WRAPPER (bukan <video>) agar overlay watermark ikut tampil; fallback "fullscreen palsu" (fixed) bila API tidak ada.
       const wrap = video.closest(".player-wrap");
-      function fakeFs(on) { wrap.classList.toggle("is-fake-fs", on); document.documentElement.classList.toggle("fake-fs", on); }
+      function fakeFs(on) { wrap.classList.toggle("is-fake-fs", on); wrap.classList.toggle("is-fs", on); document.documentElement.classList.toggle("fake-fs", on); if (on) lockLandscape(); }
+      function lockLandscape() { try { if (screen.orientation && screen.orientation.lock && window.innerWidth < 900) screen.orientation.lock("landscape").catch(() => {}); } catch (e) {} }
       function toggleFs() {
-        if (document.fullscreenElement || document.webkitFullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+        const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fsEl) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) { fakeFs(false); } return; }
         if (wrap.classList.contains("is-fake-fs")) { fakeFs(false); return; }
         const req = wrap.requestFullscreen || wrap.webkitRequestFullscreen;
-        if (req) req.call(wrap).catch(() => fakeFs(true)); else fakeFs(true);
+        if (!req) { fakeFs(true); return; }
+        try {
+          const r = req.call(wrap);
+          if (r && r.then) r.then(lockLandscape).catch(() => fakeFs(true)); else lockLandscape();
+        } catch (e) { fakeFs(true); }
       }
       fs.addEventListener("click", toggleFs);
+      const fsBig = document.getElementById("tv1-fs-big"); if (fsBig) fsBig.addEventListener("click", (e) => { e.stopPropagation(); toggleFs(); });
+      ["fullscreenchange", "webkitfullscreenchange"].forEach((ev) => document.addEventListener(ev, () => {
+        const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        wrap.classList.toggle("is-fs", on); if (!on) { try { screen.orientation && screen.orientation.unlock && screen.orientation.unlock(); } catch (e) {} }
+      }));
       video.addEventListener("dblclick", (e) => { e.preventDefault(); toggleFs(); });
       document.addEventListener("keydown", (e) => { if (e.key === "Escape" && wrap.classList.contains("is-fake-fs")) fakeFs(false); });
       ["playing", "canplay"].forEach((e) => video.addEventListener(e, () => { loading.hidden = true; }));

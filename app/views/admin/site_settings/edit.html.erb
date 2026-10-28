@@ -64,7 +64,7 @@
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <%= button_to t("admin.site_settings.indexnow_submit"), submit_indexnow_admin_site_settings_path, method: :post, form: { data: { turbo: false }, style: "display:inline" }, class: "btn btn-secondary btn-sm" %>
+        <button type="submit" class="btn btn-secondary btn-sm" form="indexnow-form"><%= t("admin.site_settings.indexnow_submit") %></button>
         <% if @indexnow_last.present? %><span class="muted" style="font-size:.78rem"><%= @indexnow_last %></span><% end %>
       </div>
     </div>
@@ -83,12 +83,14 @@
         <div class="field">
           <div class="field-label-row"><%= f.label :tokenplus_model, t("admin.site_settings.tp_model") %><span class="field-hint"><%= t("admin.site_settings.tp_model_hint") %></span></div>
           <%= f.text_field :tokenplus_model, value: @tp_model, list: "tp-models", autocomplete: "off" %>
+          <label class="check-row" style="margin-top:6px"><%= check_box_tag "site[tokenplus_auto_model]", "1", @tp_auto_model %> <%= t("admin.site_settings.tp_auto_model") %></label>
           <datalist id="tp-models"><% @tp_models.each do |m| %><option value="<%= m %>"></option><% end %></datalist>
         </div>
       </div>
       <div class="field-actions" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <%= button_to t("admin.site_settings.tp_test"), test_tokenplus_admin_site_settings_path, method: :post, form: { data: { turbo: false }, style: "display:inline" }, class: "btn btn-secondary btn-sm" %>
-        <% if @tp_key.present? %><%= button_to t("admin.site_settings.tp_clear"), clear_tokenplus_admin_site_settings_path, method: :delete, form: { data: { turbo: false, turbo_confirm: t("common.confirm", default: "Yakin?") }, style: "display:inline" }, class: "btn btn-danger btn-sm" %><% end %>
+        <%= f.submit t("common.save"), class: "btn btn-sm" %>
+        <button type="submit" class="btn btn-secondary btn-sm" form="tp-test-form" <%= "disabled" if @tp_key.blank? %>><%= t("admin.site_settings.tp_test") %></button>
+        <button type="submit" class="btn btn-danger btn-sm" form="tp-clear-form" <%= "disabled" if @tp_key.blank? %>><%= t("admin.site_settings.tp_clear") %></button>
         <% if @tp_status.present? %><span class="muted" style="font-size:.78rem"><%= @tp_status %></span><% end %>
       </div>
     </div>
@@ -123,5 +125,8 @@
 
   <%# Form aksi terpisah (di luar form utama; HTML melarang form bersarang). Tombolnya di atas lewat atribut form="…". %>
   <%= form_with url: test_cloudflare_admin_site_settings_path, method: :post, id: "cf-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: test_tokenplus_admin_site_settings_path, method: :post, id: "tp-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: clear_tokenplus_admin_site_settings_path, method: :delete, id: "tp-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm('#{j t('common.confirm', default: 'Yakin?')}')" } do %><% end %>
+  <%= form_with url: submit_indexnow_admin_site_settings_path, method: :post, id: "indexnow-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
   <%= form_with url: clear_cloudflare_admin_site_settings_path, method: :delete, id: "cf-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('common.confirm').to_json})" } do %><% end %>
 <% end %>
