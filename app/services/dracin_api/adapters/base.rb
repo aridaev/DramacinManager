@@ -111,12 +111,17 @@ module DracinApi
         { lang: code, label: label.presence || (code == "und" ? "Subtitle" : code.upcase), url: url.to_s }
       end
 
+      # Entri tanpa id/judul (slot banner kosong, tile navigasi "Rankings", dll) bukan drama → dibuang.
+      def valid_items(items)
+        Array(items).select { |d| d.id.present? && d.title.present? }
+      end
+
       def page(items, page:, has_more:)
-        Catalog::Page.new(items: items, page: page.to_i, has_more: has_more ? true : false)
+        Catalog::Page.new(items: valid_items(items), page: page.to_i, has_more: has_more ? true : false)
       end
 
       def section(title, items)
-        Catalog::Section.new(title: title, items: items)
+        Catalog::Section.new(title: title, items: valid_items(items))
       end
 
       def seconds_to_clock(sec)

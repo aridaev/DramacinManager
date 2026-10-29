@@ -1,12 +1,20 @@
 module TemplateV1Helper
   POSTER_HUES = [ 352, 18, 262, 200, 158, 40, 300, 222 ].freeze
+  # CDN yang menolak hotlink dari browser → langsung lewat proxy /covers (cache 1 hari), tanpa menunggu onerror.
+  PROXY_COVER_HOSTS = %w[v-img.crazymaplestudios.com].freeze
+
+  def tv1_cover_src(url)
+    host = (URI.parse(url.to_s).host rescue nil)
+    PROXY_COVER_HOSTS.include?(host) ? cover_proxy_path(u: url) : url
+  end
 
   def tv1_poster(drama, css_class: "poster", lazy: true)
     if drama.cover.present?
       hue = POSTER_HUES[drama.id.to_s.sum % POSTER_HUES.size]
       initials = drama.title.to_s.split(/\s+/).map { |w| w[0] }.join[0, 2].upcase
-      image_tag drama.cover, alt: drama.title, class: css_class, loading: (lazy ? "lazy" : "eager"), decoding: "async", referrerpolicy: "no-referrer",
-                data: { cover: drama.cover, hue: hue, mark: initials }
+      src = tv1_cover_src(drama.cover)
+      image_tag src, alt: drama.title, class: css_class, loading: (lazy ? "lazy" : "eager"), decoding: "async", referrerpolicy: "no-referrer",
+                data: { cover: drama.cover, hue: hue, mark: initials, proxied: (src == drama.cover ? nil : "1") }
     else
       hue = POSTER_HUES[drama.id.to_s.sum % POSTER_HUES.size]
       initials = drama.title.to_s.split(/\s+/).map { |w| w[0] }.join[0, 2].upcase

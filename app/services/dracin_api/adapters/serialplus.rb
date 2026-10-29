@@ -2,7 +2,7 @@ module DracinApi
   module Adapters
     # https://serealplus.goodbos.online (Serial+) — auth via query ?code=KEY
     #   /api/home?lang=&page=    → { data: { hasMore, list: [ { contentId, contentName, contentCoverUrl, chapterNum, tag } ] } }
-    #   /api/latest?lang=        → { data: { records: [ { columnName, records: [ { contentId, contentName, ... } ] } ] } }
+    #   /api/latest?lang=        → { data: { records: [ { columnName, records: [ { contentId, contentName, url(=cover), tag } ] } ] } }
     #   /api/search?q=&lang=     → { data: { hasMore, list: [...] } }
     #   /api/detail?id=&lang=    → { data: { id, contentName, contentCoverUrl, introduce, chapterNum, classList, tagList, contentScore } }
     #   /api/episodes?id=&lang=  → { total, episodes: [ { seqNo, duration, lock, videoUrl } ] }
@@ -52,7 +52,9 @@ module DracinApi
       end
 
       def to_drama(d)
-        drama(id: d["contentId"] || d["id"], title: d["contentName"].to_s.strip, cover: d["contentCoverUrl"], synopsis: d["introduce"],
+        # /api/latest memakai `url` (bukan contentCoverUrl) untuk cover.
+        cover = d["contentCoverUrl"].presence || (d["url"].to_s.match?(/\.(jpe?g|png|webp)(\?|$)/i) ? d["url"] : nil)
+        drama(id: d["contentId"] || d["id"], title: d["contentName"].to_s.strip, cover: cover, synopsis: d["introduce"],
               episodes: (d["chapterNum"] || d["chapterNumber"]).to_i.nonzero?, genres: Array(d["tag"].is_a?(String) ? d["tag"].split(/[,，]/) : d["tag"]).first(5),
               language: nil, rating: nil, year: nil, status: nil)
       end
