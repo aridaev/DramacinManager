@@ -75,7 +75,7 @@
       <div class="table-wrap"><table class="table">
         <thead><tr><th><%= t("admin.stats.col_provider") %></th><th><%= t("admin.stats.col_drama") %></th><th class="num"><%= t("admin.stats.views") %></th></tr></thead>
         <tbody><% @by_drama.each do |(prov, id), n| %>
-          <tr><td><%= prov %></td><td><%= link_to id, "#{@instance.public_url.to_s.chomp('/')}/#{prov}/drama/#{id}", target: "_blank", rel: "noopener" %></td><td class="num"><%= n %></td></tr>
+          <tr><td class="nowrap"><%= prov %></td><td class="truncate" style="max-width:220px"><%= link_to id, "#{@instance.public_url.to_s.chomp('/')}/#{prov}/drama/#{id}", target: "_blank", rel: "noopener", title: id %></td><td class="num"><%= n %></td></tr>
         <% end %></tbody>
       </table></div>
       <% end %>

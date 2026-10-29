@@ -778,4 +778,7 @@ html[data-density="compact"] .nav-in { height: 30px; }
 .hour-cell:nth-child(odd) em { visibility: hidden; }
 .table td.num, .table th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .table td.nowrap { white-space: nowrap; }
+.stats-grid .table-wrap { max-width: 100%; }
+.stats-grid .table { table-layout: fixed; width: 100%; }
+.stats-grid .table th.num, .stats-grid .table td.num { width: 84px; }
 @media (max-width: 560px) { .hour-cell em { font-size: .5rem; } }
