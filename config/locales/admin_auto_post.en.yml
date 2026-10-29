@@ -1,0 +1,38 @@
+en:
+  admin:
+    instances:
+      sec_autopost: Auto Posting
+    auto_post:
+      title: Auto Posting
+      hint: automatically post to social media from the selected drama title
+      instagram: Instagram
+      "on": Enabled
+      "off": Disabled
+      next_run: "Next run: %{at}"
+      f_enabled: Enable Instagram auto posting
+      f_cookies: Instagram account cookies
+      f_cookies_hint: one row = one account; paste the "Copy Cookies" output (header, Cookie-Editor JSON, or Netscape)
+      cookie_label_ph: Account name (optional)
+      cookie_ph: "sessionid=...; ds_user_id=...; csrftoken=...  or JSON [{\"name\":...}]"
+      cookie_add: + Add account
+      cookie_paste: Paste many at once
+      paste_prompt: "Paste cookies of several accounts, separated by a blank line or ---"
+      f_provider: Provider
+      f_drama: Drama title
+      drama_search_ph: Search title… (min. 2 chars)
+      choose: — choose —
+      loading: Loading…
+      load_failed: Failed to load titles
+      titles_count: "{n} titles"
+      f_interval: Post every
+      f_interval_hint: "minimum %{min} minutes"
+      minutes: minutes
+      hours: hours
+      preset: Quick pick…
+      save: Save Auto Posting
+      logic_todo: Automatic posting is not active yet — these settings are stored for now.
+      saved: "%{platform} auto posting settings saved."
+      drama_required: Choose a provider and a drama title before enabling.
+      cookies_required: Add at least one account cookie before enabling.
+      cookie_invalid: "Account cookie #%{n} has no sessionid."
+      provider_unknown: Unknown provider.

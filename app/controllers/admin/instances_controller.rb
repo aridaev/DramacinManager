@@ -14,6 +14,7 @@ class Admin::InstancesController < ApplicationController
   def show; end
 
   def load_domains
+    @auto_post_instagram = @instance.auto_posts.find_or_initialize_by(platform: "instagram")
     @domains = @instance.domains.ordered
     @cf_ready = CloudflareClient.from_settings.configured? && Setting.vps_ip.present?
   end

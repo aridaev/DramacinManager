@@ -1,0 +1,83 @@
+<%# Kartu Auto Posting (Instagram). Dirender di luar <form> utama instance; punya form sendiri (ap-form-instagram)
+    yang disembunyikan di bawah, tombol/field memakai atribut form="…" — pola sama dengan kartu Domain. %>
+<% ap = @auto_post_instagram; fid = "ap-form-instagram" %>
+<% providers = Provider.enabled.supported.order(:position, :name) %>
+<section class="card inst-sec" id="sec-autopost">
+  <div class="card-head">
+    <h2><%= t("admin.auto_post.title") %></h2>
+    <span class="muted" style="font-size:.76rem"><%= t("admin.auto_post.hint") %></span>
+  </div>
+
+  <div class="ap-platform" data-ap="instagram" data-dramas-url="<%= dramas_admin_instance_auto_posts_path(@instance) %>">
+    <div class="ap-head">
+      <strong class="ap-name"><%= t("admin.auto_post.instagram") %></strong>
+      <% if ap.enabled? %><span class="badge badge-success"><%= t("admin.auto_post.on") %></span><% else %><span class="badge badge-muted"><%= t("admin.auto_post.off") %></span><% end %>
+      <% if ap.next_run_at %><span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.next_run", at: l(ap.next_run_at, format: :short)) %></span><% end %>
+    </div>
+
+    <div class="field">
+      <label class="check-row"><input type="hidden" name="auto_post[enabled]" value="0" form="<%= fid %>"><input type="checkbox" name="auto_post[enabled]" value="1" form="<%= fid %>" <%= "checked" if ap.enabled? %>> <%= t("admin.auto_post.f_enabled") %></label>
+    </div>
+
+    <div class="field">
+      <div class="field-label-row"><label><%= t("admin.auto_post.f_cookies") %></label><span class="field-hint"><%= t("admin.auto_post.f_cookies_hint") %></span></div>
+      <div class="nav-builder ap-cookies" data-ap-cookies>
+        <input type="hidden" name="auto_post[cookies][z][cookie]" value="" form="<%= fid %>">
+        <% ap.cookies.each_with_index do |c, i| %>
+          <div class="ap-cookie-row" data-ap-cookie>
+            <input type="text" name="auto_post[cookies][<%= i %>][label]" value="<%= c["label"] %>" placeholder="<%= t("admin.auto_post.cookie_label_ph") %>" class="nav-in" maxlength="60" form="<%= fid %>">
+            <textarea name="auto_post[cookies][<%= i %>][cookie]" rows="2" placeholder="<%= t("admin.auto_post.cookie_ph") %>" class="ap-cookie-in" form="<%= fid %>"><%= c["cookie"] %></textarea>
+            <button type="button" class="btn btn-danger btn-xs ap-cookie-del" title="<%= t("common.delete") %>">✕</button>
+          </div>
+        <% end %>
+      </div>
+      <template data-ap-cookie-tpl>
+        <div class="ap-cookie-row" data-ap-cookie>
+          <input type="text" name="auto_post[cookies][__i__][label]" placeholder="<%= t("admin.auto_post.cookie_label_ph") %>" class="nav-in" maxlength="60" form="<%= fid %>">
+          <textarea name="auto_post[cookies][__i__][cookie]" rows="2" placeholder="<%= t("admin.auto_post.cookie_ph") %>" class="ap-cookie-in" form="<%= fid %>"></textarea>
+          <button type="button" class="btn btn-danger btn-xs ap-cookie-del">✕</button>
+        </div>
+      </template>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="chip chip-btn" data-ap-cookie-add><%= t("admin.auto_post.cookie_add") %></button>
+        <button type="button" class="chip chip-btn" data-ap-cookie-paste><%= t("admin.auto_post.cookie_paste") %></button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <div class="field-label-row"><label><%= t("admin.auto_post.f_provider") %></label></div>
+        <select name="auto_post[provider_slug]" form="<%= fid %>" data-ap-provider>
+          <option value=""><%= t("admin.auto_post.choose") %></option>
+          <% providers.each do |p| %><option value="<%= p.slug %>" <%= "selected" if ap.provider_slug == p.slug %>><%= p.name %></option><% end %>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label><%= t("admin.auto_post.f_drama") %></label><span class="field-hint" data-ap-drama-status></span></div>
+        <input type="search" class="nav-in" style="width:100%;margin-bottom:6px" placeholder="<%= t("admin.auto_post.drama_search_ph") %>" data-ap-drama-q autocomplete="off">
+        <select name="auto_post[drama_id]" form="<%= fid %>" data-ap-drama data-current="<%= ap.drama_id %>" data-current-title="<%= ap.drama_title %>">
+          <option value=""><%= t("admin.auto_post.choose") %></option>
+          <% if ap.drama_id.present? %><option value="<%= ap.drama_id %>" selected><%= ap.drama_title.presence || ap.drama_id %></option><% end %>
+        </select>
+        <input type="hidden" name="auto_post[drama_title]" value="<%= ap.drama_title %>" form="<%= fid %>" data-ap-drama-title>
+      </div>
+    </div>
+
+    <div class="field" style="max-width:320px">
+      <div class="field-label-row"><label><%= t("admin.auto_post.f_interval") %></label><span class="field-hint"><%= t("admin.auto_post.f_interval_hint", min: AutoPost::MIN_INTERVAL) %></span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="number" name="auto_post[interval_minutes]" value="<%= ap.interval_minutes %>" min="<%= AutoPost::MIN_INTERVAL %>" max="<%= AutoPost::MAX_INTERVAL %>" step="1" class="nav-in" style="width:120px" form="<%= fid %>">
+        <span class="muted"><%= t("admin.auto_post.minutes") %></span>
+        <select class="select-sm" data-ap-interval-preset>
+          <option value=""><%= t("admin.auto_post.preset") %></option>
+          <% [ 15, 30, 60, 120, 180, 360, 720, 1440 ].each do |m| %><option value="<%= m %>"><%= m < 60 ? "#{m} #{t('admin.auto_post.minutes')}" : "#{m / 60} #{t('admin.auto_post.hours')}" %></option><% end %>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions-row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button type="submit" form="<%= fid %>" class="btn btn-sm"><%= dm_icon("check", size: 14) %> <%= t("admin.auto_post.save") %></button>
+      <span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.logic_todo") %></span>
+    </div>
+  </div>
+</section>

@@ -6,7 +6,7 @@
   <%= form_with model: [:admin, @instance], id: "instance-form", class: "inst-layout" do |f| %>
     <aside class="inst-side">
       <nav class="inst-tabs" aria-label="Bagian">
-        <% { general: "grid", domains: "external", template: "layers", branding: "box", theme: "palette", watermark: "box", ads: "clock", members: "user", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
+        <% { general: "grid", domains: "external", template: "layers", branding: "box", theme: "palette", watermark: "box", ads: "clock", members: "user", autopost: "clock", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
           <a href="#sec-<%= k %>" class="inst-tab <%= 'is-active' if i.zero? %>" data-sec="sec-<%= k %>"><%= dm_icon(ic, size: 16) %><span><%= t("admin.instances.sec_#{k}") %></span></a>
         <% end %>
       </nav>
@@ -512,8 +512,9 @@
       </div>
     </div>
   <% end %>
-  <div class="inst-layout inst-layout-after"><div></div><div class="inst-main"><%= render "domains" %></div></div>
+  <div class="inst-layout inst-layout-after"><div></div><div class="inst-main"><%= render "domains" %><%= render "auto_post" %></div></div>
   <%= render "domain_forms" %>
+  <%= render "auto_post_forms" %>
 
 <script>
 (function () {
@@ -625,6 +626,8 @@
       window.useGlobalCsrf = function (form) { var m = document.querySelector('meta[name="csrf-token"]'), i = form && form.querySelector('input[name="authenticity_token"]'); if (m && i) i.value = m.content; };
       // Kartu Domain dirender di luar <form> utama (punya form sendiri); pindahkan ke posisi setelah "Umum" (tombolnya memakai atribut form="…", jadi aman di dalam form utama).
       var domSec = document.getElementById("sec-domains"), gen = document.getElementById("sec-general"), after = document.querySelector(".inst-layout-after");
+      var apSec = document.getElementById("sec-autopost"), mem = document.getElementById("sec-members");
+      if (apSec && mem) mem.insertAdjacentElement("afterend", apSec);
       if (domSec && gen) { gen.insertAdjacentElement("afterend", domSec); if (after) after.remove(); }
       var tabs = document.querySelectorAll(".inst-tab"), secs = document.querySelectorAll(".inst-sec");
       tabs.forEach(function (t) { t.addEventListener("click", function (e) { e.preventDefault(); document.getElementById(t.dataset.sec).scrollIntoView({ behavior: "smooth", block: "start" }); }); });

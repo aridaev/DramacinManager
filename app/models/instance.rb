@@ -45,6 +45,7 @@ class Instance < ApplicationRecord
   has_many :domains, dependent: :destroy
   has_many :members, dependent: :destroy
   has_many :deposit_requests, dependent: :destroy
+  has_many :auto_posts, dependent: :destroy
 
   scope :owned_by, ->(user) { where(created_by_id: user.id) }
   def primary_domain = domains.active.first || domains.first

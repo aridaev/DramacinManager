@@ -1,0 +1,38 @@
+id:
+  admin:
+    instances:
+      sec_autopost: Auto Posting
+    auto_post:
+      title: Auto Posting
+      hint: posting otomatis ke media sosial dari judul drama yang dipilih
+      instagram: Instagram
+      "on": Aktif
+      "off": Nonaktif
+      next_run: "Jadwal berikutnya: %{at}"
+      f_enabled: Aktifkan auto posting Instagram
+      f_cookies: Cookie akun Instagram
+      f_cookies_hint: satu baris = satu akun; tempel hasil "Copy Cookies" (header, JSON Cookie-Editor, atau Netscape)
+      cookie_label_ph: Nama akun (opsional)
+      cookie_ph: "sessionid=...; ds_user_id=...; csrftoken=...  atau JSON [{\"name\":...}]"
+      cookie_add: + Tambah akun
+      cookie_paste: Tempel banyak sekaligus
+      paste_prompt: "Tempel cookie beberapa akun, pisahkan dengan baris kosong atau ---"
+      f_provider: Penyedia
+      f_drama: Judul drama
+      drama_search_ph: Cari judul… (min. 2 huruf)
+      choose: — pilih —
+      loading: Memuat…
+      load_failed: Gagal memuat judul
+      titles_count: "{n} judul"
+      f_interval: Posting setiap
+      f_interval_hint: "minimal %{min} menit"
+      minutes: menit
+      hours: jam
+      preset: Pilih cepat…
+      save: Simpan Auto Posting
+      logic_todo: Pengiriman postingan otomatis belum aktif — pengaturan ini disimpan dulu.
+      saved: "Pengaturan auto posting %{platform} disimpan."
+      drama_required: Pilih penyedia dan judul drama sebelum mengaktifkan.
+      cookies_required: Tambahkan minimal satu cookie akun sebelum mengaktifkan.
+      cookie_invalid: "Cookie akun #%{n} tidak memuat sessionid."
+      provider_unknown: Penyedia tidak dikenal.

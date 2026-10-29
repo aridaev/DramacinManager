@@ -54,6 +54,9 @@ Rails.application.routes.draw do
       resources :members, only: [ :index, :destroy ] do
         member { post :approve; post :reject; post :grant; post :revoke }
       end
+      resources :auto_posts, only: [ :update ], param: :platform do
+        collection { get :dramas }
+      end
     end
     resource :site_settings, only: [ :edit, :update ] do
       post :test_tokenplus
