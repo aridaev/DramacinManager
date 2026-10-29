@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Deploy ke production di server ini (systemd: dracinmanager.service, nginx: dracin.aridaev.com).
+# Deploy ke production di server ini (systemd: dracinmanager.service + dracinmanager-jobs.service).
+# Puma di-reload secara bertahap (phased restart) sehingga situs tidak pernah 502 saat deploy.
 # Production memakai Ruby sistem (/usr/bin/ruby 3.2.3), bukan rbenv.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -7,7 +8,7 @@ cd "$(dirname "$0")/.."
 export RBENV_VERSION=system
 export RAILS_ENV=production
 export SECRET_KEY_BASE="${SECRET_KEY_BASE:-dummy-for-asset-precompile}"
-export DRACIN_MANAGER_DATABASE_PASSWORD="${DRACIN_MANAGER_DATABASE_PASSWORD:-$(systemctl show dracinmanager -p Environment --value | tr ' ' '\n' | sed -n 's/^DRACIN_MANAGER_DATABASE_PASSWORD=//p')}"
+export DRACIN_MANAGER_DATABASE_PASSWORD="${DRACIN_MANAGER_DATABASE_PASSWORD:-$(cat /root/.dracin_db_pass)}"
 
 echo "==> bundle install"
 bundle install --quiet
@@ -17,8 +18,18 @@ echo "==> db:seed (idempotent: admin + 42 provider)"
 bin/rails db:seed
 echo "==> assets:precompile"
 bin/rails assets:precompile | grep -E "Writing|error" || true
-echo "==> restart dracinmanager"
-systemctl restart dracinmanager
-sleep 6
-systemctl is-active dracinmanager
+echo "==> cek boot (biar worker baru tidak crash-loop)"
+bin/rails runner 'print "boot ok\n"'
+echo "==> reload puma (phased restart, tanpa downtime; restart penuh hanya bila Gemfile.lock berubah)"
+LOCK_SUM=$(md5sum Gemfile.lock | cut -d' ' -f1)
+if systemctl is-active --quiet dracinmanager && [ "$(cat tmp/deploy_gemfile.md5 2>/dev/null)" = "$LOCK_SUM" ]; then
+  systemctl reload dracinmanager
+else
+  systemctl restart dracinmanager
+fi
+echo "$LOCK_SUM" > tmp/deploy_gemfile.md5
+echo "==> restart worker jobs"
+systemctl restart dracinmanager-jobs
+sleep 8
+systemctl is-active dracinmanager dracinmanager-jobs
 curl -s -o /dev/null -w "sign_in -> HTTP %{http_code}\n" -H "Host: dracin.aridaev.com" http://127.0.0.1/users/sign_in

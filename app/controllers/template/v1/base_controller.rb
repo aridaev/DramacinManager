@@ -44,6 +44,7 @@ class Template::V1::BaseController < ApplicationController
     Rails.logger.warn("[DracinApi] #{current_provider&.slug}: #{error.class} #{error.message}")
     @error = error
     @error_kind = error.is_a?(DracinApi::MissingApiKey) ? :missing_api_key : :api_error
-    render "template/v1/shared/api_error", status: :bad_gateway
+    response.set_header("Retry-After", "30")
+    render "template/v1/shared/api_error", status: :service_unavailable
   end
 end
