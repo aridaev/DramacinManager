@@ -23,8 +23,9 @@ class InstagramPostJob < ApplicationJob
 
     sweep_stale_tmp
     Dir.mktmpdir("igpost") do |dir|
-      builder = AutoPoster::VideoBuilder.new(instance, stream, dir, max_seconds: ap.max_seconds, offset_seconds: (part - 1) * ap.max_seconds)
-      parts = parts_for(builder.source_duration, ap.max_seconds)
+      builder = AutoPoster::VideoBuilder.new(instance, stream, dir, max_seconds: ap.max_seconds, offset_seconds: (part - 1) * ap.max_seconds,
+                                             remix_seed: (ap.remix? ? ap.id * 1_000_003 + ep.number : nil))
+      parts = builder.parts
       if part > parts # durasi sumber berubah / part sebelumnya salah hitung → tutup episode ini, lanjut episode berikutnya
         ap.update_columns(last_part: parts, parts_total: parts)
         raise AutoPost::RunError, "EP #{ep.number} part #{part} melebihi durasi (#{parts} part); episode berikutnya pada jadwal berikutnya"
@@ -36,7 +37,7 @@ class InstagramPostJob < ApplicationJob
       t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       result = AutoPoster::InstagramClient.new(ap.cookie).post_reel(video, cover, caption, **meta.slice(:width, :height, :duration_ms))
       t_ig = Process.clock_gettime(Process::CLOCK_MONOTONIC) - t
-      Rails.logger.info("[InstagramPostJob] auto_post=#{ap.id} EP #{ep.number} part #{part}/#{parts}: render #{t_render.round}s (#{File.size(video) / 1_048_576} MB, #{meta[:duration_ms] / 1000}s), instagram #{t_ig.round}s")
+      Rails.logger.info("[InstagramPostJob] auto_post=#{ap.id} EP #{ep.number} part #{part}/#{parts}#{builder.remix? ? " remix" : ""}: render #{t_render.round}s (#{File.size(video) / 1_048_576} MB, #{meta[:duration_ms] / 1000}s), instagram #{t_ig.round}s")
       ap.record!(ok: true, episode: ep.number, part: part, parts: parts, url: result.url)
       ap.update_columns(next_run_at: Time.current + PART_GAP) if ap.enabled? && part < parts
     end
@@ -74,9 +75,6 @@ class InstagramPostJob < ApplicationJob
     ep ||= episodes.first or raise AutoPost::RunError, "tidak ada episode terbuka" # manual: habis → ulang dari awal
     [ catalog, drama, ep, part ]
   end
-
-  # Sisa < 5 detik tidak dijadikan part sendiri.
-  def parts_for(duration_s, max_s) = [ ((duration_s - 5) / max_s.to_f).ceil, 1 ].max
 
   # Dir.mktmpdir dengan blok sudah menghapus folder kerja (video/cover/watermark) setelah unggah, sukses maupun gagal.
   # Sisa folder hanya mungkin ada bila proses dimatikan di tengah jalan (restart service) — bersihkan yang > 2 jam.

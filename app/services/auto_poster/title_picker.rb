@@ -3,7 +3,8 @@ module AutoPoster
   #   1. dari Statistik pengunjung instance (drama paling banyak dibuka/ditonton, bukan bot) yang belum pernah
   #      diposting akun ini;
   #   2. bila semua judul statistik sudah terpakai → acak dari beranda ("terbaru") beberapa penyedia aktif.
-  # Judul diverifikasi ke API (ada detail + minimal satu episode terbuka) sebelum dipakai.
+  # Judul yang sudah/sedang dipakai akun lain di instance yang sama juga dihindari (rotasi antar akun), kecuali
+  # kandidat habis. Judul diverifikasi ke API (ada detail + minimal satu episode terbuka) sebelum dipakai.
   class TitlePicker
     STATS_LIMIT    = 300 # kandidat teratas dari statistik yang diperiksa
     HOME_PROVIDERS = 6   # penyedia acak yang dicoba saat fallback
@@ -23,8 +24,17 @@ module AutoPoster
     end
 
     private
+    # Judul yang sudah diposting akun ini + yang sudah/sedang dipakai akun lain di instance ini.
     def posted
-      @posted ||= Set.new(Array(@ap.posted_titles).map(&:to_s)).tap { |s| s << @ap.title_key if @ap.drama_id.present? }
+      @posted ||= begin
+        set = Set.new(Array(@ap.posted_titles).map(&:to_s))
+        set << @ap.title_key if @ap.drama_id.present?
+        AutoPost.where(instance_id: @ap.instance_id).where.not(id: @ap.id).pluck(:posted_titles, :provider_slug, :drama_id).each do |titles, slug, id|
+          Array(titles).each { |t| set << t.to_s }
+          set << "#{slug}:#{id}" if id.present?
+        end
+        set
+      end
     end
 
     def providers = @providers ||= Provider.enabled.supported.index_by(&:slug)

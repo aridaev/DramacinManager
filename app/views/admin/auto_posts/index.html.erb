@@ -71,6 +71,11 @@
           </div>
         </div>
 
+        <div class="field">
+          <label class="check-row"><input type="hidden" name="auto_post[remix]" value="0"><input type="checkbox" name="auto_post[remix]" value="1" <%= "checked" if ap.remix? %>> <%= t("admin.auto_post.f_remix") %></label>
+          <span class="field-hint"><%= t("admin.auto_post.f_remix_hint") %></span>
+        </div>
+
         <div class="grid-2">
           <div class="field">
             <div class="field-label-row"><label><%= t("admin.auto_post.f_provider") %></label><span class="field-hint"><%= t("admin.auto_post.f_title_manual_hint") %></span></div>

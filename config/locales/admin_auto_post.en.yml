@@ -58,6 +58,8 @@ en:
       f_episodes_per_title: Episodes per title
       f_episodes_per_title_hint: after the quota, move on to the next title
       f_title_manual_hint: "optional with automatic titles: starting / current title"
+      f_remix: Anti-copyright variation
+      f_remix_hint: "each upload is slightly altered (speed ±3-5 %, pitch, zoom-crop, colour, shifted start) so the audio/video fingerprint differs from the source and from other accounts; titles are also rotated across accounts"
       auto_badge: "Auto · %{n} EP/title"
       titles_done: "%{n} titles done"
       no_title_found: "No title could be picked (statistics empty and provider home pages failed to load)."

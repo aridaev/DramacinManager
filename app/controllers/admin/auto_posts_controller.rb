@@ -6,8 +6,8 @@ class Admin::AutoPostsController < ApplicationController
   before_action :load_instance
   before_action :load_auto_post, only: [ :update, :destroy, :run_now ]
 
-  PERMIT = [ :enabled, :label, :cookie, :provider_slug, :drama_id, :drama_title, :auto_title, :episodes_per_title, :interval_minutes, :max_seconds, :fixed_text ].freeze
-  COPY_KEYS = %w[auto_title episodes_per_title interval_minutes max_seconds fixed_text].freeze
+  PERMIT = [ :enabled, :label, :cookie, :provider_slug, :drama_id, :drama_title, :auto_title, :episodes_per_title, :remix, :interval_minutes, :max_seconds, :fixed_text ].freeze
+  COPY_KEYS = %w[auto_title episodes_per_title remix interval_minutes max_seconds fixed_text].freeze
 
   def index
     @auto_posts = scope_posts.to_a

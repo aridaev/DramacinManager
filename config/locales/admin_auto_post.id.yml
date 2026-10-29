@@ -58,6 +58,8 @@ id:
       f_episodes_per_title: Episode per judul
       f_episodes_per_title_hint: setelah jatah habis, ganti judul berikutnya
       f_title_manual_hint: "opsional saat judul otomatis: judul awal / judul saat ini"
+      f_remix: Variasi anti-copyright
+      f_remix_hint: "tiap unggahan diubah sedikit (kecepatan ±3-5 %, nada suara, zoom-crop, warna, awal digeser) agar sidik jari audio/video tidak sama dengan sumber atau akun lain; judul juga dirotasi antar akun"
       auto_badge: "Otomatis · %{n} EP/judul"
       titles_done: "%{n} judul selesai"
       no_title_found: "Tidak ada judul yang bisa dipilih (statistik kosong dan beranda penyedia gagal dimuat)."

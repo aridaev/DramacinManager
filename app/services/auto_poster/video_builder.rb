@@ -7,6 +7,10 @@ module AutoPoster
   # 1080x1920 (9:16), H.264 high + AAC 128k, 30 fps, maks N detik. Video yang bukan 9:16 diletakkan di tengah
   # dengan latar blur. Watermark instance DIBAKAR ke frame (gambar watermark_src; fallback teks nama aplikasi)
   # sehingga tetap ada setelah diunggah ke Instagram.
+  #
+  # Remix (remix_seed): variasi kecil yang deterministik per akun+episode — kecepatan ±3-5 % (video+audio), nada
+  # audio digeser 2-3 %, zoom-crop 3-8 %, hue/saturasi/kecerahan sedikit, awal digeser <1,2 s. Tidak terasa oleh
+  # penonton tetapi mengubah sidik jari audio/visual sehingga tidak identik dengan sumber maupun unggahan akun lain.
   class VideoBuilder
     class Error < StandardError; end
 
@@ -27,14 +31,21 @@ module AutoPoster
     DEFAULT_HOST = ENV.fetch("DRACIN_HOST", "dracin.aridaev.com")
 
     # offset_seconds: titik mulai potongan (Part ke-n = (n-1) * max_seconds).
-    def initialize(instance, stream, dir, max_seconds: 90, offset_seconds: 0)
+    def initialize(instance, stream, dir, max_seconds: 90, offset_seconds: 0, remix_seed: nil)
       @instance, @stream, @dir = instance, stream, dir
+      @remix = remix_seed ? remix_params(remix_seed) : nil
       @max = max_seconds.to_i.clamp(AutoPost::MIN_SECONDS, AutoPost::MAX_SECONDS)
       @offset = [ offset_seconds.to_i, 0 ].max
     end
 
     # Durasi sumber (detik), dari ffprobe (sekali; dipakai juga oleh build).
     def source_duration = source_meta.dig("format", "duration").to_f
+
+    # Faktor kecepatan (1.0 tanpa remix); satu part keluaran = max_seconds * speed detik sumber.
+    def speed = @remix ? @remix[:speed] : 1.0
+    # Jumlah part untuk episode ini; sisa < 5 detik tidak dijadikan part sendiri.
+    def parts = [ ((source_duration - 5) / (@max * speed)).ceil, 1 ].max
+    def remix? = @remix.present?
 
     # => [mp4_path, cover_jpg_path, { width:, height:, duration_ms: }]
     def build
@@ -47,12 +58,13 @@ module AutoPoster
       cover = File.join(@dir, "cover.jpg")
 
       cmd = [ "ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-nostdin", *input_opts ]
-      cmd += [ "-ss", @offset.to_s ] if @offset.positive?
+      ss = @offset * speed + (@remix ? @remix[:skip] : 0)
+      cmd += [ "-ss", format("%.2f", ss) ] if ss.positive?
       cmd += [ "-i", @stream.url ]
       cmd += [ "-i", wm ] if wm
       cmd += [ "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100" ] unless has_audio
-      audio_map = has_audio ? "0:a:0" : "#{wm ? 2 : 1}:a"
-      cmd += [ "-filter_complex", filter_graph(wm, portrait), "-map", "[v]", "-map", audio_map, "-t", @max.to_s,
+      audio_map = has_audio ? (@remix ? "[a]" : "0:a:0") : "#{wm ? 2 : 1}:a"
+      cmd += [ "-filter_complex", filter_graph(wm, portrait, has_audio), "-map", "[v]", "-map", audio_map, "-t", @max.to_s,
                "-c:v", "libx264", "-preset", "superfast", "-profile:v", "high", "-level", "4.1", "-pix_fmt", "yuv420p",
                "-r", "30", "-g", "60", "-crf", "23", "-maxrate", "5M", "-bufsize", "10M",
                "-c:a", "aac", "-b:a", "128k", "-ar", "44100", "-ac", "2", "-shortest", "-movflags", "+faststart", out ]
@@ -76,12 +88,21 @@ module AutoPoster
 
     # Sumber yang sudah 9:16 cukup di-scale (tanpa latar blur). Latar blur dihitung pada resolusi kecil
     # (1/4) lalu diperbesar — hasil visual sama, jauh lebih ringan daripada boxblur di 1080x1920.
-    def filter_graph(wm, portrait)
-      g = if portrait
-        "[0:v]scale=#{W}:#{H}[base];"
+    def filter_graph(wm, portrait, has_audio = true)
+      src = "[0:v]"
+      g = +""
+      if @remix
+        r = @remix
+        g << "[0:v]scale=iw*#{r[:zoom]}:ih*#{r[:zoom]},crop=iw/#{r[:zoom]}:ih/#{r[:zoom]}," \
+             "eq=brightness=#{r[:bright]}:saturation=#{r[:sat]}:contrast=#{r[:contrast]},hue=h=#{r[:hue]},setpts=PTS/#{r[:speed]}[src];"
+        g << "[0:a:0]asetrate=44100*#{r[:pitch]},aresample=44100,atempo=#{format('%.4f', r[:speed] / r[:pitch])}[a];" if has_audio
+        src = "[src]"
+      end
+      g << if portrait
+        "#{src}scale=#{W}:#{H}[base];"
       else
-        "[0:v]scale=#{W / 4}:#{H / 4}:force_original_aspect_ratio=increase,crop=#{W / 4}:#{H / 4},boxblur=luma_radius=6:luma_power=2,eq=brightness=-0.1,scale=#{W}:#{H}[bg];" \
-        "[0:v]scale=#{W}:#{H}:force_original_aspect_ratio=decrease[fg];" \
+        "#{src}split[s0][s1];[s0]scale=#{W / 4}:#{H / 4}:force_original_aspect_ratio=increase,crop=#{W / 4}:#{H / 4},boxblur=luma_radius=6:luma_power=2,eq=brightness=-0.1,scale=#{W}:#{H}[bg];" \
+        "[s1]scale=#{W}:#{H}:force_original_aspect_ratio=decrease[fg];" \
         "[bg][fg]overlay=(W-w)/2:(H-h)/2:format=auto[base];"
       end
       x, y = WM_POS.fetch(@instance.watermark_pos) { WM_POS["top-center"] }
@@ -97,6 +118,21 @@ module AutoPoster
         font = FONT ? "fontfile=#{FONT}:" : ""
         g + "[base]drawtext=#{font}text='#{text}':fontsize=60:fontcolor=white@#{alpha}:borderw=3:bordercolor=black@0.6:x=#{tx}:y=#{ty}[v]"
       end
+    end
+
+    # Parameter remix dari seed (deterministik: part 1..n satu episode memakai nilai yang sama).
+    def remix_params(seed)
+      rnd = Random.new(seed.to_i)
+      {
+        speed: [ 0.95, 0.96, 0.97, 1.03, 1.04, 1.05 ].sample(random: rnd),
+        pitch: [ 0.97, 0.98, 1.02, 1.03 ].sample(random: rnd),
+        zoom: (1.03 + rnd.rand * 0.05).round(3),
+        hue: rnd.rand(-6..6),
+        sat: (0.92 + rnd.rand * 0.16).round(3),
+        bright: (rnd.rand * 0.04 - 0.02).round(3),
+        contrast: (0.97 + rnd.rand * 0.06).round(3),
+        skip: (rnd.rand * 1.2).round(2)
+      }
     end
 
     # Unduh gambar watermark (≤5 MB, ikut redirect); gagal/SVG → nil (fallback teks).
