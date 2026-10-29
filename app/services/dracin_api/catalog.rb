@@ -5,12 +5,13 @@ module DracinApi
     Drama   = Struct.new(:provider, :id, :title, :cover, :synopsis, :genres, :language, :episodes, :rating, :year, :status, keyword_init: true)
     Episode = Struct.new(:number, :title, :thumbnail, :duration, :locked, :payload, keyword_init: true)
     # sources: [ { label: "720p", url: } ] — semua varian kualitas yang bisa dipilih pemutar. url = varian default.
-    Stream  = Struct.new(:url, :format, :quality, :sources, :subtitles, :episode, :cookies, keyword_init: true)
+    # proxied: CDN tanpa CORS / menolak Referer ? HLS diputar lewat Template::V1::StreamsController.
+    Stream  = Struct.new(:url, :format, :quality, :sources, :subtitles, :episode, :cookies, :proxied, keyword_init: true)
     Section = Struct.new(:title, :items, keyword_init: true)
     Page    = Struct.new(:items, :page, :has_more, keyword_init: true)
 
     CACHE_TTL = 30.minutes
-    PLAY_TTL  = 5.minutes # URL video sering ber-signature dan kedaluwarsa
+    PLAY_TTL  = 2.minutes # URL video sering ber-signature (auth_key) dan kedaluwarsa cepat
     RACE_TTL  = 20.seconds # saat cache kedaluwarsa, request lain tetap dapat nilai lama selama satu request memperbarui
 
     attr_reader :provider
@@ -52,7 +53,7 @@ module DracinApi
     end
 
     def play(id, episode)
-      fetch("play", id, episode, ttl: PLAY_TTL) do
+      fetch("play2", id, episode, ttl: PLAY_TTL) do  # key baru: Stream struct bertambah field (proxied)
         adapter.prime_episodes(id, episodes(id))
         adapter.play(id, episode)
       end

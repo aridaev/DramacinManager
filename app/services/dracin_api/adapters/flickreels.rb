@@ -38,7 +38,7 @@ module DracinApi
         item = find_episode(id, ep) or return nil
         url = item.payload["hls_url"]
         return nil if url.blank?
-        stream(url: url, episode: ep)
+        stream(url: url, episode: ep, proxied: true)
       end
 
       private

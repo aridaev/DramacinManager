@@ -21,18 +21,24 @@ class Template::V1::DramasController < Template::V1::BaseController
     @episodes = catalog.episodes(params[:id])
   end
 
-  # Stream yang butuh cookie (signed CloudFront dsb.) diputar lewat proxy server.
+  # Stream ber-cookie (signed CloudFront) atau yang CDN-nya tanpa CORS/menolak Referer (proxied) diputar lewat proxy server.
   def play_url_for(stream)
     return nil if stream&.url.blank?
-    return stream.url if stream.cookies.blank?
-    template_v1_stream_path(Template::V1::StreamsController.register(stream), u: stream.url)
+    @sid = Template::V1::StreamsController.register(stream) if stream.cookies.present? || stream.proxied
+    proxied?(stream) ? template_v1_stream_path(@sid, u: stream.url) : stream.url
   end
 
-  # Pilihan kualitas untuk pemutar; stream ber-cookie hanya punya satu sumber (lewat proxy).
+  # Pilihan kualitas untuk pemutar; untuk stream proxied, setiap varian juga lewat proxy (sid yang sama).
   def sources_for(stream)
     return [] if stream.nil? || @play_url.blank?
-    return [ { label: "Auto", url: @play_url } ] if stream.cookies.present?
-    Array(stream.sources).presence || [ { label: "Auto", url: stream.url } ]
+    srcs = Array(stream.sources).presence || [ { label: "Auto", url: stream.url } ]
+    return srcs unless proxied?(stream)
+    # Varian MP4 tetap langsung (native <video> tidak butuh CORS); hanya HLS/ber-cookie yang lewat proxy.
+    srcs.map { |s| proxied?(stream, s[:url]) ? { label: s[:label], url: template_v1_stream_path(@sid, u: s[:url]) } : s }
+  end
+
+  def proxied?(stream, url = stream.url)
+    stream.cookies.present? || (stream.proxied && url.to_s.match?(%r{\.m3u8|/hls/}))
   end
 
   # Subtitle diputar lewat proxy same-origin (CORS + konversi SRT→VTT).

@@ -42,7 +42,7 @@ module DracinApi
         d = get("/api/freereels/drama/#{id}/play/#{ep}", lang: lang).dig("data", "data") || {}
         url = d["m3u8_url"].presence || d["external_audio_h264_m3u8"].presence || d["video_url"]
         return nil if url.blank?
-        stream(url: url, episode: ep)
+        stream(url: url, episode: ep, proxied: true)
       end
 
       private

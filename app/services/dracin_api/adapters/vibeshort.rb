@@ -37,7 +37,7 @@ module DracinApi
         v = item.payload
         url = v["video_720"].presence || v["video_1080"].presence || v["video_480"]
         return nil if url.blank?
-        stream(url: url, episode: ep, sources: sources_from(v, { "video_1080" => "1080p", "video_720" => "720p", "video_480" => "480p" }))
+        stream(url: url, episode: ep, sources: sources_from(v, { "video_1080" => "1080p", "video_720" => "720p", "video_480" => "480p" }), proxied: true)
       end
 
       private

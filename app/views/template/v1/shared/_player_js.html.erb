@@ -10,7 +10,13 @@
       const loading = document.getElementById("tv1-loading"), err = document.getElementById("tv1-error");
       const pref = (k, v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch (e) { return null; } };
       let hls = null;
-      const isHls = (u) => /\.m3u8(\?|$)/.test(u);
+      // HLS: dari format server (data-format) atau pola URL; URL proxy (/stream/..?u=...) di-decode dulu.
+      const isHls = (u) => {
+        if (u === video.dataset.src && video.dataset.format === "HLS") return true;
+        let s = u; try { s = decodeURIComponent(u); } catch (e) {}
+        return /\.m3u8(\?|&|#|$)|\/hls\//i.test(s);
+      };
+      const tried = new Set(); let netRestarts = 0;
 
       // ---- iklan pra-tayang: tahan pemutaran sampai hitung mundur selesai, lalu putar video.
       const ad = document.getElementById("tv1-ad");
@@ -24,26 +30,41 @@
         video.addEventListener("play", () => { if (adActive) video.pause(); });
       }
 
-      function load(url, resume) {
+      let current = null;
+      function load(url, resume, forceHls) {
         const t = resume ? video.currentTime : 0, wasPlaying = resume ? !video.paused : true;
         if (hls) { hls.destroy(); hls = null; }
+        current = url; tried.add(url); netRestarts = 0;
         err.hidden = true; loading.hidden = false;
-        if (isHls(url) && !video.canPlayType("application/vnd.apple.mpegurl") && Hls.isSupported()) {
-          hls = new Hls({ enableWorker: true, lowLatencyMode: false, maxBufferLength: 30, backBufferLength: 30 });
+        const useHls = (forceHls || isHls(url)) && Hls.isSupported() && (forceHls || !video.canPlayType("application/vnd.apple.mpegurl"));
+        if (useHls) {
+          hls = new Hls({
+            enableWorker: true, lowLatencyMode: false, maxBufferLength: 30, backBufferLength: 30,
+            manifestLoadingTimeOut: 15000, manifestLoadingMaxRetry: 2, levelLoadingMaxRetry: 3, fragLoadingMaxRetry: 4,
+            fragLoadingTimeOut: 20000, xhrSetup: (xhr) => { xhr.withCredentials = false; }
+          });
           hls.loadSource(url);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, () => { buildHlsLevels(); buildHlsSubs(); });
           hls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, buildHlsSubs);
           hls.on(Hls.Events.ERROR, (_, d) => {
             if (!d.fatal) return;
-            if (d.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
-            else if (d.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
-            else showError();
+            // Jaringan: coba ulang 2x, lalu pindah ke sumber lain. Media: pulihkan 1x, lalu pindah.
+            if (d.type === Hls.ErrorTypes.NETWORK_ERROR && netRestarts < 2) { netRestarts += 1; setTimeout(() => hls && hls.startLoad(), 800 * netRestarts); }
+            else if (d.type === Hls.ErrorTypes.MEDIA_ERROR && netRestarts < 2) { netRestarts += 1; hls.recoverMediaError(); }
+            else fallback();
           });
         } else {
           video.src = url;
         }
         video.addEventListener("loadedmetadata", () => { if (t > 0) video.currentTime = t; if (wasPlaying && !adActive) video.play().catch(() => {}); }, { once: true });
+      }
+      // Sumber gagal: pakai varian kualitas lain yang belum dicoba; bila habis, tampilkan error.
+      function fallback() {
+        const next = sources.find((s) => !tried.has(s.url));
+        if (!next) { showError(); return; }
+        const i = sources.indexOf(next); if (qSel && !qWrap.hidden) qSel.value = "src:" + i;
+        load(next.url, false);
       }
 
       // ---- kualitas: beberapa file (MP4/HLS per resolusi) ATAU level di dalam satu HLS
@@ -130,7 +151,13 @@
       ["playing", "canplay"].forEach((e) => video.addEventListener(e, () => { loading.hidden = true; }));
       video.addEventListener("waiting", () => { loading.hidden = false; });
       function showError() { loading.hidden = true; err.hidden = false; }
-      video.addEventListener("error", () => { if (!hls) showError(); });
+      // <video> native gagal: bila ternyata HLS yang tak terdeteksi, coba hls.js dulu; selain itu pindah sumber.
+      video.addEventListener("error", () => {
+        if (hls) return;
+        const code = video.error && video.error.code;
+        if (current && Hls.isSupported() && !tried.has("hls:" + current) && (code === 4 || code === 3)) { tried.add("hls:" + current); load(current, false, true); return; }
+        fallback();
+      });
       video.addEventListener("ended", () => { const n = document.querySelector("a[rel=next]"); if (n) window.location.href = n.href; });
       document.addEventListener("keydown", (e) => {
         if (e.target.matches("input,select,textarea")) return;

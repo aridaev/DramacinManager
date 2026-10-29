@@ -91,12 +91,13 @@ module DracinApi
       end
 
       # sources: [ { label:, url: } ] semua varian kualitas; url = varian yang diputar pertama kali.
+      # proxied: true bila CDN provider tidak kirim CORS / menolak Referer (HLS lewat proxy server).
       def stream(url:, episode:, sources: nil, quality: nil, **attrs)
         srcs = Array(sources).map { |s| { label: s[:label].to_s, url: s[:url].to_s } }.reject { |s| s[:url].blank? }.uniq { |s| s[:url] }
         srcs = [ { label: "Auto", url: url.to_s } ] if srcs.empty?
         Catalog::Stream.new(url: url, episode: episode.to_i, format: attrs.delete(:format) || (url.to_s.match?(%r{\.m3u8|/hls/|m3u8}) ? "HLS" : "MP4"),
                             quality: quality || srcs.map { |s| s[:label] }.reject { |l| l == "Auto" }, sources: srcs,
-                            subtitles: [], cookies: nil, **attrs)
+                            subtitles: [], cookies: nil, proxied: false, **attrs)
       end
 
       # Membangun daftar sumber dari hash API: keys = { "videoUrl1080" => "1080p", ... } (urutan = prioritas).

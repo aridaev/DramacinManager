@@ -41,7 +41,7 @@ module DracinApi
         return nil if url.blank?
         subs = Array(e["subtitle_list"]).map { |s| subtitle(lang: s["language"], label: s["display_name"], url: s["subtitle"]) }.select { |s| s[:url].present? }
         sources = sources_from(e, { "m3u8_path" => "Auto", "1080p_mp4" => "1080p", "720p_mp4" => "720p", "540p_mp4" => "540p" })
-        stream(url: url, episode: ep, sources: sources, subtitles: subs)
+        stream(url: url, episode: ep, sources: sources, subtitles: subs, proxied: true)
       end
 
       private
