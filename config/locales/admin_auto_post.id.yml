@@ -60,6 +60,8 @@ id:
       f_title_manual_hint: "opsional saat judul otomatis: judul awal / judul saat ini"
       f_remix: Variasi anti-copyright
       f_remix_hint: "tiap unggahan diubah sedikit (kecepatan ±3-5 %, nada suara, zoom-crop, warna, awal digeser) agar sidik jari audio/video tidak sama dengan sumber atau akun lain; judul juga dirotasi antar akun"
+      f_bgm: Musik latar pelan
+      f_bgm_hint: "musik dicampur pelan di bawah dialog (±10-12 %) agar sidik jari audio makin berbeda; taruh berkas bebas royalti (mp3/m4a/wav/ogg) di %{dir} — dipilih acak per episode dan di-loop; bila kosong dipakai pad sintetis"
       auto_badge: "Otomatis · %{n} EP/judul"
       titles_done: "%{n} judul selesai"
       no_title_found: "Tidak ada judul yang bisa dipilih (statistik kosong dan beranda penyedia gagal dimuat)."

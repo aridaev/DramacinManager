@@ -11,6 +11,10 @@ module AutoPoster
   # Remix (remix_seed): variasi kecil yang deterministik per akun+episode — kecepatan ±3-5 % (video+audio), nada
   # audio digeser 2-3 %, zoom-crop 3-8 %, hue/saturasi/kecerahan sedikit, awal digeser <1,2 s. Tidak terasa oleh
   # penonton tetapi mengubah sidik jari audio/visual sehingga tidak identik dengan sumber maupun unggahan akun lain.
+  #
+  # Musik latar pelan (bgm): dicampur ke audio episode pada volume rendah (dialog tetap jelas) sehingga fingerprint
+  # audio makin berbeda. Berkas di storage/bgm/*.{mp3,m4a,wav,ogg} (bebas royalti, dipilih deterministik dari seed
+  # dan di-loop); bila folder kosong dipakai pad sintetis dari ffmpeg (akord lembut + lowpass, tanpa hak cipta).
   class VideoBuilder
     class Error < StandardError; end
 
@@ -31,9 +35,10 @@ module AutoPoster
     DEFAULT_HOST = ENV.fetch("DRACIN_HOST", "dracin.aridaev.com")
 
     # offset_seconds: titik mulai potongan (Part ke-n = (n-1) * max_seconds).
-    def initialize(instance, stream, dir, max_seconds: 90, offset_seconds: 0, remix_seed: nil)
+    def initialize(instance, stream, dir, max_seconds: 90, offset_seconds: 0, remix_seed: nil, bgm: false)
       @instance, @stream, @dir = instance, stream, dir
       @remix = remix_seed ? remix_params(remix_seed) : nil
+      @bgm = bgm ? bgm_source(remix_seed.to_i) : nil
       @max = max_seconds.to_i.clamp(AutoPost::MIN_SECONDS, AutoPost::MAX_SECONDS)
       @offset = [ offset_seconds.to_i, 0 ].max
     end
@@ -46,6 +51,7 @@ module AutoPoster
     # Jumlah part untuk episode ini; sisa < 5 detik tidak dijadikan part sendiri.
     def parts = [ ((source_duration - 5) / (@max * speed)).ceil, 1 ].max
     def remix? = @remix.present?
+    def bgm? = @bgm.present?
 
     # => [mp4_path, cover_jpg_path, { width:, height:, duration_ms: }]
     def build
@@ -62,9 +68,18 @@ module AutoPoster
       cmd += [ "-ss", format("%.2f", ss) ] if ss.positive?
       cmd += [ "-i", @stream.url ]
       cmd += [ "-i", wm ] if wm
-      cmd += [ "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100" ] unless has_audio
-      audio_map = has_audio ? (@remix ? "[a]" : "0:a:0") : "#{wm ? 2 : 1}:a"
-      cmd += [ "-filter_complex", filter_graph(wm, portrait, has_audio), "-map", "[v]", "-map", audio_map, "-t", @max.to_s,
+      idx = wm ? 2 : 1
+      null_idx = bgm_idx = nil
+      unless has_audio
+        cmd += [ "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100" ]
+        null_idx = idx; idx += 1
+      end
+      if @bgm
+        cmd += @bgm[:file] ? [ "-stream_loop", "-1", "-i", @bgm[:file] ] : [ "-f", "lavfi", "-i", @bgm[:lavfi] ]
+        bgm_idx = idx
+      end
+      a_graph, audio_map = audio_graph(has_audio, null_idx, bgm_idx)
+      cmd += [ "-filter_complex", filter_graph(wm, portrait) + a_graph, "-map", "[v]", "-map", audio_map, "-t", @max.to_s,
                "-c:v", "libx264", "-preset", "superfast", "-profile:v", "high", "-level", "4.1", "-pix_fmt", "yuv420p",
                "-r", "30", "-g", "60", "-crf", "23", "-maxrate", "5M", "-bufsize", "10M",
                "-c:a", "aac", "-b:a", "128k", "-ar", "44100", "-ac", "2", "-shortest", "-movflags", "+faststart", out ]
@@ -88,14 +103,33 @@ module AutoPoster
 
     # Sumber yang sudah 9:16 cukup di-scale (tanpa latar blur). Latar blur dihitung pada resolusi kecil
     # (1/4) lalu diperbesar — hasil visual sama, jauh lebih ringan daripada boxblur di 1080x1920.
-    def filter_graph(wm, portrait, has_audio = true)
+    # Rantai audio: (remix pitch/tempo) → (campur musik latar pelan). => [potongan graph, label/map audio keluaran]
+    def audio_graph(has_audio, null_idx, bgm_idx)
+      return [ "", has_audio ? "0:a:0" : "#{null_idx}:a" ] unless (@remix && has_audio) || bgm_idx
+      src = has_audio ? "[0:a:0]" : "[#{null_idx}:a]"
+      steps = []
+      if @remix && has_audio
+        r = @remix
+        steps << "#{src}asetrate=44100*#{r[:pitch]},aresample=44100,atempo=#{format('%.4f', r[:speed] / r[:pitch])}[a0]"
+        src = "[a0]"
+      end
+      if bgm_idx
+        steps << "[#{bgm_idx}:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=#{@bgm[:volume]},afade=t=in:d=2[bg]"
+        steps << "#{src}aformat=sample_rates=44100:channel_layouts=stereo[a1]"
+        steps << "[a1][bg]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a]"
+      else
+        steps[-1] = steps[-1].sub(/\[a0\]\z/, "[a]")
+      end
+      [ ";" + steps.join(";"), "[a]" ]
+    end
+
+    def filter_graph(wm, portrait)
       src = "[0:v]"
       g = +""
       if @remix
         r = @remix
         g << "[0:v]scale=iw*#{r[:zoom]}:ih*#{r[:zoom]},crop=iw/#{r[:zoom]}:ih/#{r[:zoom]}," \
              "eq=brightness=#{r[:bright]}:saturation=#{r[:sat]}:contrast=#{r[:contrast]},hue=h=#{r[:hue]},setpts=PTS/#{r[:speed]}[src];"
-        g << "[0:a:0]asetrate=44100*#{r[:pitch]},aresample=44100,atempo=#{format('%.4f', r[:speed] / r[:pitch])}[a];" if has_audio
         src = "[src]"
       end
       g << if portrait
@@ -133,6 +167,25 @@ module AutoPoster
         contrast: (0.97 + rnd.rand * 0.06).round(3),
         skip: (rnd.rand * 1.2).round(2)
       }
+    end
+
+    BGM_DIR = Rails.root.join("storage", "bgm")
+    BGM_EXT = %w[mp3 m4a wav ogg flac].freeze
+    BGM_FILE_VOLUME = 0.12 # berkas musik biasanya sudah keras → 12 %
+    BGM_PAD_VOLUME = 0.10
+    # Akord pad sintetis (Hz), dipilih dari seed: Am, C, F, G, Dm, Em
+    BGM_CHORDS = [ [ 220, 261.63, 329.63, 440 ], [ 130.81, 164.81, 196, 261.63 ], [ 174.61, 220, 261.63, 349.23 ],
+                   [ 196, 246.94, 293.66, 392 ], [ 146.83, 174.61, 220, 293.66 ], [ 164.81, 196, 246.94, 329.63 ] ].freeze
+
+    # Sumber musik latar: berkas di BGM_DIR (deterministik dari seed, di-loop) atau pad sintetis lavfi.
+    def bgm_source(seed)
+      rnd = Random.new(seed + 7)
+      files = BGM_EXT.flat_map { |e| Dir.glob(BGM_DIR.join("*.#{e}").to_s) }.sort
+      return { file: files.sample(random: rnd), volume: BGM_FILE_VOLUME } if files.any?
+      f = BGM_CHORDS.sample(random: rnd)
+      rate = (0.05 + rnd.rand * 0.06).round(3) # ayunan volume pelan 0,05-0,11 Hz
+      expr = "(0.55+0.45*sin(2*PI*#{rate}*t))*0.5*(0.5*sin(2*PI*#{f[0]}*t)+0.35*sin(2*PI*#{f[1]}*t)+0.3*sin(2*PI*#{f[2]}*t)+0.2*sin(2*PI*#{f[3]}*t))"
+      { lavfi: "aevalsrc=exprs='#{expr}':s=44100,lowpass=f=900,aformat=channel_layouts=stereo", volume: BGM_PAD_VOLUME }
     end
 
     # Unduh gambar watermark (≤5 MB, ikut redirect); gagal/SVG → nil (fallback teks).
