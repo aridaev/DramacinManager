@@ -1,0 +1,179 @@
+<% content_for :page_actions do %>
+  <%= link_to edit_admin_instance_path(@instance, anchor: "sec-autopost"), class: "btn btn-sm btn-secondary" do %><%= dm_icon("box", size: 16) %> <%= t("admin.auto_post.back_to_instance") %><% end %>
+  <%= link_to admin_instances_path, class: "btn btn-sm btn-secondary" do %><%= dm_icon("grid", size: 16) %> <%= t("admin.instances.title") %><% end %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.auto_post.page_title", name: @instance.display_name), subtitle: t("admin.auto_post.page_subtitle") } do %>
+
+  <div class="stats">
+    <div class="stat"><span class="stat-label"><%= t("admin.auto_post.stat_accounts") %></span><span class="stat-num"><%= @auto_posts.size %></span></div>
+    <div class="stat is-ok"><span class="stat-label"><%= t("admin.auto_post.stat_enabled") %></span><span class="stat-num"><%= @auto_posts.count(&:enabled?) %></span></div>
+    <div class="stat"><span class="stat-label"><%= t("admin.auto_post.stat_posts") %></span><span class="stat-num"><%= @auto_posts.sum(&:posts_count) %></span></div>
+    <% nxt = @auto_posts.filter_map(&:next_run_at).min %>
+    <div class="stat"><span class="stat-label"><%= t("admin.auto_post.stat_next") %></span><span class="stat-num" style="font-size:1rem"><%= nxt ? l(nxt, format: :short) : "—" %></span></div>
+  </div>
+
+  <%# ---------- Tambah akun ---------- %>
+  <div class="card">
+    <div class="card-head"><h2><%= t("admin.auto_post.add_title") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.auto_post.add_hint") %></span></div>
+    <%= form_with url: admin_instance_auto_posts_path(@instance), method: :post, data: { turbo: false } do %>
+      <div class="ap-cookie-row">
+        <input type="text" name="auto_post[label]" placeholder="<%= t("admin.auto_post.cookie_label_ph") %>" class="nav-in" maxlength="60">
+        <textarea name="auto_post[cookie]" rows="3" placeholder="<%= t("admin.auto_post.cookie_ph") %>" class="ap-cookie-in" required></textarea>
+        <button type="submit" class="btn btn-sm"><%= t("admin.auto_post.cookie_add") %></button>
+      </div>
+      <% if @auto_posts.any? %><p class="muted" style="font-size:.74rem;margin:8px 0 0"><%= t("admin.auto_post.add_copy_hint", label: @auto_posts.last.label) %></p><% end %>
+    <% end %>
+  </div>
+
+  <% if @auto_posts.empty? %>
+    <div class="card"><p class="muted"><%= t("admin.auto_post.empty") %></p></div>
+  <% end %>
+
+  <%# ---------- Satu kartu per akun ---------- %>
+  <% @auto_posts.each do |ap| %>
+    <div class="card ap-platform" id="ap-<%= ap.id %>" data-ap="<%= ap.id %>" data-dramas-url="<%= dramas_admin_instance_auto_posts_path(@instance) %>">
+      <div class="ap-head">
+        <strong class="ap-name"><%= dm_icon("user", size: 16) %> <%= ap.label %></strong>
+        <% if ap.enabled? %><span class="badge badge-success"><%= t("admin.auto_post.on") %></span><% else %><span class="badge badge-muted"><%= t("admin.auto_post.off") %></span><% end %>
+        <% if ap.drama_title.present? %><span class="badge badge-info"><%= ap.provider&.name %> · <%= ap.drama_title %></span><% end %>
+        <% if ap.next_run_at %><span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.next_run", at: l(ap.next_run_at, format: :short)) %></span><% end %>
+        <span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.progress", posts: ap.posts_count, ep: ap.last_episode || "—", part: (ap.parts_total.to_i > 1 ? " Part #{ap.last_part}/#{ap.parts_total}" : "")) %></span>
+      </div>
+      <% if ap.last_status.present? %>
+        <p class="<%= ap.last_status.start_with?("ok") ? "domain-ok" : (ap.last_status.start_with?("gagal") ? "domain-err" : "muted") %>" style="margin:0 0 10px;font-size:.8rem"><%= t("admin.auto_post.last_status") %>: <%= ap.last_status %><% if ap.last_run_at %> <span class="muted">(<%= l(ap.last_run_at, format: :short) %>)</span><% end %></p>
+      <% end %>
+
+      <%= form_with url: admin_instance_auto_post_path(@instance, ap), method: :patch, data: { turbo: false } do %>
+        <div class="field">
+          <label class="check-row"><input type="hidden" name="auto_post[enabled]" value="0"><input type="checkbox" name="auto_post[enabled]" value="1" <%= "checked" if ap.enabled? %>> <%= t("admin.auto_post.f_enabled") %></label>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_label") %></label></div>
+            <input type="text" name="auto_post[label]" value="<%= ap.label %>" class="nav-in" maxlength="60" style="width:100%">
+          </div>
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_cookie") %></label><span class="field-hint"><%= t("admin.auto_post.f_cookie_hint") %></span></div>
+            <textarea name="auto_post[cookie]" rows="2" placeholder="<%= AutoPost.cookie_value(ap.cookie, 'ds_user_id').present? ? "ds_user_id=#{AutoPost.cookie_value(ap.cookie, 'ds_user_id')}; sessionid=••••••" : t("admin.auto_post.cookie_ph") %>" class="ap-cookie-in"></textarea>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_provider") %></label></div>
+            <select name="auto_post[provider_slug]" data-ap-provider>
+              <option value=""><%= t("admin.auto_post.choose") %></option>
+              <% @providers.each do |p| %><option value="<%= p.slug %>" <%= "selected" if ap.provider_slug == p.slug %>><%= p.name %></option><% end %>
+            </select>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_drama") %></label><span class="field-hint" data-ap-drama-status></span></div>
+            <input type="search" class="nav-in" style="width:100%;margin-bottom:6px" placeholder="<%= t("admin.auto_post.drama_search_ph") %>" data-ap-drama-q autocomplete="off">
+            <select name="auto_post[drama_id]" data-ap-drama data-current="<%= ap.drama_id %>" data-current-title="<%= ap.drama_title %>">
+              <option value=""><%= t("admin.auto_post.choose") %></option>
+              <% if ap.drama_id.present? %><option value="<%= ap.drama_id %>" selected><%= ap.drama_title.presence || ap.drama_id %></option><% end %>
+            </select>
+            <input type="hidden" name="auto_post[drama_title]" value="<%= ap.drama_title %>" data-ap-drama-title>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_interval") %></label><span class="field-hint"><%= t("admin.auto_post.f_interval_hint", min: AutoPost::MIN_INTERVAL) %></span></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="number" name="auto_post[interval_minutes]" value="<%= ap.interval_minutes %>" min="<%= AutoPost::MIN_INTERVAL %>" max="<%= AutoPost::MAX_INTERVAL %>" step="1" class="nav-in" style="width:110px">
+              <span class="muted"><%= t("admin.auto_post.minutes") %></span>
+              <select class="select-sm" data-ap-interval-preset>
+                <option value=""><%= t("admin.auto_post.preset") %></option>
+                <% [ 15, 30, 60, 120, 180, 360, 720, 1440 ].each do |m| %><option value="<%= m %>"><%= m < 60 ? "#{m} #{t('admin.auto_post.minutes')}" : "#{m / 60} #{t('admin.auto_post.hours')}" %></option><% end %>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_max_seconds") %></label><span class="field-hint"><%= t("admin.auto_post.f_max_seconds_hint", gap: InstagramPostJob::PART_GAP.in_minutes.to_i) %></span></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="number" name="auto_post[max_seconds]" value="<%= ap.max_seconds %>" min="<%= AutoPost::MIN_SECONDS %>" max="<%= AutoPost::MAX_SECONDS %>" step="1" class="nav-in" style="width:110px">
+              <span class="muted"><%= t("admin.auto_post.seconds") %></span>
+              <select class="select-sm" data-ap-seconds-preset>
+                <option value=""><%= t("admin.auto_post.preset") %></option>
+                <% [ 60, 90, 180, 600, 900 ].each do |s| %><option value="<%= s %>"><%= s < 120 ? "#{s} #{t('admin.auto_post.seconds')}" : "#{s / 60} #{t('admin.auto_post.minutes')}" %></option><% end %>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row"><label><%= t("admin.auto_post.f_fixed_text") %></label><span class="field-hint"><%= t("admin.auto_post.f_fixed_text_hint") %></span></div>
+          <textarea name="auto_post[fixed_text]" rows="3" class="ap-cookie-in" style="font-family:inherit;font-size:.82rem" maxlength="1000"><%= ap.fixed_text %></textarea>
+        </div>
+
+        <div class="actions-row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button type="submit" class="btn btn-sm"><%= dm_icon("check", size: 14) %> <%= t("admin.auto_post.save") %></button>
+          <span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.flow_hint") %></span>
+        </div>
+      <% end %>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px">
+        <%= button_to t("admin.auto_post.run_now"), run_now_admin_instance_auto_post_path(@instance, ap), method: :post, class: "btn btn-sm btn-secondary", form: { style: "display:inline", data: { turbo: false }, onsubmit: "return confirm(#{t('admin.auto_post.run_now_confirm').to_json})" } %>
+        <%= button_to t("common.delete", default: "Hapus"), admin_instance_auto_post_path(@instance, ap), method: :delete, class: "btn btn-sm btn-danger", form: { style: "display:inline", data: { turbo: false }, onsubmit: "return confirm(#{t('admin.auto_post.delete_confirm', label: ap.label).to_json})" } %>
+        <% if ap.caption_template.present? %>
+          <details style="font-size:.76rem"><summary class="muted" style="cursor:pointer"><%= t("admin.auto_post.caption_preview") %></summary>
+            <pre style="white-space:pre-wrap;font:inherit;margin:6px 0 0;max-width:720px"><%= ap.caption_template %>
+
+<%= ap.fixed_text %>
+
+<%= ap.caption_tags %></pre></details>
+        <% end %>
+      </div>
+
+      <% if ap.log.any? %>
+        <details style="margin-top:12px"><summary class="muted" style="cursor:pointer;font-size:.8rem"><%= t("admin.auto_post.log_title", n: ap.log.size) %></summary>
+          <div class="table-wrap" style="margin-top:8px"><table class="table" style="font-size:.78rem">
+            <thead><tr><th><%= t("admin.auto_post.log_at") %></th><th>EP</th><th><%= t("admin.auto_post.log_result") %></th></tr></thead>
+            <tbody>
+              <% ap.log.first(30).each do |e| %>
+                <tr><td><%= (Time.iso8601(e["at"]).in_time_zone rescue nil)&.then { |t| l(t, format: :short) } %></td><td><%= e["episode"] || "—" %> <%= e["part"] %></td>
+                  <td><% if e["ok"] %><span class="badge badge-success">OK</span> <% if e["url"] %><a href="<%= e["url"] %>" target="_blank" rel="noopener"><%= e["url"] %></a><% end %><% else %><span class="badge badge-danger"><%= t("admin.auto_post.failed") %></span> <%= e["error"] %><% end %></td></tr>
+              <% end %>
+            </tbody></table></div>
+        </details>
+      <% end %>
+    </div>
+  <% end %>
+
+<script>
+(function () {
+  var i18n = { loading: <%= t("admin.auto_post.loading").to_json.html_safe %>, choose: <%= t("admin.auto_post.choose").to_json.html_safe %>, failed: <%= t("admin.auto_post.load_failed").to_json.html_safe %>, count: <%= t("admin.auto_post.titles_count").to_json.html_safe %> };
+  document.querySelectorAll("[data-ap]").forEach(function (box) {
+    /* dropdown judul: muat dari provider terpilih (beranda + pencarian) */
+    var prov = box.querySelector("[data-ap-provider]"), sel = box.querySelector("[data-ap-drama]"), q = box.querySelector("[data-ap-drama-q]"),
+        status = box.querySelector("[data-ap-drama-status]"), titleIn = box.querySelector("[data-ap-drama-title]"), timer = null;
+    function loadDramas() {
+      var p = prov.value; if (!p) { sel.innerHTML = "<option value=''>" + i18n.choose + "</option>"; status.textContent = ""; return; }
+      status.textContent = i18n.loading;
+      var url = box.dataset.dramasUrl + "?provider=" + encodeURIComponent(p) + (q.value.trim() ? "&q=" + encodeURIComponent(q.value.trim()) : "");
+      fetch(url, { headers: { Accept: "application/json" }, credentials: "same-origin" }).then(function (r) { return r.json(); }).then(function (j) {
+        var cur = sel.dataset.current, curTitle = sel.dataset.currentTitle, found = false;
+        sel.innerHTML = "<option value=''>" + i18n.choose + "</option>";
+        (j.items || []).forEach(function (d) { var o = document.createElement("option"); o.value = d.id; o.textContent = d.title; if (d.id === cur) { o.selected = true; found = true; } sel.appendChild(o); });
+        if (cur && !found && curTitle) { var o = document.createElement("option"); o.value = cur; o.textContent = curTitle; o.selected = true; sel.insertBefore(o, sel.children[1]); }
+        status.textContent = j.error ? (i18n.failed + ": " + j.error) : i18n.count.replace("{n}", (j.items || []).length);
+      }).catch(function () { status.textContent = i18n.failed; });
+    }
+    prov.addEventListener("change", function () { sel.dataset.current = ""; sel.dataset.currentTitle = ""; titleIn.value = ""; q.value = ""; loadDramas(); });
+    q.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(loadDramas, 400); });
+    sel.addEventListener("change", function () { sel.dataset.current = sel.value; titleIn.value = sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : ""; sel.dataset.currentTitle = titleIn.value; });
+    /* muat daftar hanya saat dropdown dibuka pertama kali (hemat request API bila banyak akun) */
+    var loaded = false;
+    function lazy() { if (!loaded && prov.value) { loaded = true; loadDramas(); } }
+    sel.addEventListener("focus", lazy); sel.addEventListener("mousedown", lazy); q.addEventListener("focus", lazy);
+
+    var ip = box.querySelector("[data-ap-interval-preset]"), im = box.querySelector('[name="auto_post[interval_minutes]"]');
+    ip.addEventListener("change", function () { if (ip.value) im.value = ip.value; });
+    var sp = box.querySelector("[data-ap-seconds-preset]"), sm = box.querySelector('[name="auto_post[max_seconds]"]');
+    sp.addEventListener("change", function () { if (sp.value) sm.value = sp.value; });
+  });
+})();
+</script>
+<% end %>

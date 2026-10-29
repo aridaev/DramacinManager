@@ -4,19 +4,35 @@ en:
       sec_autopost: Auto Posting
     auto_post:
       title: Auto Posting
-      hint: automatically post to social media from the selected drama title
+      hint: automatic Instagram posting; each account has its own title, schedule and text
+      page_title: "Auto Posting — %{name}"
+      page_subtitle: "One card = one Instagram account (cookie). Accounts may share a title or use different ones."
+      back_to_instance: Instance settings
+      manage: Manage accounts & auto posting
+      accounts_count: "%{n} accounts · %{on} enabled"
       instagram: Instagram
       "on": Enabled
       "off": Disabled
       next_run: "Next run: %{at}"
-      f_enabled: Enable Instagram auto posting
-      f_cookies: Instagram account cookies
-      f_cookies_hint: one row = one account; paste the "Copy Cookies" output (header, Cookie-Editor JSON, or Netscape)
+      stat_accounts: Accounts
+      stat_enabled: Enabled
+      stat_posts: Total posts
+      stat_next: Next post
+      add_title: Add Instagram account
+      add_hint: paste "Copy Cookies" output (header, Cookie-Editor JSON or Netscape); several accounts at once separated by a blank line or ---
+      add_copy_hint: "Title/interval/text settings are copied from account \"%{label}\" — change them on its card if needed."
+      added: "%{n} account(s) added."
+      deleted: "Account %{label} deleted."
+      delete_confirm: "Delete account %{label} and its posting history?"
+      empty: No accounts yet. Add an Instagram cookie above.
+      f_enabled: Enable auto posting for this account
+      f_label: Account name
+      f_cookie: Cookie
+      f_cookie_hint: leave empty to keep the current one
       cookie_label_ph: Account name (optional)
       cookie_ph: "sessionid=...; ds_user_id=...; csrftoken=...  or JSON [{\"name\":...}]"
       cookie_add: + Add account
-      cookie_paste: Paste many at once
-      paste_prompt: "Paste cookies of several accounts, separated by a blank line or ---"
+      cookie_required: Paste the account cookie first.
       f_provider: Provider
       f_drama: Drama title
       drama_search_ph: Search title… (min. 2 chars)
@@ -25,14 +41,29 @@ en:
       load_failed: Failed to load titles
       titles_count: "{n} titles"
       f_interval: Post every
-      f_interval_hint: "minimum %{min} minutes"
+      f_interval_hint: "minimum %{min} minutes; applies between episodes"
+      f_max_seconds: Max duration per Reel
+      f_max_seconds_hint: "longer episodes are split into Part 1, 2, … %{gap} minutes apart"
+      f_fixed_text: Fixed text
+      f_fixed_text_hint: inserted after the description, before the #hashtags
       minutes: minutes
       hours: hours
+      seconds: seconds
       preset: Quick pick…
-      save: Save Auto Posting
-      logic_todo: Automatic posting is not active yet — these settings are stored for now.
-      saved: "%{platform} auto posting settings saved."
-      drama_required: Choose a provider and a drama title before enabling.
-      cookies_required: Add at least one account cookie before enabling.
-      cookie_invalid: "Account cookie #%{n} has no sessionid."
+      save: Save
+      saved: "Settings for %{label} saved."
+      drama_required: Choose a provider and drama title before enabling.
+      cookie_invalid: Cookie does not contain sessionid.
+      progress: "%{posts} posts · last EP %{ep}%{part}"
+      last_status: Last status
+      run_now: Post now
+      run_now_confirm: "Upload the next episode/part to Instagram now with this account?"
+      run_now_queued: "Post queued. Status appears on the account card when done (±2–4 min)."
+      run_now_incomplete: "Save the provider and title for this account first."
+      flow_hint: "Flow: next episode/part → render 9:16 + watermark → caption (title, TokenPlus description once per title, fixed text, #hashtags) → upload Reel."
+      caption_preview: Show saved caption
+      log_title: "Posting history (%{n})"
+      log_at: Time
+      log_result: Result
+      failed: Failed
       provider_unknown: Unknown provider.

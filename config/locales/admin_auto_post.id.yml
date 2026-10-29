@@ -4,19 +4,35 @@ id:
       sec_autopost: Auto Posting
     auto_post:
       title: Auto Posting
-      hint: posting otomatis ke media sosial dari judul drama yang dipilih
+      hint: posting otomatis ke Instagram; tiap akun punya judul, jadwal, dan teks sendiri
+      page_title: "Auto Posting — %{name}"
+      page_subtitle: "Satu kartu = satu akun Instagram (cookie). Akun boleh memakai judul yang sama atau berbeda."
+      back_to_instance: Pengaturan instance
+      manage: Kelola akun & auto posting
+      accounts_count: "%{n} akun · %{on} aktif"
       instagram: Instagram
       "on": Aktif
       "off": Nonaktif
       next_run: "Jadwal berikutnya: %{at}"
-      f_enabled: Aktifkan auto posting Instagram
-      f_cookies: Cookie akun Instagram
-      f_cookies_hint: satu baris = satu akun; tempel hasil "Copy Cookies" (header, JSON Cookie-Editor, atau Netscape)
+      stat_accounts: Akun
+      stat_enabled: Aktif
+      stat_posts: Total posting
+      stat_next: Posting berikutnya
+      add_title: Tambah akun Instagram
+      add_hint: tempel hasil "Copy Cookies" (header, JSON Cookie-Editor, atau Netscape); beberapa akun sekaligus dipisah baris kosong atau ---
+      add_copy_hint: "Pengaturan judul/interval/teks disalin dari akun \"%{label}\" — ubah di kartunya bila ingin berbeda."
+      added: "%{n} akun ditambahkan."
+      deleted: "Akun %{label} dihapus."
+      delete_confirm: "Hapus akun %{label} beserta riwayat postingnya?"
+      empty: Belum ada akun. Tambahkan cookie Instagram di atas.
+      f_enabled: Aktifkan auto posting untuk akun ini
+      f_label: Nama akun
+      f_cookie: Cookie
+      f_cookie_hint: kosongkan bila tidak diganti
       cookie_label_ph: Nama akun (opsional)
       cookie_ph: "sessionid=...; ds_user_id=...; csrftoken=...  atau JSON [{\"name\":...}]"
       cookie_add: + Tambah akun
-      cookie_paste: Tempel banyak sekaligus
-      paste_prompt: "Tempel cookie beberapa akun, pisahkan dengan baris kosong atau ---"
+      cookie_required: Tempel cookie akun terlebih dahulu.
       f_provider: Penyedia
       f_drama: Judul drama
       drama_search_ph: Cari judul… (min. 2 huruf)
@@ -25,14 +41,29 @@ id:
       load_failed: Gagal memuat judul
       titles_count: "{n} judul"
       f_interval: Posting setiap
-      f_interval_hint: "minimal %{min} menit"
+      f_interval_hint: "minimal %{min} menit; berlaku antar episode"
+      f_max_seconds: Maks durasi per Reel
+      f_max_seconds_hint: "episode lebih panjang dipecah jadi Part 1, 2, … berjeda %{gap} menit"
+      f_fixed_text: Teks tetap
+      f_fixed_text_hint: disisipkan setelah deskripsi, sebelum #hashtag
       minutes: menit
       hours: jam
+      seconds: detik
       preset: Pilih cepat…
-      save: Simpan Auto Posting
-      logic_todo: Pengiriman postingan otomatis belum aktif — pengaturan ini disimpan dulu.
-      saved: "Pengaturan auto posting %{platform} disimpan."
+      save: Simpan
+      saved: "Pengaturan akun %{label} disimpan."
       drama_required: Pilih penyedia dan judul drama sebelum mengaktifkan.
-      cookies_required: Tambahkan minimal satu cookie akun sebelum mengaktifkan.
-      cookie_invalid: "Cookie akun #%{n} tidak memuat sessionid."
+      cookie_invalid: Cookie tidak memuat sessionid.
+      progress: "%{posts} posting · EP terakhir %{ep}%{part}"
+      last_status: Status terakhir
+      run_now: Posting sekarang
+      run_now_confirm: "Unggah episode/part berikutnya ke Instagram sekarang dengan akun ini?"
+      run_now_queued: "Posting diantrekan. Status muncul di kartu akun setelah selesai (±2–4 menit)."
+      run_now_incomplete: "Simpan dulu penyedia dan judul untuk akun ini."
+      flow_hint: "Alur: episode/part berikutnya → render 9:16 + watermark → caption (judul, deskripsi TokenPlus 1x per judul, teks tetap, #hashtag) → unggah Reels."
+      caption_preview: Lihat caption tersimpan
+      log_title: "Riwayat posting (%{n})"
+      log_at: Waktu
+      log_result: Hasil
+      failed: Gagal
       provider_unknown: Penyedia tidak dikenal.
