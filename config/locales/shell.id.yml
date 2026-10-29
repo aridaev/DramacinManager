@@ -1,0 +1,21 @@
+id:
+  nav:
+    group_main: Utama
+    group_admin: Administrasi
+    group_account: Akun
+    group_site: Situs
+    close: Tutup
+  panel:
+    title: Status & aktivitas
+    status: Status
+    providers_online: Platform aktif
+    providers_offline: Platform bermasalah
+    api_key: API key
+    ok: OK
+    missing: Kosong
+    instances_active: Instance aktif
+    pending_deposits: Deposit menunggu
+    autopost: Auto posting
+    next_run: "Berikutnya: %{at}"
+    no_activity: Belum ada aktivitas.
+    quick_links: Aksi cepat

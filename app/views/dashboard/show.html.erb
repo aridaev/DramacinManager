@@ -1,8 +1,44 @@
 <% content_for :page_actions do %>
-  <%= link_to template_v1_root_path, target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" do %><%= dm_icon("external", size: 16) %> <%= t("nav.open_template") %><% end %>
+  <%= link_to template_v1_root_path, target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" do %><%= dm_icon("external-link", size: 16) %> <%= t("nav.open_template") %><% end %>
+  <% if Setting.users_can_create_instances? || admin? %><%= button_to admin_instances_path, method: :post, class: "btn btn-sm", form: { class: "m-0" } do %><%= dm_icon("plus", size: 16) %> <%= t("admin.instances.create") %><% end %><% end %>
 <% end %>
+<% insts = (admin? ? Instance.all : Instance.where(created_by_id: current_user.id)).order(updated_at: :desc) %>
+<% can_instances = Setting.users_can_create_instances? || admin? %>
 <%= render layout: "shared/app_shell", locals: { title: t("dashboard.title"), subtitle: t("dashboard.welcome", email: current_user.email) } do %>
-  <div class="card-grid">
+
+  <% if can_instances %>
+    <div class="stats">
+      <div class="stat"><span class="stat-label"><%= t("nav.instances") %></span><span class="stat-num"><%= insts.size %></span></div>
+      <div class="stat is-ok"><span class="stat-label"><%= t("admin.instances.statuses.active") %></span><span class="stat-num"><%= insts.where(status: :active).count %></span></div>
+      <div class="stat"><span class="stat-label"><%= t("panel.autopost") %></span><span class="stat-num"><%= AutoPost.where(instance_id: insts.select(:id), enabled: true).count %></span><span class="stat-sub"><%= t("admin.auto_post.stat_posts") %>: <%= AutoPost.where(instance_id: insts.select(:id)).sum(:posts_count) %></span></div>
+      <div class="stat"><span class="stat-label"><%= t("panel.pending_deposits") %></span><span class="stat-num"><%= DepositRequest.where(instance_id: insts.select(:id)).pending.count %></span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2><%= t("nav.instances") %></h2>
+        <%= link_to t("common.all"), admin_instances_path, class: "btn btn-secondary btn-xs" %>
+      </div>
+      <% if insts.empty? %>
+        <p class="muted"><%= t("admin.instances.empty") %></p>
+      <% else %>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <% insts.limit(6).each do |i| %>
+            <%= link_to edit_admin_instance_path(i), class: "group flex items-start gap-3 rounded-xl border border-[var(--border)] p-3 hover:border-[var(--primary)] hover:no-underline" do %>
+              <span class="tpl-dot" style="background:<%= Instance::TEMPLATES.dig(i.template.presence || 'v1', :accent) %>"></span>
+              <span class="min-w-0 flex-1">
+                <span class="block truncate font-semibold text-[var(--heading)] group-hover:text-[var(--primary)]"><%= i.display_name %></span>
+                <span class="block truncate text-[.76rem] text-[var(--text-muted)]"><%= i.primary_host || i.name %> · <%= (i.template.presence || "v1").upcase %></span>
+              </span>
+              <span class="badge <%= i.active? ? 'badge-success' : (i.paused? ? 'badge-muted' : 'badge-danger') %>"><%= t("admin.instances.statuses.#{i.status}") %></span>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="card-grid" style="margin-top:var(--sp-4)">
     <div class="card">
       <h2><%= t("dashboard.your_account") %></h2>
       <dl class="dl">
@@ -13,14 +49,6 @@
       </dl>
       <%= link_to t("nav.account"), edit_user_registration_path, class: "btn btn-secondary btn-sm" %>
     </div>
-
-    <% if Setting.users_can_create_instances? || admin? %>
-      <div class="card">
-        <h2><%= t("nav.instances") %></h2>
-        <p><%= t("dashboard.instances_text") %></p>
-        <%= link_to t("nav.instances"), admin_instances_path, class: "btn btn-sm" %>
-      </div>
-    <% end %>
     <% if admin? %>
       <div class="card">
         <h2><%= t("dashboard.admin_card_title") %></h2>

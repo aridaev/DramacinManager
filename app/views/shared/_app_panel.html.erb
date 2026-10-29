@@ -1,0 +1,61 @@
+<%# Panel kanan bawaan: status platform, instance, member menunggu, aktivitas auto posting, tautan cepat.
+    Query ringan (count + 5 log terakhir); scope instance mengikuti akses pengguna. %>
+<% insts = admin? ? Instance.all : Instance.where(created_by_id: current_user.id) %>
+<% inst_ids = insts.pluck(:id) %>
+<% pending = DepositRequest.where(instance_id: inst_ids).pending.count %>
+<% posts = AutoPost.where(instance_id: inst_ids).where.not(last_run_at: nil).includes(:instance).order(last_run_at: :desc).limit(5).to_a %>
+<% next_post = AutoPost.where(instance_id: inst_ids, enabled: true).where.not(next_run_at: nil).minimum(:next_run_at) %>
+<% can_instances = admin? || Setting.users_can_create_instances? %>
+
+<div class="grid gap-4">
+  <section class="panel-sec">
+    <h3 class="panel-title"><%= dm_icon("activity", size: 15) %> <%= t("panel.status") %></h3>
+    <% if admin? %>
+      <% online = Provider.where(last_status: Provider::ONLINE_STATUSES).count; offline = Provider.where.not(last_status: [ nil, *Provider::ONLINE_STATUSES ]).count %>
+      <div class="panel-row"><span><%= t("panel.providers_online") %></span><strong class="text-[var(--success)]"><%= online %></strong></div>
+      <div class="panel-row"><span><%= t("panel.providers_offline") %></span><strong class="<%= offline.positive? ? 'text-[var(--error)]' : '' %>"><%= offline %></strong></div>
+      <div class="panel-row"><span><%= t("panel.api_key") %></span><% if Setting.dracin_api_key.present? %><span class="badge badge-success"><%= t("panel.ok") %></span><% else %><span class="badge badge-danger"><%= t("panel.missing") %></span><% end %></div>
+    <% end %>
+    <% if can_instances %>
+      <div class="panel-row"><span><%= t("panel.instances_active") %></span><strong><%= insts.where(status: :active).count %> <span class="muted font-medium">/ <%= inst_ids.size %></span></strong></div>
+      <div class="panel-row"><span><%= t("panel.pending_deposits") %></span><% if pending.positive? %><span class="badge badge-danger"><%= pending %></span><% else %><strong>0</strong></div><% end %>
+    <% end %>
+  </section>
+
+  <% if can_instances %>
+    <section class="panel-sec">
+      <h3 class="panel-title"><%= dm_icon("send", size: 15) %> <%= t("panel.autopost") %></h3>
+      <% if next_post %><p class="panel-note"><%= t("panel.next_run", at: l(next_post, format: :short)) %></p><% end %>
+      <% if posts.empty? %>
+        <p class="panel-note"><%= t("panel.no_activity") %></p>
+      <% else %>
+        <ul class="panel-list">
+          <% posts.each do |ap| %>
+            <li>
+              <span class="panel-dot <%= ap.last_status.to_s.start_with?('ok') ? 'is-ok' : (ap.last_status.to_s.start_with?('gagal') ? 'is-bad' : '') %>"></span>
+              <div class="min-w-0">
+                <%= link_to admin_instance_auto_posts_path(ap.instance, anchor: "ap-#{ap.id}"), class: "block truncate font-semibold text-[var(--heading)] hover:text-[var(--primary)]" do %><%= ap.label %> · <%= ap.instance.display_name %><% end %>
+                <div class="truncate text-[.74rem] text-[var(--text-muted)]"><%= ap.last_status.to_s.sub(%r{ → https?://\S+}, "") %> · <%= time_ago_in_words(ap.last_run_at) %></div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+  <% end %>
+
+  <section class="panel-sec">
+    <h3 class="panel-title"><%= dm_icon("zap", size: 15) %> <%= t("panel.quick_links") %></h3>
+    <div class="grid gap-1.5">
+      <% if can_instances %>
+        <%= button_to admin_instances_path, method: :post, class: "panel-link", form: { class: "m-0" } do %><%= dm_icon("plus", size: 15) %> <%= t("admin.instances.create") %><% end %>
+        <%= link_to admin_instances_path, class: "panel-link" do %><%= dm_icon("box", size: 15) %> <%= t("nav.instances") %><% end %>
+      <% end %>
+      <% if admin? %>
+        <%= link_to admin_providers_path, class: "panel-link" do %><%= dm_icon("layers", size: 15) %> <%= t("nav.providers") %><% end %>
+        <%= link_to admin_api_sources_path, class: "panel-link" do %><%= dm_icon("plug-zap", size: 15) %> <%= t("nav.api_sources") %><% end %>
+      <% end %>
+      <%= link_to template_v1_root_path, target: "_blank", rel: "noopener", class: "panel-link" do %><%= dm_icon("external-link", size: 15) %> <%= t("nav.open_template") %><% end %>
+    </div>
+  </section>
+</div>

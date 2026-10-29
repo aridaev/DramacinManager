@@ -1,28 +1,36 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="<%= I18n.locale %>">
   <head>
     <title><%= content_for(:title) || "Dracin Manager" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Dracin Manager">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f8fafc">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Font Inter + Tailwind (utility untuk shell/layout; preflight dimatikan agar komponen di application.css tetap utuh) + ikon Lucide %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>tailwind = { config: { corePlugins: { preflight: false }, theme: { extend: { fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"] }, colors: { brand: { 50: "#eef2ff", 100: "#e0e7ff", 500: "#6366f1", 600: "#4f46e5", 700: "#4338ca" } } } } } };</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+    <script>document.addEventListener("DOMContentLoaded", function () { if (window.lucide) lucide.createIcons(); });</script>
 
     <%= stylesheet_link_tag "application" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="font-sans antialiased">
     <%= yield %>
   </body>
 </html>

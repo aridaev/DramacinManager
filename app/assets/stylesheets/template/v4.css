@@ -252,7 +252,7 @@ html[data-theme="dark"] .icon-moon { display: none; }
 .detail-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; font-size: .86rem; }
 .detail-meta .tag-ghost { background: rgba(255, 255, 255, .16); color: #fff; }
 .detail-fact { opacity: .85; }
-.detail-fact + .detail-fact::before { content: "Â·"; margin-right: 8px; opacity: .6; }
+.detail-fact + .detail-fact::before { content: "·"; margin-right: 8px; opacity: .6; }
 .detail-genres { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
 .detail-genres .genre-chip { background: rgba(255, 255, 255, .12); color: #fff; border-color: rgba(255, 255, 255, .2); }
 .detail-synopsis { margin: 0 0 16px; max-width: 80ch; line-height: 1.65; opacity: .9; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }

@@ -1,6 +1,6 @@
 ﻿<% content_for :title, tv1_page_title(tt("watch.title", title: @drama.title, number: @episode_number), current_provider.name) %>
 
-<nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>â€º</span><%= link_to @drama.title, tv1_drama_path(@drama) %><span>â€º</span><span><%= tt("watch.episode", number: @episode_number) %></span></nav>
+<nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>›</span><%= link_to @drama.title, tv1_drama_path(@drama) %><span>›</span><span><%= tt("watch.episode", number: @episode_number) %></span></nav>
 
 <div class="watch">
   <div class="watch-main">
@@ -39,7 +39,7 @@
     <div class="watch-head">
       <div>
         <h1 class="watch-title"><%= link_to @drama.title, tv1_drama_path(@drama) %></h1>
-        <p class="watch-sub"><%= tt("watch.episode", number: @episode_number) %><%= " Â· #{@episode.title}" if @episode.title.present? && @episode.title != "Episode #{@episode_number}" %><%= " Â· #{@episode.duration}" if @episode.duration.present? %> Â· <%= tt("watch.of_total", count: @episodes.size) %></p>
+        <p class="watch-sub"><%= tt("watch.episode", number: @episode_number) %><%= " · #{@episode.title}" if @episode.title.present? && @episode.title != "Episode #{@episode_number}" %><%= " · #{@episode.duration}" if @episode.duration.present? %> · <%= tt("watch.of_total", count: @episodes.size) %></p>
       </div>
       <div class="watch-acts">
         <% if @prev_episode %><%= link_to tt("watch.prev"), tv1_watch_path(@drama, @prev_episode.number), class: "btn btn-outline btn-sm", rel: "prev" %><% end %>

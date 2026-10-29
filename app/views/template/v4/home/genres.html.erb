@@ -1,10 +1,10 @@
 ﻿<% content_for :title, tv1_page_title(tt("genres_title"), current_provider.name) %>
 <section class="module page">
-  <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>â€º</span><span><%= tt("genres_title") %></span></nav>
+  <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>›</span><span><%= tt("genres_title") %></span></nav>
   <div class="module-head"><h1 class="module-title"><%= tt("genres_title") %><span class="module-count"><%= current_provider.name %></span></h1></div>
   <div class="genre-grid">
     <% ::Template::V1::BaseController::GENRES.each_with_index do |g, i| %>
-      <%= link_to template_v1_genre_path(g), class: "genre-tile", style: "--i:#{i}" do %><span class="genre-tile-name"><%= t("template.v1.genres.#{g}", default: g.titleize) %></span><span class="genre-tile-sub"><%= tt("genre_tile_sub") %> â€º</span><% end %>
+      <%= link_to template_v1_genre_path(g), class: "genre-tile", style: "--i:#{i}" do %><span class="genre-tile-name"><%= t("template.v1.genres.#{g}", default: g.titleize) %></span><span class="genre-tile-sub"><%= tt("genre_tile_sub") %> ›</span><% end %>
     <% end %>
   </div>
 </section>

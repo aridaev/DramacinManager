@@ -2,7 +2,7 @@
 <% content_for :description, @drama.synopsis.to_s.truncate(160) if @drama.synopsis.present? %>
 <% first = @episodes.find { |e| !e.locked } || @episodes.first %>
 
-<nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>â€º</span><% if @drama.genres.first %><%= link_to @drama.genres.first, template_v1_genre_path(@drama.genres.first.parameterize) %><span>â€º</span><% end %><span><%= @drama.title %></span></nav>
+<nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>›</span><% if @drama.genres.first %><%= link_to @drama.genres.first, template_v1_genre_path(@drama.genres.first.parameterize) %><span>›</span><% end %><span><%= @drama.title %></span></nav>
 
 <article class="detail">
   <div class="detail-hero">
@@ -16,7 +16,7 @@
         <p class="detail-meta">
           <% if (ep = tv1_episode_label(@drama)) %><span class="tag tag-ep"><%= ep %></span><% end %>
           <% if @drama.status.present? %><span class="tag tag-ghost"><%= t("template.v1.status.#{@drama.status}", default: @drama.status.to_s.titleize) %></span><% end %>
-          <% if @drama.rating %><span class="tag tag-gold">â˜… <%= @drama.rating %></span><% end %>
+          <% if @drama.rating %><span class="tag tag-gold">★ <%= @drama.rating %></span><% end %>
           <% if @drama.year %><span class="detail-fact"><%= @drama.year %></span><% end %>
           <% if @drama.language.present? %><span class="detail-fact"><%= @drama.language %></span><% end %>
           <span class="detail-fact"><%= current_provider.name %></span>
@@ -44,7 +44,7 @@
       b.addEventListener("click", function () {
         var d = { title: b.dataset.title, url: location.href };
         if (navigator.share) navigator.share(d).catch(function () {});
-        else { navigator.clipboard && navigator.clipboard.writeText(location.href); b.textContent = "âœ“"; }
+        else { navigator.clipboard && navigator.clipboard.writeText(location.href); b.textContent = "✓"; }
       });
     });
   </script>

@@ -1,0 +1,21 @@
+en:
+  nav:
+    group_main: Main
+    group_admin: Administration
+    group_account: Account
+    group_site: Site
+    close: Close
+  panel:
+    title: Status & activity
+    status: Status
+    providers_online: Platforms online
+    providers_offline: Platforms with issues
+    api_key: API key
+    ok: OK
+    missing: Missing
+    instances_active: Active instances
+    pending_deposits: Pending deposits
+    autopost: Auto posting
+    next_run: "Next: %{at}"
+    no_activity: No activity yet.
+    quick_links: Quick actions

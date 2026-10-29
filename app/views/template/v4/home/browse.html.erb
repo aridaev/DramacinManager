@@ -2,7 +2,7 @@
 <% content_for :title, tv1_page_title(heading, current_provider.name) %>
 
 <section class="module page">
-  <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>â€º</span><span><%= heading %></span></nav>
+  <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>›</span><span><%= heading %></span></nav>
   <div class="module-head"><h1 class="module-title"><%= heading %><span class="module-count"><%= current_provider.name %></span></h1><%= render "template/v1/shared/pager", page: @result.page, has_more: @result.has_more %></div>
 
   <% if @query.nil? && @heading.nil? %>
