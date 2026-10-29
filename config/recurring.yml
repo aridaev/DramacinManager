@@ -18,3 +18,6 @@ production:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
 
+  purge_old_visits:
+    command: "Visit.where('created_at < ?', Visit::RETENTION.ago).in_batches(of: 5000).delete_all"
+    schedule: every day at 4am

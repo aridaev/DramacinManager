@@ -1,0 +1,55 @@
+id:
+  admin:
+    members:
+      title_short: Member
+    instances:
+      stats_link: Statistik
+    stats:
+      title: "Statistik pengunjung — %{name}"
+      subtitle: "Tampilan halaman & pengunjung unik di %{host}; negara dari Cloudflare, perangkat dari user-agent."
+      range_text: "Periode %{from} – %{to}"
+      retention: "data disimpan %{days} hari"
+      include_bots: "Sertakan bot (%{n})"
+      views: Tampilan
+      visitors: Pengunjung unik
+      today: Hari ini
+      views_per_visitor: Halaman / pengunjung
+      bots: Bot / crawler
+      bots_hint: tidak dihitung di angka lain
+      chart_views: Tampilan per hari
+      chart_visitors: Pengunjung unik per hari
+      empty: Belum ada kunjungan tercatat pada periode ini. Data mulai terkumpul sejak fitur ini aktif.
+      by_country: Negara
+      by_device: Perangkat
+      by_kind: Jenis halaman
+      by_os: Sistem operasi
+      by_browser: Browser
+      by_hour: Jam kunjungan (WIB)
+      by_ref: Sumber rujukan
+      no_ref: Semua kunjungan langsung / tanpa referer.
+      by_drama: Drama terpopuler
+      by_path: Halaman terpopuler
+      recent: Kunjungan terakhir
+      recent_hint: 40 terakhir; IP hanya disimpan sebagai prefix jaringan
+      unknown: Tidak diketahui
+      col_provider: Penyedia
+      col_drama: ID drama
+      col_path: Halaman
+      col_time: Waktu
+      col_country: Negara
+      col_device: Perangkat
+      col_ref: Rujukan
+      devices:
+        mobile: HP
+        tablet: Tablet
+        desktop: Desktop
+        bot: Bot
+        unknown: "?"
+      kinds:
+        home: Beranda
+        drama: Detail drama
+        watch: Nonton
+        search: Pencarian
+        genre: Genre
+        member: Akun member
+        other: Lainnya

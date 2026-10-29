@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
-  allow_browser versions: :modern
+  # Pembatasan browser hanya untuk area admin (lihat Admin::BaseController & DashboardController);
+  # situs publik instance harus bisa dibuka semua browser, termasuk Safari/Chrome lama.
   before_action :authenticate_user!
   around_action :switch_locale
   helper_method :admin?

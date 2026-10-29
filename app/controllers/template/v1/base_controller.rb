@@ -5,6 +5,7 @@ class Template::V1::BaseController < ApplicationController
 
   before_action :load_providers
   before_action :select_provider
+  after_action :track_visit, if: -> { request.get? && response.status == 200 && current_instance }
 
   helper_method :current_provider, :enabled_providers, :catalog
 
@@ -17,7 +18,18 @@ class Template::V1::BaseController < ApplicationController
     @_tpl_prefixes ||= tpl == "v1" ? super : super.flat_map { |p| p.start_with?("template/v1/") ? [ p.sub("template/v1/", "template/#{tpl}/"), p ] : [ p ] }
   end
 
-  private
+private
+# Statistik pengunjung per instance: dicatat setelah respons sukses, dieksekusi async supaya tidak memperlambat halaman.
+def track_visit
+  return if request.xhr? || !request.format.html?
+  kind = { "home#index" => "home", "home#search" => "search", "home#genre" => "genre", "home#genres" => "genre",
+           "dramas#show" => "drama", "dramas#watch" => "watch", "members#show" => "member" }["#{controller_name}##{action_name}"] || "other"
+  attrs = Visit.attributes_from(request, instance: current_instance, kind: kind, provider: current_provider&.slug, drama_id: (params[:id] if kind.in?(%w[drama watch])))
+  VisitTrackJob.perform_later(attrs)
+rescue => e
+  Rails.logger.warn("[Visit] #{e.class}: #{e.message}")
+end
+
   def load_providers
     # Hanya platform yang diaktifkan admin DAN sudah punya adapter API.
     @enabled_providers = Provider.enabled.supported.by_latency.to_a

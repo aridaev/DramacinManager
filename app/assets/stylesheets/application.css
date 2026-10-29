@@ -760,3 +760,22 @@ html[data-density="compact"] .nav-in { height: 30px; }
 .mem-share span { display: block; height: 100%; background: var(--primary); }
 
 .tpl-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex: 0 0 auto; }
+
+/* Statistik pengunjung */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--sp-4); }
+.stats-grid .card + .card { margin-top: 0; }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.bars li { display: grid; grid-template-columns: minmax(90px, 38%) 1fr auto; gap: 10px; align-items: center; font-size: var(--fs-sm); }
+.bars-label { color: var(--label); font-weight: 600; }
+.bars-track { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+.bars-fill { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--primary), #818cf8); }
+.bars-num { color: var(--heading); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bars-num em { font-style: normal; color: var(--text-muted); font-weight: 500; margin-left: 2px; }
+.hour-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; height: 120px; align-items: end; }
+.hour-cell { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; }
+.hour-cell span { display: block; align-self: end; min-height: 2px; border-radius: 3px 3px 0 0; background: var(--primary); opacity: .8; }
+.hour-cell em { font-style: normal; font-size: .58rem; color: var(--text-soft); text-align: center; margin-top: 3px; }
+.hour-cell:nth-child(odd) em { visibility: hidden; }
+.table td.num, .table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.table td.nowrap { white-space: nowrap; }
+@media (max-width: 560px) { .hour-cell em { font-size: .5rem; } }

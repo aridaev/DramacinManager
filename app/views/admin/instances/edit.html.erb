@@ -9,6 +9,8 @@
         <% { general: "grid", domains: "external", template: "layers", branding: "box", theme: "palette", watermark: "box", ads: "clock", members: "user", autopost: "clock", seo: "external", ai: "plug", search: "check", footer: "layers", nav: "menu" }.each_with_index do |(k, ic), i| %>
           <a href="#sec-<%= k %>" class="inst-tab <%= 'is-active' if i.zero? %>" data-sec="sec-<%= k %>"><%= dm_icon(ic, size: 16) %><span><%= t("admin.instances.sec_#{k}") %></span></a>
         <% end %>
+        <%= link_to admin_instance_stats_path(@instance), class: "inst-tab" do %><%= dm_icon("chart-column", size: 16) %><span><%= t("admin.instances.stats_link") %></span><% end %>
+        <%= link_to admin_instance_members_path(@instance), class: "inst-tab" do %><%= dm_icon("users-round", size: 16) %><span><%= t("admin.members.title_short") %></span><% end %>
       </nav>
       <div class="inst-meta">
         <div><span class="muted"><%= t("admin.instances.col_name") %></span><br><code><%= @instance.name %></code></div>

@@ -1,4 +1,5 @@
 <% content_for :page_actions do %>
+  <%= link_to admin_instance_stats_path(@instance), class: "btn btn-sm btn-secondary" do %><%= dm_icon("chart-column", size: 16) %> <%= t("admin.instances.stats_link") %><% end %>
   <%= link_to edit_admin_instance_path(@instance, anchor: "sec-members"), class: "btn btn-sm btn-secondary" do %><%= dm_icon("box", size: 16) %> <%= t("admin.members.back_to_instance") %><% end %>
   <%= link_to admin_instances_path, class: "btn btn-sm btn-secondary" do %><%= dm_icon("grid", size: 16) %> <%= t("admin.instances.title") %><% end %>
 <% end %>

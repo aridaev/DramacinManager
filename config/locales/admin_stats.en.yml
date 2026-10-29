@@ -1,0 +1,55 @@
+en:
+  admin:
+    members:
+      title_short: Members
+    instances:
+      stats_link: Statistics
+    stats:
+      title: "Visitor statistics — %{name}"
+      subtitle: "Page views & unique visitors on %{host}; country from Cloudflare, device from user-agent."
+      range_text: "Period %{from} – %{to}"
+      retention: "data kept for %{days} days"
+      include_bots: "Include bots (%{n})"
+      views: Page views
+      visitors: Unique visitors
+      today: Today
+      views_per_visitor: Pages / visitor
+      bots: Bots / crawlers
+      bots_hint: excluded from other numbers
+      chart_views: Page views per day
+      chart_visitors: Unique visitors per day
+      empty: No visits recorded in this period yet. Data accumulates from the moment this feature went live.
+      by_country: Country
+      by_device: Device
+      by_kind: Page type
+      by_os: Operating system
+      by_browser: Browser
+      by_hour: Visits by hour (WIB)
+      by_ref: Referrers
+      no_ref: All visits were direct / without referer.
+      by_drama: Top dramas
+      by_path: Top pages
+      recent: Latest visits
+      recent_hint: last 40; IP stored as network prefix only
+      unknown: Unknown
+      col_provider: Provider
+      col_drama: Drama ID
+      col_path: Page
+      col_time: Time
+      col_country: Country
+      col_device: Device
+      col_ref: Referrer
+      devices:
+        mobile: Mobile
+        tablet: Tablet
+        desktop: Desktop
+        bot: Bot
+        unknown: "?"
+      kinds:
+        home: Home
+        drama: Drama detail
+        watch: Watch
+        search: Search
+        genre: Genre
+        member: Member account
+        other: Other

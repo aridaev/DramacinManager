@@ -1,0 +1,111 @@
+<% content_for :page_actions do %>
+  <%= link_to admin_instance_members_path(@instance), class: "btn btn-sm btn-secondary" do %><%= dm_icon("users-round", size: 16) %> <%= t("admin.members.title_short") %><% end %>
+  <%= link_to edit_admin_instance_path(@instance), class: "btn btn-sm btn-secondary" do %><%= dm_icon("settings-2", size: 16) %> <%= t("admin.auto_post.back_to_instance") %><% end %>
+<% end %>
+<% pct = ->(n) { @views.positive? ? "#{(n * 100.0 / @views).round(1)}%" : "—" } %>
+<% country_name = ->(c) { c.present? ? (ISO3166::Country[c]&.translations&.dig(I18n.locale.to_s) || ISO3166::Country[c]&.common_name || c rescue c) : t("admin.stats.unknown") } %>
+<% flag = ->(c) { c.to_s.size == 2 ? c.upcase.each_char.map { |ch| (ch.ord + 127397).chr(Encoding::UTF_8) }.join : "" } %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.stats.title", name: @instance.display_name), subtitle: t("admin.stats.subtitle", host: @instance.primary_host || @instance.name) } do %>
+
+  <div class="card mem-filter">
+    <div class="mem-filter-row">
+      <span class="mem-periods">
+        <% Admin::StatsController::PERIODS.each do |p| %>
+          <%= link_to t("admin.members.period_days", n: p), admin_instance_stats_path(@instance, period: p, bots: (@include_bots ? 1 : nil)), class: [ "chip-btn", ("is-active" if @period == p) ] %>
+        <% end %>
+      </span>
+      <%= link_to admin_instance_stats_path(@instance, period: @period, bots: (@include_bots ? nil : 1)), class: [ "chip-btn", ("is-active" if @include_bots) ] do %><%= t("admin.stats.include_bots", n: @bots) %><% end %>
+    </div>
+    <p class="muted" style="font-size:.74rem;margin:8px 0 0"><%= t("admin.stats.range_text", from: l(@from.to_date, format: :long), to: l(@to.to_date, format: :long)) %> · <%= t("admin.stats.retention", days: Visit::RETENTION.in_days.to_i) %></p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span class="stat-label"><%= t("admin.stats.views") %></span><span class="stat-num"><%= number_with_delimiter(@views, delimiter: ".") %></span><span class="stat-sub"><%= t("admin.stats.today") %>: <%= number_with_delimiter(@views_today, delimiter: ".") %></span></div>
+    <div class="stat is-ok"><span class="stat-label"><%= t("admin.stats.visitors") %></span><span class="stat-num"><%= number_with_delimiter(@visitors, delimiter: ".") %></span><span class="stat-sub"><%= t("admin.stats.today") %>: <%= number_with_delimiter(@visitors_today, delimiter: ".") %></span></div>
+    <div class="stat"><span class="stat-label"><%= t("admin.stats.views_per_visitor") %></span><span class="stat-num"><%= @visitors.positive? ? (@views.to_f / @visitors).round(1) : "—" %></span></div>
+    <div class="stat"><span class="stat-label"><%= t("admin.stats.bots") %></span><span class="stat-num"><%= number_with_delimiter(@bots, delimiter: ".") %></span><span class="stat-sub"><%= t("admin.stats.bots_hint") %></span></div>
+  </div>
+
+  <div class="mem-charts">
+    <%= render "admin/members/chart", title: t("admin.stats.chart_views"), rows: @series, idx: 1, fmt: ->(v) { number_with_delimiter(v, delimiter: ".") } %>
+    <%= render "admin/members/chart", title: t("admin.stats.chart_visitors"), rows: @series, idx: 2, fmt: ->(v) { number_with_delimiter(v, delimiter: ".") } %>
+  </div>
+
+  <% if @views.zero? %>
+    <div class="card"><p class="muted"><%= t("admin.stats.empty") %></p></div>
+  <% else %>
+  <div class="stats-grid">
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_country") %></h2></div>
+      <%= render "bars", rows: @by_country.map { |c, n| [ "#{flag.(c)} #{country_name.(c)}".strip, n ] }, pct: pct %>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_device") %></h2></div>
+      <%= render "bars", rows: @by_device.map { |d, n| [ t("admin.stats.devices.#{d || 'unknown'}", default: d.to_s), n ] }, pct: pct %>
+      <div class="card-head" style="margin-top:var(--sp-3)"><h2><%= t("admin.stats.by_kind") %></h2></div>
+      <%= render "bars", rows: @by_kind.map { |k, n| [ t("admin.stats.kinds.#{k || 'other'}", default: k.to_s), n ] }, pct: pct %>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_os") %></h2></div>
+      <%= render "bars", rows: @by_os, pct: pct %>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_browser") %></h2></div>
+      <%= render "bars", rows: @by_browser, pct: pct %>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_hour") %></h2></div>
+      <% hmax = [ @by_hour.values.max.to_i, 1 ].max %>
+      <div class="hour-grid">
+        <% 24.times do |h| v = @by_hour[h].to_i %>
+          <div class="hour-cell" title="<%= format('%02d:00', h) %> · <%= v %>"><span style="height:<%= (v * 100.0 / hmax).round %>%"></span><em><%= format('%02d', h) %></em></div>
+        <% end %>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_ref") %></h2></div>
+      <% if @by_ref.empty? %><p class="muted"><%= t("admin.stats.no_ref") %></p><% else %><%= render "bars", rows: @by_ref, pct: pct %><% end %>
+    </div>
+  </div>
+
+  <div class="stats-grid" style="margin-top:var(--sp-4)">
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_drama") %></h2></div>
+      <% if @by_drama.empty? %><p class="muted">—</p><% else %>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th><%= t("admin.stats.col_provider") %></th><th><%= t("admin.stats.col_drama") %></th><th class="num"><%= t("admin.stats.views") %></th></tr></thead>
+        <tbody><% @by_drama.each do |(prov, id), n| %>
+          <tr><td><%= prov %></td><td><%= link_to id, "#{@instance.public_url.to_s.chomp('/')}/#{prov}/drama/#{id}", target: "_blank", rel: "noopener" %></td><td class="num"><%= n %></td></tr>
+        <% end %></tbody>
+      </table></div>
+      <% end %>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2><%= t("admin.stats.by_path") %></h2></div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th><%= t("admin.stats.col_path") %></th><th class="num"><%= t("admin.stats.views") %></th></tr></thead>
+        <tbody><% @by_path.each do |p, n| %><tr><td class="truncate" style="max-width:360px" title="<%= p %>"><code><%= p %></code></td><td class="num"><%= n %></td></tr><% end %></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:var(--sp-4)">
+    <div class="card-head"><h2><%= t("admin.stats.recent") %></h2><span class="muted" style="font-size:.76rem"><%= t("admin.stats.recent_hint") %></span></div>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th><%= t("admin.stats.col_time") %></th><th><%= t("admin.stats.col_country") %></th><th><%= t("admin.stats.col_device") %></th><th><%= t("admin.stats.col_path") %></th><th><%= t("admin.stats.col_ref") %></th><th>IP</th></tr></thead>
+      <tbody>
+        <% @recent.each do |v| %>
+          <tr>
+            <td class="nowrap"><%= l(v.created_at, format: :short) %></td>
+            <td class="nowrap"><%= flag.(v.country) %> <%= v.country || "—" %></td>
+            <td class="nowrap"><%= t("admin.stats.devices.#{v.device || 'unknown'}", default: v.device.to_s) %> · <%= v.os %> · <%= v.browser %></td>
+            <td class="truncate" style="max-width:300px" title="<%= v.path %>"><code><%= v.path %></code></td>
+            <td><%= v.referrer_host || "—" %></td>
+            <td><code><%= v.ip_prefix || "—" %></code></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table></div>
+  </div>
+  <% end %>
+<% end %>

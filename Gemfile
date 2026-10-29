@@ -56,3 +56,6 @@ end
 gem "devise", "~> 5.0"
 
 gem "rails-i18n", "~> 8.0"
+
+# Nama negara untuk statistik pengunjung
+gem "countries", require: "countries/global"
