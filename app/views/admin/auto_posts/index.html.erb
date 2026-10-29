@@ -35,9 +35,10 @@
       <div class="ap-head">
         <strong class="ap-name"><%= dm_icon("user", size: 16) %> <%= ap.label %></strong>
         <% if ap.enabled? %><span class="badge badge-success"><%= t("admin.auto_post.on") %></span><% else %><span class="badge badge-muted"><%= t("admin.auto_post.off") %></span><% end %>
-        <% if ap.drama_title.present? %><span class="badge badge-info"><%= ap.provider&.name %> · <%= ap.drama_title %></span><% end %>
+        <% if ap.auto_title? %><span class="badge badge-muted"><%= t("admin.auto_post.auto_badge", n: ap.episodes_per_title) %></span><% end %>
+        <% if ap.drama_title.present? %><span class="badge badge-info"><%= ap.provider&.name %> · <%= ap.drama_title %><% if ap.auto_title? %> (<%= ap.title_episodes %>/<%= ap.episodes_per_title %>)<% end %></span><% end %>
         <% if ap.next_run_at %><span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.next_run", at: l(ap.next_run_at, format: :short)) %></span><% end %>
-        <span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.progress", posts: ap.posts_count, ep: ap.last_episode || "—", part: (ap.parts_total.to_i > 1 ? " Part #{ap.last_part}/#{ap.parts_total}" : "")) %></span>
+        <span class="muted" style="font-size:.74rem"><%= t("admin.auto_post.progress", posts: ap.posts_count, ep: ap.last_episode || "—", part: (ap.parts_total.to_i > 1 ? " Part #{ap.last_part}/#{ap.parts_total}" : "")) %><% if ap.auto_title? && ap.posted_titles.any? %> · <%= t("admin.auto_post.titles_done", n: ap.posted_titles.size) %><% end %></span>
       </div>
       <% if ap.last_status.present? %>
         <p class="<%= ap.last_status.start_with?("ok") ? "domain-ok" : (ap.last_status.start_with?("gagal") ? "domain-err" : "muted") %>" style="margin:0 0 10px;font-size:.8rem"><%= t("admin.auto_post.last_status") %>: <%= ap.last_status %><% if ap.last_run_at %> <span class="muted">(<%= l(ap.last_run_at, format: :short) %>)</span><% end %></p>
@@ -61,7 +62,18 @@
 
         <div class="grid-2">
           <div class="field">
-            <div class="field-label-row"><label><%= t("admin.auto_post.f_provider") %></label></div>
+            <label class="check-row"><input type="hidden" name="auto_post[auto_title]" value="0"><input type="checkbox" name="auto_post[auto_title]" value="1" <%= "checked" if ap.auto_title? %>> <%= t("admin.auto_post.f_auto_title") %></label>
+            <span class="field-hint"><%= t("admin.auto_post.f_auto_title_hint") %></span>
+          </div>
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_episodes_per_title") %></label><span class="field-hint"><%= t("admin.auto_post.f_episodes_per_title_hint") %></span></div>
+            <input type="number" name="auto_post[episodes_per_title]" value="<%= ap.episodes_per_title %>" min="<%= AutoPost::MIN_EPISODES_PER_TITLE %>" max="<%= AutoPost::MAX_EPISODES_PER_TITLE %>" step="1" class="nav-in" style="width:110px">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <div class="field-label-row"><label><%= t("admin.auto_post.f_provider") %></label><span class="field-hint"><%= t("admin.auto_post.f_title_manual_hint") %></span></div>
             <select name="auto_post[provider_slug]" data-ap-provider>
               <option value=""><%= t("admin.auto_post.choose") %></option>
               <% @providers.each do |p| %><option value="<%= p.slug %>" <%= "selected" if ap.provider_slug == p.slug %>><%= p.name %></option><% end %>

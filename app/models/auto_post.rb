@@ -2,6 +2,8 @@
 # interval, batas durasi per Reel (episode lebih panjang dipecah jadi Part 1..n dengan jeda InstagramPostJob::PART_GAP,
 # lalu episode berikutnya mengikuti interval), dan teks tetap yang disisipkan sebelum hashtag.
 # Beberapa akun boleh memakai judul yang sama. Progres (last_episode/last_part) dan cache caption per baris.
+# Judul otomatis (auto_title): tiap judul hanya episodes_per_title episode, lalu AutoPoster::TitlePicker memilih
+# judul berikutnya dari Statistik pengunjung (belum pernah diposting akun ini) atau acak dari beranda penyedia.
 class AutoPost < ApplicationRecord
   class RunError < StandardError; end
   LOG_MAX = 30
@@ -10,6 +12,9 @@ class AutoPost < ApplicationRecord
   MAX_INTERVAL = 7 * 24 * 60
   MIN_SECONDS = 15
   MAX_SECONDS = 20 * 60
+  MIN_EPISODES_PER_TITLE = 1
+  MAX_EPISODES_PER_TITLE = 100
+  POSTED_TITLES_MAX = 2000
   DEFAULT_FIXED_TEXT = "Tonight, @thv took a turn in the audience as he watched @gracieabrams and @dojacat perform at #VogueWorld Hollywood. No stranger to a fashion show either, the @bts.bighitofficial star dressed in a look that could have easily appeared on the runway."
 
   belongs_to :instance
@@ -18,6 +23,7 @@ class AutoPost < ApplicationRecord
   validates :interval_minutes, numericality: { only_integer: true, greater_than_or_equal_to: MIN_INTERVAL, less_than_or_equal_to: MAX_INTERVAL }
   validates :max_seconds, numericality: { only_integer: true, greater_than_or_equal_to: MIN_SECONDS, less_than_or_equal_to: MAX_SECONDS }
   validates :cookie, presence: true
+  validates :episodes_per_title, numericality: { only_integer: true, greater_than_or_equal_to: MIN_EPISODES_PER_TITLE, less_than_or_equal_to: MAX_EPISODES_PER_TITLE }
   validate :cookie_has_session
   validate :enabled_requirements
 
@@ -40,14 +46,30 @@ class AutoPost < ApplicationRecord
 
   def provider = provider_slug.present? ? Provider.find_by(slug: provider_slug) : nil
   def more_parts? = last_episode.present? && last_part.to_i < parts_total.to_i
-  def ready? = provider_slug.present? && drama_id.present?
+  def ready? = auto_title? || (provider_slug.present? && drama_id.present?)
+  def title_key = "#{provider_slug}:#{drama_id}"
+  # Jatah episode judul ini habis (dan tidak ada part yang tersisa) → TitlePicker memilih judul baru.
+  def title_done? = auto_title? && drama_id.present? && title_episodes.to_i >= episodes_per_title && !more_parts?
+
+  # Ganti judul aktif (dipanggil TitlePicker): judul lama dicatat agar tidak terulang, progres & caption di-reset.
+  def start_title!(provider_slug:, drama_id:, drama_title:, source: nil)
+    done = self.drama_id.present? ? [ title_key ] : []
+    update_columns(provider_slug: provider_slug, drama_id: drama_id, drama_title: drama_title,
+                   posted_titles: (Array(posted_titles) + done).last(POSTED_TITLES_MAX),
+                   last_episode: nil, last_part: nil, parts_total: nil, title_episodes: 0,
+                   caption_template: nil, caption_tags: nil, updated_at: Time.current)
+    Rails.logger.info("[AutoPost] ##{id} judul baru (#{source}): #{provider_slug}/#{drama_id} #{drama_title}")
+  end
 
   # Catat hasil satu siklus posting (log terbaru di depan, maks LOG_MAX) + status ringkas.
   def record!(ok:, episode: nil, part: nil, parts: nil, url: nil, error: nil)
     part_s = parts.to_i > 1 ? " Part #{part}/#{parts}" : ""
     entry = { "at" => Time.current.iso8601, "ok" => ok, "episode" => episode, "part" => part_s.strip.presence, "account" => label, "url" => url, "error" => error.to_s.first(300).presence }
     attrs = { log: [ entry ] + Array(log).first(LOG_MAX - 1), last_status: ok ? "ok: EP #{episode}#{part_s} → #{url || 'diunggah'}" : "gagal: #{entry['error']}" }
-    attrs.merge!(last_episode: episode, last_part: part, parts_total: parts, posts_count: posts_count + 1) if ok
+    if ok
+      attrs.merge!(last_episode: episode, last_part: part, parts_total: parts, posts_count: posts_count + 1)
+      attrs[:title_episodes] = title_episodes.to_i + 1 if part.to_i >= parts.to_i # episode selesai (semua part terunggah)
+    end
     update_columns(attrs.merge(updated_at: Time.current))
   end
 
@@ -91,6 +113,7 @@ class AutoPost < ApplicationRecord
 
   def reset_progress
     self.last_episode = self.last_part = self.parts_total = nil
+    self.title_episodes = 0
     self.caption_template = self.caption_tags = nil
   end
 

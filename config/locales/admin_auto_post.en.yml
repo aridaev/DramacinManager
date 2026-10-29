@@ -52,15 +52,23 @@ en:
       preset: Quick pick…
       save: Save
       saved: "Settings for %{label} saved."
-      drama_required: Choose a provider and drama title before enabling.
+      drama_required: Choose a provider and drama title before enabling (or turn on automatic titles).
+      f_auto_title: Automatic titles
+      f_auto_title_hint: "titles come from visitor Statistics (most viewed, not yet posted by this account); when exhausted, random from providers' latest"
+      f_episodes_per_title: Episodes per title
+      f_episodes_per_title_hint: after the quota, move on to the next title
+      f_title_manual_hint: "optional with automatic titles: starting / current title"
+      auto_badge: "Auto · %{n} EP/title"
+      titles_done: "%{n} titles done"
+      no_title_found: "No title could be picked (statistics empty and provider home pages failed to load)."
       cookie_invalid: Cookie does not contain sessionid.
       progress: "%{posts} posts · last EP %{ep}%{part}"
       last_status: Last status
       run_now: Post now
       run_now_confirm: "Upload the next episode/part to Instagram now with this account?"
       run_now_queued: "Post queued. Status appears on the account card when done (±2–4 min)."
-      run_now_incomplete: "Save the provider and title for this account first."
-      flow_hint: "Flow: next episode/part → render 9:16 + watermark → caption (title, TokenPlus description once per title, fixed text, #hashtags) → upload Reel."
+      run_now_incomplete: "Save the provider and title for this account first, or enable automatic titles."
+      flow_hint: "Flow: title (auto: Statistics → random latest, N episodes per title) → next episode/part → render 9:16 + watermark → caption (title, TokenPlus description once per title, fixed text, #hashtags) → upload Reel."
       caption_preview: Show saved caption
       log_title: "Posting history (%{n})"
       log_at: Time

@@ -52,15 +52,23 @@ id:
       preset: Pilih cepat…
       save: Simpan
       saved: "Pengaturan akun %{label} disimpan."
-      drama_required: Pilih penyedia dan judul drama sebelum mengaktifkan.
+      drama_required: Pilih penyedia dan judul drama sebelum mengaktifkan (atau aktifkan judul otomatis).
+      f_auto_title: Judul otomatis
+      f_auto_title_hint: "judul diambil dari Statistik pengunjung (paling banyak dibuka, belum pernah diposting akun ini); bila sudah habis, acak dari judul terbaru penyedia"
+      f_episodes_per_title: Episode per judul
+      f_episodes_per_title_hint: setelah jatah habis, ganti judul berikutnya
+      f_title_manual_hint: "opsional saat judul otomatis: judul awal / judul saat ini"
+      auto_badge: "Otomatis · %{n} EP/judul"
+      titles_done: "%{n} judul selesai"
+      no_title_found: "Tidak ada judul yang bisa dipilih (statistik kosong dan beranda penyedia gagal dimuat)."
       cookie_invalid: Cookie tidak memuat sessionid.
       progress: "%{posts} posting · EP terakhir %{ep}%{part}"
       last_status: Status terakhir
       run_now: Posting sekarang
       run_now_confirm: "Unggah episode/part berikutnya ke Instagram sekarang dengan akun ini?"
       run_now_queued: "Posting diantrekan. Status muncul di kartu akun setelah selesai (±2–4 menit)."
-      run_now_incomplete: "Simpan dulu penyedia dan judul untuk akun ini."
-      flow_hint: "Alur: episode/part berikutnya → render 9:16 + watermark → caption (judul, deskripsi TokenPlus 1x per judul, teks tetap, #hashtag) → unggah Reels."
+      run_now_incomplete: "Simpan dulu penyedia dan judul untuk akun ini, atau aktifkan judul otomatis."
+      flow_hint: "Alur: judul (otomatis: Statistik → acak terbaru, N episode per judul) → episode/part berikutnya → render 9:16 + watermark → caption (judul, deskripsi TokenPlus 1x per judul, teks tetap, #hashtag) → unggah Reels."
       caption_preview: Lihat caption tersimpan
       log_title: "Riwayat posting (%{n})"
       log_at: Waktu

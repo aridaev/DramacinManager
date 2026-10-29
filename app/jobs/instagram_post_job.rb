@@ -18,21 +18,7 @@ class InstagramPostJob < ApplicationJob
     return unless ap && ap.platform == "instagram" && (ap.enabled? || manual)
     ap.update_columns(last_run_at: Time.current, next_run_at: (Time.current + ap.interval_minutes.minutes if ap.enabled?))
     instance = ap.instance
-    provider = ap.provider or raise AutoPost::RunError, "penyedia #{ap.provider_slug} tidak ada"
-    catalog = DracinApi::Catalog.for(provider, lang: instance_locale(instance))
-    drama = catalog.detail(ap.drama_id)
-    episodes = catalog.episodes(ap.drama_id).reject(&:locked).sort_by(&:number)
-    raise AutoPost::RunError, "tidak ada episode terbuka" if episodes.empty?
-
-    ep = part = nil
-    if ap.more_parts?
-      ep = episodes.find { |e| e.number == ap.last_episode }
-      part = ap.last_part + 1
-    end
-    unless ep
-      ep = episodes.find { |e| e.number > ap.last_episode.to_i } || episodes.first # habis → ulang dari awal
-      part = 1
-    end
+    catalog, drama, ep, part = resolve_target(ap, instance_locale(instance))
     stream = catalog.play(ap.drama_id, ep.number) or raise AutoPost::RunError, "stream episode #{ep.number} kosong"
 
     sweep_stale_tmp
@@ -62,6 +48,33 @@ class InstagramPostJob < ApplicationJob
   end
 
   private
+  # Menentukan judul + episode/part berikutnya. Judul otomatis: bila belum ada judul, jatah episode judul ini habis,
+  # atau episode terbuka sudah habis → TitlePicker memilih judul baru (statistik → acak terbaru), maksimal 2x ganti.
+  def resolve_target(ap, locale, hops = 0)
+    AutoPoster::TitlePicker.new(ap, locale: locale).pick! if ap.auto_title? && (ap.drama_id.blank? || ap.title_done?)
+    provider = ap.provider or raise AutoPost::RunError, "penyedia #{ap.provider_slug} tidak ada"
+    catalog = DracinApi::Catalog.for(provider, lang: locale)
+    drama = catalog.detail(ap.drama_id)
+    episodes = catalog.episodes(ap.drama_id).reject(&:locked).sort_by(&:number)
+
+    ep = part = nil
+    if ap.more_parts?
+      ep = episodes.find { |e| e.number == ap.last_episode }
+      part = ap.last_part + 1
+    end
+    unless ep
+      ep = episodes.find { |e| e.number > ap.last_episode.to_i }
+      part = 1
+    end
+    if ep.nil? && ap.auto_title? # judul ini tidak punya episode (lagi) → judul berikutnya
+      raise AutoPost::RunError, "tidak ada episode terbuka di #{ap.drama_title}" if hops >= 2
+      AutoPoster::TitlePicker.new(ap, locale: locale).pick!
+      return resolve_target(ap, locale, hops + 1)
+    end
+    ep ||= episodes.first or raise AutoPost::RunError, "tidak ada episode terbuka" # manual: habis → ulang dari awal
+    [ catalog, drama, ep, part ]
+  end
+
   # Sisa < 5 detik tidak dijadikan part sendiri.
   def parts_for(duration_s, max_s) = [ ((duration_s - 5) / max_s.to_f).ceil, 1 ].max
 
