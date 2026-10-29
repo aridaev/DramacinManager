@@ -1,0 +1,14 @@
+<% wide = local_assigns[:wide] %>
+<article class="card <%= 'card-wide' if wide %>">
+  <%= link_to tv1_drama_path(drama), class: "card-link", aria: { label: tt("card.open", title: drama.title) } do %>
+    <span class="poster-wrap">
+      <% if wide %><span class="poster-blur"><%= tv1_poster(drama, css_class: "poster-blur-img", lazy: local_assigns.fetch(:lazy, true)) %></span><% end %>
+      <%= tv1_poster(drama, lazy: local_assigns.fetch(:lazy, true)) %>
+      <% if local_assigns[:hot] %><span class="tag tag-hot tag-corner"><%= tt("tags.hot") %></span><% elsif drama.status.to_s == "completed" %><span class="tag tag-done tag-corner"><%= tt("tags.complete") %></span><% end %>
+      <% if (ep = tv1_episode_label(drama)) %><span class="card-ep"><%= ep %></span><% end %>
+      <span class="card-play"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+    </span>
+    <span class="card-title"><%= drama.title %></span>
+    <span class="card-sub"><%= drama.genres.first(2).presence&.join(" • ") || drama.synopsis.presence&.truncate(50) %></span>
+  <% end %>
+</article>

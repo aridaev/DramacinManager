@@ -1,0 +1,20 @@
+﻿<% heading = @heading || (@query ? tt("browse.search_title", query: @query) : tt("browse.genre_title", genre: t("template.v1.genres.#{@genre}", default: @genre.to_s.titleize))) %>
+<% content_for :title, tv1_page_title(heading, current_provider.name) %>
+
+<section class="module page">
+  <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>â€º</span><span><%= heading %></span></nav>
+  <div class="module-head"><h1 class="module-title"><%= heading %><span class="module-count"><%= current_provider.name %></span></h1><%= render "template/v1/shared/pager", page: @result.page, has_more: @result.has_more %></div>
+
+  <% if @query.nil? && @heading.nil? %>
+    <div class="filter-row"><span class="filter-label"><%= tt("nav.genre") %></span><div class="genre-chips"><% ::Template::V1::BaseController::GENRES.each do |g| %><%= link_to t("template.v1.genres.#{g}", default: g.titleize), template_v1_genre_path(g), class: ["genre-chip", ("is-active" if g == @genre)] %><% end %></div></div>
+  <% end %>
+
+  <% if @result.items.empty? %>
+    <div class="empty-state"><h2><%= tt("empty.title") %></h2><p><%= @query.present? ? tt("empty.search", query: @query) : tt("empty.generic") %></p></div>
+  <% else %>
+    <div class="grid"><% @result.items.each do |drama| %><%= render "template/v4/shared/card", drama: drama %><% end %></div>
+    <div class="list-toolbar"><%= render "template/v1/shared/pager", page: @result.page, has_more: @result.has_more %></div>
+  <% end %>
+</section>
+
+<%= render "template/v1/shared/seo_page_text" %>

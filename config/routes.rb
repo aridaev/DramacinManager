@@ -75,4 +75,5 @@ Rails.application.routes.draw do
   scope "template/v1", module: "template/v1", as: :template_v1, defaults: { tpl: "v1" }, &template_v1_routes
   scope "template/v2", module: "template/v1", as: :template_v2, defaults: { tpl: "v2" }, &template_v1_routes
   scope "template/v3", module: "template/v1", as: :template_v3, defaults: { tpl: "v3" }, &template_v1_routes
+  scope "template/v4", module: "template/v1", as: :template_v4, defaults: { tpl: "v4" }, &template_v1_routes
 end

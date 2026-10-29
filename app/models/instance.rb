@@ -29,7 +29,8 @@ class Instance < ApplicationRecord
   TEMPLATES = {
     "v1" => { name: "Template v1 — Klasik", description: "Katalog drama pendek: hero rail, section per penyedia, navbar atas, gelap/terang.", path: "/template/v1", status: "stable", accent: "#e10037", bg: "#090a0d" },
     "v2" => { name: "Template v2 — Cinema", description: "Gaya Dracinema: sidebar kiri, hero besar, rail geser, ranking 'Paling Dicari', tema plum gelap.", path: "/template/v2", status: "stable", accent: "#ff2357", bg: "#241c29" },
-    "v3" => { name: "Template v3 — Mango", description: "Gaya MangoTV: tema terang oranye, tab kanal, banner swiper, modul kartu landscape + ranking.", path: "/template/v3", status: "stable", accent: "#ff5f00", bg: "#ffffff" }
+    "v3" => { name: "Template v3 — Mango", description: "Gaya MangoTV: tema terang oranye, tab kanal, banner swiper, modul kartu landscape + ranking.", path: "/template/v3", status: "stable", accent: "#ff5f00", bg: "#ffffff" },
+    "v4" => { name: "Template v4 — Vidio", description: "Gaya Vidio: tema gelap merah, header satu baris, hero full-width dengan thumbnail, rail landscape, Top 10 angka besar, rail short drama portrait.", path: "/template/v4", status: "stable", accent: "#e4002b", bg: "#0b0b0d" }
   }.freeze
   DEFAULT_TEMPLATE = "v1".freeze
   DEFAULT_NAV = [

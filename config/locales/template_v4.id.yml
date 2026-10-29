@@ -1,0 +1,25 @@
+id:
+  template:
+    v4:
+      search_placeholder: "Cari drama, genre..."
+      nav:
+        latest: "Terbaru"
+        more: "Lainnya"
+      hero:
+        play_now: "Tonton"
+        detail: "Detail"
+        fallback_desc: "Tonton %{title} HD gratis dengan subtitle Indonesia."
+      tags:
+        hot: "HOT"
+        complete: "Tamat"
+      sections:
+        hot_now: "Pilihan Untukmu"
+        ranking: "Top 10 Hari Ini"
+        short_drama: "Short Drama Terpopuler"
+        by_genre: "Jelajah Genre"
+        more: "Lihat Semua"
+      genre_tile_sub: "Lihat semua"
+      detail:
+        share: "Bagikan"
+      watch:
+        of_total: "dari %{count} episode"
