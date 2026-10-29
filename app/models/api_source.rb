@@ -1,7 +1,7 @@
 # Sumber API eksternal (hub). Awalnya hanya DracinAPI; admin bisa menambah sumber lain dari
 # /admin/api_sources. Provider yang terhubung ke sumber memakai api_key sumber kecuali punya key sendiri.
 class ApiSource < ApplicationRecord
-  AUTH_MODES = %w[header_x_token query_code query_key bearer none].freeze
+  AUTH_MODES = %w[header_x_token query_code query_key bearer none hmac_sha256].freeze
 
   encrypts :api_key
 
@@ -18,6 +18,7 @@ class ApiSource < ApplicationRecord
 
   scope :enabled, -> { where(enabled: true) }
   scope :ordered, -> { order(is_default: :desc, name: :asc) }
+  scope :hmac, -> { where(auth_mode: "hmac_sha256") }
 
   def self.default = find_by(is_default: true) || ordered.first
 
@@ -36,6 +37,14 @@ class ApiSource < ApplicationRecord
     when "query_key"  then { (auth_param.presence || "key").to_sym => api_key }
     else {}
     end.compact_blank
+  end
+
+  def hmac? = auth_mode == "hmac_sha256"
+
+  # Vorta: X-Timestamp (ms) + X-Signature = hex HMAC-SHA256("METHOD:/path?query:timestamp", secret).
+  def hmac_headers(method, request_uri)
+    ts = (Time.now.to_f * 1000).to_i.to_s
+    { "X-Timestamp" => ts, "X-Signature" => OpenSSL::HMAC.hexdigest("SHA256", api_key.to_s, "#{method.to_s.upcase}:#{request_uri}:#{ts}") }
   end
 
   def status_url = status_path.present? ? "#{base_url}#{status_path.start_with?('/') ? '' : '/'}#{status_path}" : nil

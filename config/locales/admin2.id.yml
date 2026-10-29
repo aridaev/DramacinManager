@@ -195,6 +195,7 @@ id:
         query_key: Query ?key=
         bearer: 'Authorization: Bearer'
         none: Tanpa auth
+        hmac_sha256: HMAC-SHA256 (Vorta, X-Timestamp/X-Signature)
       created: Sumber %{name} ditambahkan.
       updated: Sumber %{name} disimpan.
       deleted: Sumber %{name} dihapus.

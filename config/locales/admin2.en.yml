@@ -195,6 +195,7 @@ en:
         query_key: Query ?key=
         bearer: 'Authorization: Bearer'
         none: No auth
+        hmac_sha256: HMAC-SHA256 (Vorta, X-Timestamp/X-Signature)
       created: Source %{name} added.
       updated: Source %{name} saved.
       deleted: Source %{name} deleted.

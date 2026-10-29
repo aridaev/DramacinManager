@@ -31,8 +31,10 @@ module DracinApi
       "starshort"  => "DracinApi::Adapters::Starshort",
       "storyreel"  => "DracinApi::Adapters::Vibeshort",
       "vibeshort"  => "DracinApi::Adapters::Vibeshort",
-      "vigloo"     => "DracinApi::Adapters::Vigloo"
+      "vigloo"     => "DracinApi::Adapters::Vigloo",
+      "vorta"      => "DracinApi::Adapters::Vorta" # hub multi-platform; slug provider = category_p
     }.freeze
+    NATIVE = REGISTRY.reject { |_, v| v == "DracinApi::Adapters::Vorta" }.freeze
 
     module_function
 
@@ -42,6 +44,19 @@ module DracinApi
     def for(provider, api_key: nil, lang: nil)
       klass = REGISTRY[provider.adapter_slug] or return nil
       klass.constantize.new(provider, api_key: api_key.presence || provider.effective_api_key, lang: lang)
+    end
+
+    # Adapter cadangan bila adapter utama gagal: provider DracinAPI → Vorta (bila kategorinya ada di hub Vorta),
+    # provider Vorta → adapter native DracinAPI dengan slug yang sama.
+    def fallback_for(provider, lang: nil)
+      if provider.adapter_slug == "vorta"
+        klass = NATIVE[provider.slug] or return nil
+        key = ApiSource.enabled.where.not(auth_mode: "hmac_sha256").ordered.first&.api_key.presence || Setting.dracin_api_key
+        return nil if key.blank?
+        klass.constantize.new(provider, api_key: key, lang: lang)
+      else
+        Vorta.fallback_for(provider, lang: lang)
+      end
     end
   end
 end

@@ -30,13 +30,13 @@ module DracinApi
     def supported? = @adapter.present?
 
     def home
-      fetch("home") do
-        adapter.home.each { |s| s.items = clean(s.items) }.reject { |s| s.items.empty? }
+      fetch("home") do |a|
+        a.home.each { |s| s.items = clean(s.items) }.reject { |s| s.items.empty? }
       end
     end
 
     def search(keyword, page: 1)
-      fetch("search", keyword, page) { adapter.search(keyword, page: page).tap { |pg| pg.items = clean(pg.items) } }
+      fetch("search", keyword, page) { |a| a.search(keyword, page: page).tap { |pg| pg.items = clean(pg.items) } }
     end
 
     def genre(type, page: 1)
@@ -45,17 +45,17 @@ module DracinApi
     end
 
     def detail(id)
-      fetch("detail", id) { clean_genres(adapter.detail(id)) }
+      fetch("detail", id) { |a| clean_genres(a.detail(id)) }
     end
 
     def episodes(id)
-      fetch("episodes", id) { Array(adapter.episodes(id)).sort_by(&:number) }
+      fetch("episodes", id) { |a| Array(a.episodes(id)).sort_by(&:number) }
     end
 
     def play(id, episode)
-      fetch("play2", id, episode, ttl: PLAY_TTL) do  # key baru: Stream struct bertambah field (proxied)
-        adapter.prime_episodes(id, episodes(id))
-        adapter.play(id, episode)
+      fetch("play2", id, episode, ttl: PLAY_TTL) do |a|  # key baru: Stream struct bertambah field (proxied)
+        a.prime_episodes(id, episodes(id))
+        a.play(id, episode)
       end
     end
 
@@ -78,7 +78,7 @@ module DracinApi
     def fetch(*key, ttl: CACHE_TTL)
       ckey = [ "dracin_api", "v2", slug, @lang, *key ]
       Rails.cache.fetch(ckey, expires_in: ttl, race_condition_ttl: RACE_TTL) do
-        value = yield
+        value = with_fallback { |a| yield a }
         Rails.cache.write([ *ckey, "stale" ], value, expires_in: STALE_TTL) unless value.nil?
         value
       end
@@ -87,6 +87,24 @@ module DracinApi
       raise if stale.nil?
       Rails.logger.warn("[DracinApi] #{slug} #{key.first}: #{e.message} → pakai cache lama")
       stale
+    end
+
+    # Adapter utama error atau hasil kosong → coba adapter cadangan dari hub lain (Adapters.fallback_for).
+    def with_fallback
+      value = begin
+        yield adapter
+      rescue DracinApi::Error => e
+        raise unless fallback
+        Rails.logger.warn("[DracinApi] #{slug}: #{e.message} → fallback #{fallback.class.name.demodulize}")
+        return yield(fallback)
+      end
+      return yield(fallback) if fallback && (value.nil? || (value.respond_to?(:empty?) && value.empty?))
+      value
+    end
+
+    def fallback
+      return @fallback if defined?(@fallback)
+      @fallback = DracinApi::Adapters.fallback_for(provider, lang: @lang)
     end
   end
 end

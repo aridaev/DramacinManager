@@ -82,8 +82,17 @@ class Provider < ApplicationRecord
       slug = (entry["id"] || entry["slug"]).to_s
       next if slug.blank?
       provider = find_or_initialize_by(slug: slug)
+      # Hub lain (mis. Vorta) hanya mengambil alih provider baru atau yang belum punya adapter; provider yang sudah
+      # jalan lewat sumber lain dibiarkan (hub kedua menjadi cadangan lewat Adapters.fallback_for).
+      takeover = entry["adapter"].present? && (provider.new_record? || !provider.supported?)
+      owned = provider.new_record? || provider.api_source.nil? || provider.api_source == source
+      next unless owned || takeover
+      if takeover
+        provider.adapter_key = entry["adapter"]
+        provider.api_source = source if source
+      end
       provider.name = entry["name"].presence || slug.titleize if provider.new_record? || entry["name"].present?
-      provider.position = index + 1 if provider.new_record?
+      provider.position = (source && !source.is_default? ? Provider.maximum(:position).to_i : 0) + index + 1 if provider.new_record?
       provider.last_status = entry["status"].to_s.presence
       provider.last_latency_ms = entry["latency"]
       provider.last_checked_at = entry["lastChecked"].present? ? (Time.zone.parse(entry["lastChecked"]) || now) : now
