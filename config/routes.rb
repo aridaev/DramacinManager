@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   template_v1_routes = lambda do
     root "home#index"
     get "nonton/:provider", to: "home#index", as: :provider_home
+    get "amp", to: "home#amp", as: :amp
     get "robots.txt", to: "/seo#robots", as: :robots
     get "sitemap.xml", to: "/seo#sitemap", as: :sitemap
     get "sitemap-:part.xml", to: "/seo#sitemap", as: :sitemap_part, constraints: { part: /[a-z0-9_-]+/ }

@@ -79,12 +79,14 @@ class SeoGenerator
 
   def apply!(d)
     i = @instance
-    i.site_title       = d["site_title"].to_s.strip.truncate(70, omission: "")        if d["site_title"].present?
-    i.meta_description = d["meta_description"].to_s.strip.truncate(160, omission: "") if d["meta_description"].present?
+    # Teks per bahasa ditulis ke key "<key>_<locale>" bila locale bukan bawaan (lihat Instance#localized).
+    set = ->(key, val) { i.public_send("#{i.localized_key(key, @locale)}=", val) }
+    set.("site_title",       d["site_title"].to_s.strip.truncate(70, omission: ""))        if d["site_title"].present?
+    set.("meta_description", d["meta_description"].to_s.strip.truncate(160, omission: "")) if d["meta_description"].present?
     i.app_name         = d["app_name"].to_s.strip.truncate(24, omission: "")          if d["app_name"].present? && i.app_name.blank?
-    i.footer_text      = d["footer_text"].to_s.strip.truncate(160, omission: "")      if d["footer_text"].present?
-    i.footer_about     = d["footer_about"].to_s.strip.truncate(400, omission: "")     if d["footer_about"].present?
-    i.seo_content      = d["seo_content"].to_s.strip                                   if d["seo_content"].present?
+    set.("footer_text",      d["footer_text"].to_s.strip.truncate(160, omission: ""))      if d["footer_text"].present?
+    set.("footer_about",     d["footer_about"].to_s.strip.truncate(400, omission: ""))     if d["footer_about"].present?
+    set.("seo_content",      d["seo_content"].to_s.strip)                                   if d["seo_content"].present?
     i.theme_font       = d["font"].to_s.strip.downcase if InstanceTheme::THEME_FONTS.key?(d["font"].to_s.strip.downcase)
     nav = clean_links(d["nav"]); i.nav_items = nav.map { |l| l.merge("enabled" => true) } if nav.size >= 2
     fl  = clean_links(d["footer_links"]); i.footer_links = fl if fl.any?

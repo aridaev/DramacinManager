@@ -106,7 +106,8 @@
       // Fullscreen pada WRAPPER (bukan <video>) agar overlay watermark ikut tampil; fallback "fullscreen palsu" (fixed) bila API tidak ada.
       const wrap = video.closest(".player-wrap");
       function fakeFs(on) { wrap.classList.toggle("is-fake-fs", on); wrap.classList.toggle("is-fs", on); document.documentElement.classList.toggle("fake-fs", on); if (on) lockLandscape(); }
-      function lockLandscape() { try { if (screen.orientation && screen.orientation.lock && window.innerWidth < 900) screen.orientation.lock("landscape").catch(() => {}); } catch (e) {} }
+      // Kunci orientasi hanya bila videonya landscape; video vertikal (9:16) dibiarkan bebas supaya bisa ditonton portrait.
+      function lockLandscape() { try { if (screen.orientation && screen.orientation.lock && window.innerWidth < 900 && video.videoWidth > video.videoHeight) screen.orientation.lock("landscape").catch(() => {}); } catch (e) {} }
       function toggleFs() {
         const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
         if (fsEl) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) { fakeFs(false); } return; }

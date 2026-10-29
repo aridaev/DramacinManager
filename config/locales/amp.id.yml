@@ -1,0 +1,14 @@
+id:
+  template:
+    v1:
+      amp:
+        watch: "Nonton Sekarang"
+        full_site: "Buka situs lengkap"
+  admin:
+    instances:
+      f_amp_enabled: "Aktifkan halaman AMP (/amp)"
+      f_amp_hint: "Halaman AMP ringan: logo, banner iklan, tombol login & nonton. Beranda otomatis memasang <link rel=amphtml>."
+      f_amp_google_redirect: "Pengunjung dari Google dialihkan ke /amp dulu"
+      f_amp_google_redirect_hint: "Hanya kunjungan pertama dari google.* (referer); dari AMP lanjut ke beranda via tombol Nonton."
+      locale_variant: "Varian %{lang}"
+      locale_variant_hint: "kosongkan untuk memakai teks utama"

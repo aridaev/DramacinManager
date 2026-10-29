@@ -100,7 +100,7 @@
         </div>
         <% if current_instance&.social_links&.any? %><div class="footer-social"><% current_instance.social_links.each do |sl| %><%= link_to sl["name"], sl["url"], target: "_blank", rel: "noopener", class: "social-btn", style: "--sc:#{sl['color']}" %><% end %></div><% end %>
         <p class="footer-text"><%= tv1_footer_text %></p>
-        <% if current_instance&.footer_about.present? %><p class="footer-about"><%= simple_format(current_instance.footer_about, {}, wrapper_tag: "span") %></p><% end %>
+        <% if (about = current_instance&.localized("footer_about")).present? %><p class="footer-about"><%= simple_format(about, {}, wrapper_tag: "span") %></p><% end %>
         <p class="footer-copy">
           <% if tv1_copyright %><%= tv1_copyright %><% else %>© <%= Date.current.year %> <%= tv1_site_name %><% end %>
           <% show_prov = current_instance.nil? || current_instance.footer_show_providers?; show_pow = current_instance.nil? || current_instance.footer_show_powered? %>

@@ -1,0 +1,12 @@
+<%# Varian teks per bahasa tambahan (mis. EN). fields: [[key, :text_field|:text_area, opts], ...] %>
+<% Instance::EXTRA_LOCALES.each do |loc| %>
+  <details class="locale-fields" <%= "open" if fields.any? { |k, _, _| @instance.settings["#{k}_#{loc}"].present? } %>>
+    <summary class="muted" style="cursor:pointer;font-size:.8rem;margin:4px 0 8px"><%= t("admin.instances.locale_variant", lang: t("locales.#{loc}")) %> · <span class="field-hint"><%= t("admin.instances.locale_variant_hint") %></span></summary>
+    <% fields.each do |key, kind, opts| %>
+      <div class="field">
+        <div class="field-label-row"><%= f.label "#{key}_#{loc}", "#{t("admin.instances.#{opts.delete(:label) || "f_#{key}"}")} (#{loc.upcase})" %></div>
+        <%= f.public_send(kind, "#{key}_#{loc}", **opts) %>
+      </div>
+    <% end %>
+  </details>
+<% end %>

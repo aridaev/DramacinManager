@@ -1,0 +1,69 @@
+<% inst = current_instance
+   site = tv1_site_name
+   logo = tv1_logo_url.presence
+   logo = request.base_url + logo if logo && !logo.start_with?("http")
+   banner = inst&.ads_image_url.presence
+   title = inst&.localized("ads_title").presence || site
+   text = inst&.localized("ads_text").to_s.strip.gsub(/\s+/, " ")
+   login_href = inst&.ads_button_href
+   login_label = inst&.localized("ads_button_text").presence || t("ads.button_default")
+   canon = request.base_url + tv1_nav_url("/")
+   watch_href = "#{canon}#{canon.include?('?') ? '&' : '?'}from=amp"
+   accent = inst&.theme("theme_accent").presence || "#e10037" %>
+<!doctype html>
+<html ⚡ lang="<%= I18n.locale %>">
+<head>
+<meta charset="utf-8">
+<script async src="https://cdn.ampproject.org/v0.js"></script>
+<title><%= [ title, site ].uniq.join(" · ") %></title>
+<link rel="canonical" href="<%= canon %>">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="description" content="<%= (text.presence || tv1_meta_description).to_s.truncate(160) %>">
+<% if (gsc = inst&.gsc_verification.presence) %><meta name="google-site-verification" content="<%= gsc %>"><% end %>
+<link rel="icon" href="<%= tv1_icon_url.start_with?("http") ? tv1_icon_url : request.base_url + tv1_icon_url %>">
+<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+<style amp-custom>
+body{margin:0;background:#0b0c10;color:#f3f4f6;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.45}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+.logo{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 18px;text-decoration:none;color:#fff}
+.logo amp-img{width:auto}
+.brand{font-size:1.3rem;font-weight:800;letter-spacing:.01em}
+.banner{border-radius:14px;overflow:hidden;background:#15171c;box-shadow:0 12px 36px rgba(0,0,0,.45)}
+.card{margin-top:16px;text-align:center}
+h1{font-size:1.25rem;margin:0 0 8px}
+p{margin:0 0 14px;color:#c9cbd2;font-size:.95rem}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-block;min-width:150px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:1rem;text-decoration:none;color:#fff;background:#2a2d36;border:1px solid #3a3e4a}
+.btn-primary{background:<%= accent %>;border-color:<%= accent %>}
+.foot{margin-top:30px;text-align:center;color:#8a8d97;font-size:.78rem}
+.foot a{color:#8a8d97}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="logo" href="<%= watch_href %>">
+    <% if logo %><amp-img src="<%= logo %>" width="160" height="48" layout="fixed" alt="<%= site %>"></amp-img>
+    <% else %><span class="brand"><%= site %></span><% end %>
+  </a>
+
+  <% if banner %>
+  <div class="banner">
+    <% if login_href %><a href="<%= login_href %>" target="_blank" rel="nofollow sponsored noopener"><% end %>
+    <amp-img src="<%= banner %>" width="16" height="9" layout="responsive" alt="<%= title %>"></amp-img>
+    <% if login_href %></a><% end %>
+  </div>
+  <% end %>
+
+  <div class="card">
+    <h1><%= title %></h1>
+    <% if text.present? %><p><%= text %></p><% end %>
+    <div class="actions">
+      <% if login_href %><a class="btn" href="<%= login_href %>" target="_blank" rel="nofollow sponsored noopener"><%= login_label %></a><% end %>
+      <a class="btn btn-primary" href="<%= watch_href %>"><%= t("template.v1.amp.watch") %></a>
+    </div>
+  </div>
+
+  <div class="foot"><%= tv1_copyright.presence || "© #{Date.current.year} #{site}" %> · <a href="<%= canon %>"><%= t("template.v1.amp.full_site") %></a></div>
+</div>
+</body>
+</html>

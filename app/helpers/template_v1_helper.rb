@@ -51,7 +51,7 @@ module TemplateV1Helper
   SEO_TAGS = %w[h2 h3 h4 p ul ol li strong em b i a br].freeze
   # Konten SEO beranda: isi instance (HTML disanitasi) atau konten bawaan 500–800 kata.
   def tv1_seo_content_html
-    raw = current_instance&.seo_content.to_s.strip
+    raw = current_instance&.localized("seo_content").to_s.strip
     if raw.present?
       html = raw.match?(/<\w+[^>]*>/) ? raw : simple_format(raw)
       sanitize(html, tags: SEO_TAGS, attributes: %w[href])
@@ -75,7 +75,7 @@ module TemplateV1Helper
     end
   end
 
-  def tv1_site_title = current_instance&.site_title.presence || tv1_site_name
+  def tv1_site_title = current_instance&.localized("site_title").presence || tv1_site_name
 
   # Keyword efektif: isian instance + otomatis "Nonton <Penyedia>", "Streaming <Penyedia>", judul drama, genre.
   def tv1_keywords
@@ -95,7 +95,7 @@ module TemplateV1Helper
   def tv1_seo_title
     prov = current_provider&.name || tv1_site_name
     case tv1_seo_page
-    when "home"     then current_instance&.site_title.presence || tt("seo.t_home", site: tv1_site_name)
+    when "home"     then current_instance&.localized("site_title").presence || tt("seo.t_home", site: tv1_site_name)
     when "provider" then tt("seo.t_provider", provider: prov, site: tv1_site_name)
     when "latest"   then tt("seo.t_latest", provider: prov, site: tv1_site_name)
     when "genres"   then tt("seo.t_genres", site: tv1_site_name)

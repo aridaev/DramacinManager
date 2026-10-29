@@ -222,6 +222,17 @@
             <%= f.url_field :ads_image_url, placeholder: "https://.../banner.jpg" %>
           </div>
         </div>
+        <%= render "admin/instances/locale_fields", f: f, fields: [ [ "ads_title", :text_field, { maxlength: 90 } ], [ "ads_text", :text_area, { rows: 2, maxlength: 400 } ], [ "ads_button_text", :text_field, { maxlength: 40 } ] ] %>
+        <div class="form-row" style="margin-top:10px">
+          <div class="field">
+            <label class="check-row"><%= f.check_box :amp_enabled, { checked: @instance.amp_enabled? }, "1", "0" %> <%= t("admin.instances.f_amp_enabled") %></label>
+            <span class="field-hint"><%= t("admin.instances.f_amp_hint") %><% if (h = @instance.primary_host) %> · <a href="https://<%= h %>/amp" target="_blank">https://<%= h %>/amp</a><% end %></span>
+          </div>
+          <div class="field">
+            <label class="check-row"><%= f.check_box :amp_google_redirect, { checked: @instance.amp_google_redirect? }, "1", "0" %> <%= t("admin.instances.f_amp_google_redirect") %></label>
+            <span class="field-hint"><%= t("admin.instances.f_amp_google_redirect_hint") %></span>
+          </div>
+        </div>
         <% if @instance.ads_enabled? && !@instance.ads_active? %><p class="form-errors"><%= t("admin.instances.ads_need_content") %></p><% end %>
       </section>
 
@@ -279,6 +290,7 @@
           <div class="field-label-row"><%= f.label :seo_content, t("admin.instances.f_seo_content") %><span class="field-hint"><%= t("admin.instances.seo_words", count: @instance.seo_word_count) %> · <%= t("admin.instances.f_seo_content_hint") %></span></div>
           <%= f.text_area :seo_content, rows: 12, placeholder: t("admin.instances.f_seo_content_ph"), style: "font-family:ui-monospace,monospace;font-size:.8rem" %>
         </div>
+        <%= render "admin/instances/locale_fields", f: f, fields: [ [ "site_title", :text_field, { maxlength: 70 } ], [ "meta_description", :text_area, { rows: 2, maxlength: 160, label: "f_meta" } ], [ "seo_content", :text_area, { rows: 8, style: "font-family:ui-monospace,monospace;font-size:.8rem" } ] ] %>
         <div class="serp">
           <div class="serp-title" data-serp="title"><%= @instance.site_title.presence || @instance.app_name.presence || t("admin.instances.serp_title_placeholder") %></div>
           <div class="serp-url">dracin.aridaev.com › …</div>
@@ -358,6 +370,7 @@
           <div class="field-label-row"><%= f.label :footer_about, t("admin.instances.f_footer_about") %><span class="field-hint"><%= t("admin.instances.f_footer_about_hint") %></span></div>
           <%= f.text_area :footer_about, rows: 3, placeholder: t("admin.instances.f_footer_about_ph") %>
         </div>
+        <%= render "admin/instances/locale_fields", f: f, fields: [ [ "footer_text", :text_field, {} ], [ "footer_about", :text_area, { rows: 2 } ] ] %>
 
         <div class="field">
           <div class="field-label-row">

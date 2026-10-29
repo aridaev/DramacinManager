@@ -3,7 +3,7 @@
 module Template::V1::InstanceAware
   extend ActiveSupport::Concern
 
-  ROUTE_NAMES = %w[root search genres latest genre stream subtitle drama watch provider_home sitemap robots member member_login member_register member_logout member_deposit].freeze
+  ROUTE_NAMES = %w[root amp search genres latest genre stream subtitle drama watch provider_home sitemap robots member member_login member_register member_logout member_deposit].freeze
 
   # Mengganti helper template_v1_*_path → site_*_path saat melayani domain instance.
   # Dipakai di controller template v1 (termasuk streams/subtitles) dan sebagai view helper.
@@ -55,8 +55,8 @@ module Template::V1::InstanceAware
     @current_instance = host_instance || preview_instance
   end
 
-  def tv1_site_name        = current_instance&.app_name.presence || current_instance&.site_title.presence || t("template.v1.site_name")
-  def tv1_meta_description = current_instance&.meta_description.presence || t("template.v1.meta_description")
+  def tv1_site_name        = current_instance&.app_name.presence || current_instance&.localized("site_title").presence || t("template.v1.site_name")
+  def tv1_meta_description = current_instance&.localized("meta_description").presence || t("template.v1.meta_description")
   def tv1_icon_url         = current_instance&.icon_url.presence || "/icon.svg"
   def tv1_logo_url         = current_instance&.logo_url.presence
   def tv1_nav_items
@@ -81,7 +81,7 @@ module Template::V1::InstanceAware
   end
   # Iklan pra-tayang tampil bila diaktifkan dan penonton bukan member bebas iklan.
   def show_ads? = current_instance&.ads_active? && !current_member&.adfree?
-  def tv1_footer_text      = current_instance&.footer_text.presence || t("template.v1.footer.tagline")
+  def tv1_footer_text      = current_instance&.localized("footer_text").presence || t("template.v1.footer.tagline")
   def tv1_footer_links     = current_instance ? current_instance.footer_link_list : []
   def tv1_copyright        = current_instance&.copyright.presence
 

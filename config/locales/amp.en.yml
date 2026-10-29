@@ -1,0 +1,14 @@
+en:
+  template:
+    v1:
+      amp:
+        watch: "Watch Now"
+        full_site: "Open full site"
+  admin:
+    instances:
+      f_amp_enabled: "Enable AMP page (/amp)"
+      f_amp_hint: "Lightweight AMP page: logo, ad banner, login & watch buttons. Home page automatically gets <link rel=amphtml>."
+      f_amp_google_redirect: "Send visitors coming from Google to /amp first"
+      f_amp_google_redirect_hint: "First visit from google.* (referer) only; from AMP they continue to home via the Watch button."
+      locale_variant: "%{lang} variant"
+      locale_variant_hint: "leave empty to use the main text"

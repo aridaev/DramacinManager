@@ -16,7 +16,11 @@ class Instance < ApplicationRecord
   }.freeze
   # Halaman bawaan template (untuk pilihan cepat navbar/footer).
   PAGES = [ [ "/", "Beranda" ], [ "/genre", "Semua genre" ], [ "/latest", "Terbaru" ], [ "/search", "Cari" ] ].freeze
-  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url members_enabled adfree_site_url] + SOCIALS.keys.map { |k| "social_#{k}" }).freeze
+  # Teks yang bisa punya varian per bahasa: disimpan sebagai "<key>_<locale>" (mis. seo_content_en);
+  # locale bawaan (:id) memakai key polos. Baca lewat #localized(key).
+  LOCALIZED_KEYS = %w[site_title meta_description seo_content footer_text footer_about ads_title ads_text ads_button_text].freeze
+  EXTRA_LOCALES = (I18n.available_locales - [ I18n.default_locale ]).map(&:to_s).freeze
+  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url amp_enabled amp_google_redirect members_enabled adfree_site_url] + SOCIALS.keys.map { |k| "social_#{k}" } + LOCALIZED_KEYS.product(EXTRA_LOCALES).map { |k, l| "#{k}_#{l}" }).freeze
   WATERMARK_SIZES = %w[small medium large xlarge].freeze
   WATERMARK_POSITIONS = %w[top-center top-left top-right bottom-left bottom-right].freeze
   include InstanceTheme
@@ -78,6 +82,9 @@ class Instance < ApplicationRecord
   def ads_seconds = ads_duration.to_i.clamp(ADS_DURATION_RANGE.min, ADS_DURATION_RANGE.max).then { |n| ads_duration.present? ? n : 6 }
   def ads_active? = ads_enabled? && (ads_title.present? || ads_text.present? || ads_image_url.present?)
   def ads_button_href = ads_button_url.to_s.strip.then { |u| u.match?(%r{\Ahttps?://}i) ? u : nil }
+  # Halaman AMP (/amp): aktif bila dicentang; isinya dari pengaturan iklan (banner, tombol login).
+  def amp_enabled? = amp_enabled == "1"
+  def amp_google_redirect? = amp_enabled? && amp_google_redirect == "1"
 
   def watermark_src = watermark_url.presence || logo_url.presence || icon_url.presence
   def watermark_pos = watermark_position.presence || "top-center"
@@ -133,6 +140,18 @@ class Instance < ApplicationRecord
   SETTING_KEYS.each do |key|
     define_method(key) { settings[key] }
     define_method("#{key}=") { |v| self.settings = settings.merge(key => v.to_s.strip.presence) }
+  end
+
+  # Nilai teks sesuai bahasa aktif: "<key>_<locale>" bila terisi, jika tidak jatuh ke key polos.
+  def localized(key, locale = I18n.locale)
+    key = key.to_s; loc = locale.to_s
+    return settings[key] if loc == I18n.default_locale.to_s || !EXTRA_LOCALES.include?(loc)
+    settings["#{key}_#{loc}"].presence || settings[key]
+  end
+
+  def localized_key(key, locale = I18n.locale)
+    loc = locale.to_s
+    EXTRA_LOCALES.include?(loc) ? "#{key}_#{loc}" : key.to_s
   end
 
   # Kode verifikasi GSC/Bing: terima kode polos atau seluruh tag <meta ... content="...">.

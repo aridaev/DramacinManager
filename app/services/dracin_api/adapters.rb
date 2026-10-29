@@ -7,6 +7,8 @@ module DracinApi
       "dramabite"    => "DracinApi::Adapters::Dramabite",
       "dotdrama"   => "DracinApi::Adapters::Dotdrama",
       "rapidtv"    => "DracinApi::Adapters::Rapidtv",
+      "happyshort" => "DracinApi::Adapters::Happyshort",
+      "bonustv"    => "DracinApi::Adapters::Bonustv",
       # "raptdrama" => "DracinApi::Adapters::Raptdrama", # upstream detail/episodes kosong (Okt 2026); aktifkan bila sudah pulih
       "dramabox"   => "DracinApi::Adapters::Dramabox",
       "dramawave"  => "DracinApi::Adapters::Dramawave",

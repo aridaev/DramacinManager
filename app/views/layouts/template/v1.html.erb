@@ -113,7 +113,7 @@
               <% if tv1_logo_url %><%= image_tag tv1_logo_url, alt: tv1_site_name, class: "brand-logo" %><% else %><span class="brand-mark"><%= tv1_site_name.to_s[0, 1].upcase %></span><span class="brand-name"><%= tv1_site_name %></span><% end %>
             <% end %>
             <p><%= tv1_footer_text %></p>
-            <% if current_instance&.footer_about.present? %><p class="muted footer-about"><%= simple_format(current_instance.footer_about, {}, wrapper_tag: "span") %></p><% end %>
+            <% if (about = current_instance&.localized("footer_about")).present? %><p class="muted footer-about"><%= simple_format(about, {}, wrapper_tag: "span") %></p><% end %>
           </div>
           <% if tv1_footer_links.any? %>
             <nav class="footer-links" aria-label="footer">
