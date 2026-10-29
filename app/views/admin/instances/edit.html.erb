@@ -581,7 +581,7 @@
       var genresBtn = document.querySelector("[data-nav-genres]");
       if (genresBtn) genresBtn.addEventListener("click", function () { addNav("Genre", "/genre", <%= ::Template::V1::BaseController::GENRES.map { |g| [ t("template.v1.genres.#{g}", default: g.titleize), "/genre/#{g}" ] }.to_json.html_safe %>); });
       document.getElementById("nav-reset").addEventListener("click", function () {
-        if (!confirm(<%= t("admin.instances.nav_reset_confirm").to_json %>)) return;
+        if (!confirm(<%= t("admin.instances.nav_reset_confirm").to_json.html_safe %>)) return;
         root.innerHTML = ""; <%= Instance::DEFAULT_NAV.map { |n| [ n["label"], n["url"] ] }.to_json.html_safe %>.forEach(function (n) { addNav(n[0], n[1]); });
       });
 

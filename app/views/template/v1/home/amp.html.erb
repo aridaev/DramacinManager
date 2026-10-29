@@ -15,10 +15,10 @@
 <head>
 <meta charset="utf-8">
 <script async src="https://cdn.ampproject.org/v0.js"></script>
-<title><%= [ title, site ].uniq.join(" · ") %></title>
+<title><%= tv1_seo_title %></title>
 <link rel="canonical" href="<%= canon %>">
 <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
-<meta name="description" content="<%= (text.presence || tv1_meta_description).to_s.truncate(160) %>">
+<meta name="description" content="<%= tv1_seo_description %>">
 <% if (gsc = inst&.gsc_verification.presence) %><meta name="google-site-verification" content="<%= gsc %>"><% end %>
 <link rel="icon" href="<%= tv1_icon_url.start_with?("http") ? tv1_icon_url : request.base_url + tv1_icon_url %>">
 <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
