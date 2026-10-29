@@ -55,7 +55,7 @@ module DracinApi
         # /api/latest memakai `url` (bukan contentCoverUrl) untuk cover.
         cover = d["contentCoverUrl"].presence || (d["url"].to_s.match?(/\.(jpe?g|png|webp)(\?|$)/i) ? d["url"] : nil)
         drama(id: d["contentId"] || d["id"], title: d["contentName"].to_s.strip, cover: cover, synopsis: d["introduce"],
-              episodes: (d["chapterNum"] || d["chapterNumber"]).to_i.nonzero?, genres: Array(d["tag"].is_a?(String) ? d["tag"].split(/[,，]/) : d["tag"]).first(5),
+              episodes: (d["chapterNum"] || d["chapterNumber"]).to_i.nonzero?, genres: Array(d["tag"].is_a?(String) ? d["tag"].split(/[,，]/) : d["tag"]).map(&:to_s).map(&:strip).reject { |g| g.blank? || g.match?(/\A-?\d+\z/) }.first(5),
               language: nil, rating: nil, year: nil, status: nil)
       end
     end
