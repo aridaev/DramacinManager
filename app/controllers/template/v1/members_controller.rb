@@ -1,5 +1,7 @@
 # Akun penonton (bebas iklan) di situs publik instance. Terpisah total dari login dashboard (Devise User).
 class Template::V1::MembersController < Template::V1::BaseController
+  SHARE_IP_LIMIT = 5
+
   before_action :require_members!
   before_action :require_member!, only: [ :deposit, :logout ]
 
@@ -49,7 +51,29 @@ class Template::V1::MembersController < Template::V1::BaseController
     end
   end
 
+  # Klaim hadiah bebas iklan dari share (tamu atau member). Dipanggil via fetch dari tombol share.
+  def share
+    wait = share_wait_seconds
+    return render(json: { ok: false, message: tt("members.share_wait", m: (wait / 60.0).ceil) }, status: :too_many_requests) if wait > 0
+
+    bucket = "share:#{current_instance.id}:#{request.remote_ip}:#{Time.current.to_i / SHARE_COOLDOWN.to_i}"
+    n = Rails.cache.read(bucket).to_i
+    return render(json: { ok: false, message: tt("members.share_limit") }, status: :too_many_requests) if n >= SHARE_IP_LIMIT
+
+    Rails.cache.write(bucket, n + 1, expires_in: SHARE_COOLDOWN)
+    until_at = SHARE_REWARD.from_now
+    cookies.signed[share_cookie_key] = { value: until_at.to_i, expires: SHARE_COOLDOWN.from_now, httponly: true, same_site: :lax, secure: request.ssl? }
+    render json: { ok: true, until: until_at.to_i, message: tt("members.share_ok", m: share_reward_minutes) }
+  end
+
   private
+  # Sisa detik sebelum hadiah share berikutnya boleh diambil (cookie hidup selama SHARE_COOLDOWN sejak klaim).
+  def share_wait_seconds
+    ts = cookies.signed[share_cookie_key].to_i
+    return 0 if ts.zero?
+    [ ts - SHARE_REWARD.to_i + SHARE_COOLDOWN.to_i - Time.current.to_i, 0 ].max
+  end
+
   def require_members!
     head :not_found unless current_instance&.members_enabled?
   end

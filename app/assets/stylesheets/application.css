@@ -656,6 +656,33 @@ html[data-density="compact"] .nav-in { height: 30px; }
 .domain-host { font-size: 1rem; margin-right: 6px; }
 .domain-ok { margin: 8px 0 0; color: var(--success); font-size: var(--fs-sm); }
 .domain-err { margin: 8px 0 0; color: var(--error); font-size: .78rem; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.domain-geo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: .78rem; }
+/* Telegram: grup forum + topic bersarang */
+.tg-group-head td { background: var(--surface); border-top: 2px solid var(--border); cursor: pointer; vertical-align: middle; }
+.tg-group-head:hover td { background: var(--bg); }
+.tg-group-head .tg-count { font-size: .72rem; margin: 0 6px; }
+.tg-chevron { display: inline-block; width: 0; height: 0; margin-right: 8px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--text-muted); transition: transform .15s; vertical-align: middle; }
+.tg-group.is-collapsed .tg-chevron { transform: rotate(-90deg); }
+.tg-group.is-collapsed > tr:not(.tg-group-head) { display: none; }
+.tg-topic-row > td:nth-child(2) { padding-left: 26px; border-left: 3px solid var(--border); }
+.tg-topic-name::before { content: "\21B3\00a0"; color: var(--text-muted); font-weight: 400; }
+/* Telegram: promosi per tujuan */
+.tg-promo { margin: 10px 0; padding: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.tg-promo-head { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; font-size: .8rem; }
+.tg-promo-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--border); }
+.tg-promo-item.is-off { opacity: .55; }
+.tg-promo-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); display: block; }
+.tg-promo-main { flex: 1; min-width: 0; }
+.tg-promo-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.tg-promo-new { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.tg-promo-new-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+@media (max-width: 700px) { .tg-promo-item { flex-wrap: wrap; } .tg-promo-actions { width: 100%; justify-content: flex-start; } }
+.geo-pick { flex-basis: 100%; }
+.geo-pick > summary { display: inline-flex; cursor: pointer; list-style: none; }
+.geo-pick > summary::-webkit-details-marker { display: none; }
+.geo-pick-box { margin-top: 8px; padding: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.geo-pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 4px 12px; max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
+.geo-opt { display: flex; align-items: center; gap: 6px; font-size: .78rem; cursor: pointer; }
 .ns-list { display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .ns-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
 .ns-item code { font-size: .86rem; background: transparent; padding: 0; }
@@ -737,6 +764,28 @@ html[data-density="compact"] .nav-in { height: 30px; }
 .ap-cookie-in { width: 100%; min-height: 52px; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: var(--radius); font: inherit; font-size: .78rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; }
 .ap-cookie-in:focus { outline: 0; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ring); }
 @media (max-width: 640px) { .ap-cookie-row { grid-template-columns: 1fr; } .ap-cookie-row .btn { width: 100%; } }
+/* auto posting: tabel akun, satu form "Simpan semua" */
+.ap-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.ap-table { font-size: .8rem; }
+.ap-table th, .ap-table td { padding: 6px 8px; vertical-align: top; }
+.ap-table th { white-space: nowrap; }
+.ap-table .ap-in { height: 28px; font-size: .78rem; padding: 0 6px; }
+.ap-table .ap-in.is-filled { border-color: var(--primary); background: #f3f6ff; }
+.ap-table input[type="checkbox"] { accent-color: var(--primary); width: 15px; height: 15px; vertical-align: middle; }
+.ap-check { display: flex; align-items: center; gap: 5px; font-size: .76rem; color: var(--label); white-space: nowrap; margin: 2px 0; }
+.ap-sub { font-size: .7rem; color: var(--text-muted); margin-top: 3px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ap-row.is-dead td { background: #fff5f5; }
+.ap-actions { white-space: nowrap; }
+.ap-actions .btn { margin: 1px 0; }
+.ap-actions .btn.is-active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.fill-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); border-radius: 4px; font-size: .7rem; line-height: 1; padding: 2px 4px; cursor: pointer; vertical-align: middle; }
+.fill-btn:hover { color: var(--primary); border-color: var(--primary); }
+.ap-detail td { white-space: normal; background: var(--bg); }
+.ap-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+.ap-detail-grid .field { margin: 0; }
+.ap-detail .ap-cookie-in { min-height: 40px; }
+.ap-drama-row { display: grid; grid-template-columns: 150px 1fr 1fr; gap: 6px; }
+@media (max-width: 900px) { .ap-detail-grid, .ap-drama-row { grid-template-columns: 1fr; } }
 .pkg-row { display: grid; grid-template-columns: minmax(140px, 1fr) 110px auto 32px; gap: 8px; align-items: center; }
 /* halaman member: filter, statistik, grafik */
 .mem-filter { margin-bottom: var(--sp-4); }

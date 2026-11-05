@@ -4,6 +4,8 @@ class Admin::ApiSourcesController < Admin::BaseController
   def index
     @sources = ApiSource.ordered.includes(:providers)
     @provider_counts = Provider.group(:api_source_id).count
+    @error_stats = ProviderErrorStat.report
+    @muted = Provider.where("unavailable_until > ?", Time.current).includes(:api_source).ordered.to_a
   end
 
   def new

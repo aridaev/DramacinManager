@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     post "akun/register", to: "members#register", as: :member_register
     delete "akun/logout", to: "members#logout", as: :member_logout
     post "akun/deposit", to: "members#deposit", as: :member_deposit
+    post "akun/share", to: "members#share", as: :member_share
   end
 
   # Domain kustom instance (tabel domains) → template instance dilayani di root host tersebut.
@@ -40,8 +41,11 @@ Rails.application.routes.draw do
       collection do
         patch :enable_all
         patch :disable_all
+        post :unmute
+        post :recheck_all
         post :sync_status
       end
+      member { post :recheck }
     end
     resource :settings, only: [ :edit, :update ] do
       post :test_connection
@@ -49,15 +53,31 @@ Rails.application.routes.draw do
     resources :instances, only: [ :index, :show, :create, :edit, :update, :destroy ] do
       member { patch :regenerate; patch :generate_seo; get :seo_status; match :submit_indexnow, via: [ :post, :patch ] }
       resources :domains, only: [ :create, :destroy ] do
-        member { post :refresh; post :retry }
+        member { post :refresh; post :retry; post :geo }
       end
       resources :members, only: [ :index, :destroy ] do
         member { post :approve; post :reject; post :grant; post :revoke }
       end
       resources :stats, only: [ :index ]
       resources :auto_posts, only: [ :index, :create, :update, :destroy ] do
-        collection { get :dramas }
-        member { post :run_now }
+        collection { get :dramas; patch :bulk_update }
+        member { post :run_now; post :sync_profile }
+      end
+      resource :telegram, only: [ :show ], controller: "telegram" do
+        post :qr_start
+        get :qr_status
+        post :qr_password
+        post :qr_cancel
+        post :logout
+        post :sync_dialogs
+        patch :bulk_update
+        post "targets/:target_id/run_now", action: :run_now, as: :run_now_target
+        delete "targets/:target_id", action: :destroy_target, as: :target
+        post "targets/:target_id/promos", action: :create_promo, as: :target_promos
+        post "targets/:target_id/promo_run_now", action: :promo_run_now, as: :promo_run_now_target
+        patch "promos/:promo_id", action: :update_promo, as: :promo
+        delete "promos/:promo_id", action: :destroy_promo
+        get "promos/:promo_id/image", action: :promo_image, as: :promo_image
       end
     end
     resource :site_settings, only: [ :edit, :update ] do
@@ -65,6 +85,8 @@ Rails.application.routes.draw do
       delete :clear_tokenplus
       post :test_cloudflare
       delete :clear_cloudflare
+      post :test_telegram
+      delete :clear_telegram
     end
     resources :api_sources, except: [ :show ] do
       member do

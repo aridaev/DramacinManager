@@ -37,7 +37,40 @@ module AutoPoster
       configure(upload_id, caption)
     end
 
+    # Profil akun dari cookie (username, nama, bio, website) via endpoint edit profil web IG.
+    # => { "username" =>, "full_name" =>, "biography" =>, "external_url" => } (string, bisa kosong)
+    def profile
+      bootstrap! unless @dtsg
+      res = request(:get, "https://www.instagram.com/api/v1/accounts/edit/web_form_data/", nil, json_headers)
+      raise AuthError, "sesi ditolak saat baca profil (#{res.code})" if %w[401 403].include?(res.code)
+      raise Error, "profil gagal: HTTP #{res.code}" unless res.is_a?(Net::HTTPSuccess)
+      data = (JSON.parse(res.body) rescue {})["form_data"] || {}
+      data.slice("username", "first_name", "biography", "external_url", "email", "phone_number", "chaining_enabled").tap { |h| h["full_name"] = h.delete("first_name") }
+    end
+
+    # Ubah website (dan opsional bio) di profil; field lain dikirim ulang apa adanya (wajib oleh endpoint).
+    def update_profile!(website: nil, biography: nil)
+      cur = profile
+      form = {
+        first_name: cur["full_name"].to_s, username: cur["username"].to_s, email: cur["email"].to_s, phone_number: cur["phone_number"].to_s,
+        biography: (biography || cur["biography"]).to_s, external_url: (website || cur["external_url"]).to_s,
+        chaining_enabled: cur["chaining_enabled"] ? "on" : "off", jazoest: jazoest, fb_dtsg: @dtsg
+      }
+      hdr = api_headers.merge("content-type" => "application/x-www-form-urlencoded", "accept" => "*/*", "x-requested-with" => "XMLHttpRequest",
+                              "sec-fetch-site" => "same-origin", "sec-fetch-mode" => "cors", "sec-fetch-dest" => "empty")
+      res = request(:post, "https://www.instagram.com/api/v1/web/accounts/edit/", URI.encode_www_form(form), hdr)
+      raise AuthError, "sesi ditolak saat ubah profil (#{res.code})" if %w[401 403].include?(res.code)
+      json = JSON.parse(res.body) rescue {}
+      raise Error, "ubah profil gagal: HTTP #{res.code} #{json['message'] || res.body.to_s.first(200)}" unless res.is_a?(Net::HTTPSuccess) && json["status"] == "ok"
+      true
+    end
+
     private
+    def json_headers
+      api_headers.merge("accept" => "*/*", "x-requested-with" => "XMLHttpRequest", "referer" => "https://www.instagram.com/accounts/edit/",
+                        "sec-fetch-site" => "same-origin", "sec-fetch-mode" => "cors", "sec-fetch-dest" => "empty")
+    end
+
     # Ambil token halaman: fb_dtsg, rollout hash (x-instagram-ajax) dan csrftoken (bisa di-rotate lewat Set-Cookie).
     def bootstrap!
       res = request(:get, "https://www.instagram.com/", nil, navigate_headers)

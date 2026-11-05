@@ -1,0 +1,187 @@
+<% content_for :page_actions do %>
+  <%= link_to edit_admin_instance_path(@instance, anchor: "sec-telegram"), class: "btn btn-sm btn-secondary" do %><%= dm_icon("box", size: 16) %> <%= t("admin.auto_post.back_to_instance") %><% end %>
+  <%= link_to admin_instances_path, class: "btn btn-sm btn-secondary" do %><%= dm_icon("grid", size: 16) %> <%= t("admin.instances.title") %><% end %>
+<% end %>
+<%= render layout: "shared/app_shell", locals: { title: t("admin.telegram.page_title", name: @instance.display_name), subtitle: t("admin.telegram.page_subtitle") } do %>
+
+  <% unless @configured %>
+    <div class="flash flash-alert">
+      <%= t("admin.telegram.not_configured") %>
+      <% if admin? %> <%= link_to t("admin.site_settings.title"), edit_admin_site_settings_path(anchor: "telegram") %><% end %>
+    </div>
+  <% end %>
+
+  <%# ---------- Akun / login QR ---------- %>
+  <div class="card" id="tg-login-card"
+       data-start-url="<%= qr_start_admin_instance_telegram_path(@instance) %>" data-status-url="<%= qr_status_admin_instance_telegram_path(@instance) %>"
+       data-password-url="<%= qr_password_admin_instance_telegram_path(@instance) %>" data-cancel-url="<%= qr_cancel_admin_instance_telegram_path(@instance) %>">
+    <div class="card-head">
+      <h2><%= t("admin.telegram.account_title") %></h2>
+      <% if @account.logged_in? %><span class="badge badge-success"><%= t("admin.telegram.connected") %></span>
+      <% elsif @account.auth_dead? %><span class="badge badge-danger"><%= t("admin.telegram.session_dead") %></span>
+      <% else %><span class="badge badge-muted"><%= t("admin.telegram.not_logged_in") %></span><% end %>
+    </div>
+
+    <% if @account.logged_in? %>
+      <p style="margin:0 0 10px"><strong id="tg-account-label"><%= @account.label %></strong>
+        <% if @account.display_name.present? %><span class="muted"> · <%= @account.display_name %></span><% end %>
+        <% if @account.logged_in_at %><span class="muted" style="font-size:.76rem"> · <%= t("admin.telegram.logged_in_at", at: l(@account.logged_in_at, format: :short)) %></span><% end %></p>
+      <div class="actions-row">
+        <button type="submit" form="tg-sync-form" class="btn btn-sm"><%= dm_icon("zap", size: 14) %> <%= t("admin.telegram.sync") %></button>
+        <button type="submit" form="tg-logout-form" class="btn btn-sm btn-danger"><%= t("admin.telegram.logout") %></button>
+        <% if @account.dialogs_synced_at %><span class="muted" style="font-size:.76rem"><%= t("admin.telegram.synced_at", at: l(@account.dialogs_synced_at, format: :short)) %></span><% end %>
+      </div>
+    <% else %>
+      <% if @account.auth_dead? %><p class="domain-err"><%= t("admin.telegram.dead_hint", at: l(@account.auth_failed_at, format: :short)) %></p><% end %>
+      <p class="muted" style="font-size:.8rem;margin:0 0 10px"><%= t("admin.telegram.qr_howto") %></p>
+      <div class="actions-row"><button type="button" class="btn btn-sm" id="tg-qr-start" <%= "disabled" unless @configured %>><%= t("admin.telegram.qr_start") %></button></div>
+      <div id="tg-qr-box" hidden style="margin-top:12px">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+          <img id="tg-qr-img" alt="QR Telegram" width="220" height="220" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:6px">
+          <div style="max-width:360px;font-size:.8rem">
+            <p id="tg-qr-msg" style="margin:0 0 8px"></p>
+            <div id="tg-2fa" hidden>
+              <label for="tg-2fa-pw"><%= t("admin.telegram.password_label") %></label>
+              <div style="display:flex;gap:6px;margin-top:4px"><input type="password" id="tg-2fa-pw" class="nav-in" autocomplete="off" style="flex:1"><button type="button" class="btn btn-sm" id="tg-2fa-send"><%= t("admin.telegram.password_send") %></button></div>
+            </div>
+            <button type="button" class="btn btn-sm btn-secondary" id="tg-qr-cancel" style="margin-top:8px"><%= t("admin.telegram.qr_cancel") %></button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# ---------- Tujuan (grup/channel) ---------- %>
+  <% if @account.logged_in? %>
+    <% if @targets.empty? %>
+      <div class="card"><p class="muted"><%= t("admin.telegram.targets_empty") %></p></div>
+    <% else %>
+      <div class="card" id="tg-table-card">
+        <%= form_with url: bulk_update_admin_instance_telegram_path(@instance), method: :patch, id: "tg-bulk", data: { turbo: false } do %>
+          <div class="ap-toolbar">
+            <div><h2 style="margin:0"><%= t("admin.telegram.targets_title") %></h2><span class="muted" style="font-size:.74rem"><%= t("admin.telegram.targets_hint", min: TelegramTarget::MIN_INTERVAL) %></span></div>
+            <button type="submit" class="btn btn-sm"><%= dm_icon("check", size: 14) %> <%= t("admin.auto_post.save_all") %></button>
+          </div>
+          <div class="table-wrap">
+            <table class="table ap-table">
+              <thead><tr>
+                <th><%= t("admin.auto_post.col_on") %></th><th><%= t("admin.telegram.col_target") %></th><th><%= t("admin.auto_post.f_genres") %></th>
+                <th><%= t("admin.auto_post.col_interval") %></th><th><%= t("admin.auto_post.col_max") %></th><th><%= t("admin.auto_post.col_fx") %></th>
+                <th><%= t("admin.auto_post.col_status") %></th><th></th>
+              </tr></thead>
+                <% @groups.each do |rows| %>
+                  <% head = rows.first %>
+                  <% if rows.size == 1 && !head.topic? %>
+                    <tbody class="tg-single"><%= render "admin/telegram/target_row", tg: head, nested: false %></tbody>
+                  <% else %>
+                    <% gk = "#{head.peer_kind}-#{head.peer_id}"; on_n = rows.count(&:enabled?); open_it = on_n.positive? %>
+                    <tbody class="tg-group <%= "is-collapsed" unless open_it %>" id="tg-group-<%= gk %>">
+                      <tr class="tg-group-head" data-toggle-group="tg-group-<%= gk %>">
+                        <td><input type="checkbox" class="tg-all" title="<%= t("admin.telegram.topic_all") %>" <%= "disabled" unless rows.any?(&:can_post?) %>></td>
+                        <td colspan="7">
+                          <span class="tg-chevron" aria-hidden="true"></span>
+                          <strong><%= head.title.truncate(48) %></strong>
+                          <span class="badge badge-info"><%= t("admin.telegram.chat_type.forum") %></span>
+                          <span class="muted tg-count"><%= t("admin.telegram.topics_count", n: rows.size) %> · <span class="tg-on-n"><%= on_n %></span> <%= t("admin.telegram.topics_active") %></span>
+                          <% if head.username.present? %><a href="https://t.me/<%= head.username %>" target="_blank" rel="noopener" onclick="event.stopPropagation()">@<%= head.username %></a><% end %>
+                        </td>
+                      </tr>
+                      <% rows.each do |tg| %><%= render "admin/telegram/target_row", tg: tg, nested: true %><% end %>
+                    </tbody>
+                  <% end %>
+                <% end %>
+            </table>
+          </div>
+          <p class="muted" style="font-size:.74rem;margin:8px 0 0"><%= t("admin.telegram.flow_hint") %></p>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= form_with url: sync_dialogs_admin_instance_telegram_path(@instance), method: :post, id: "tg-sync-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: logout_admin_instance_telegram_path(@instance), method: :post, id: "tg-logout-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.telegram.logout_confirm').to_json})" } do %><% end %>
+  <% @targets.each do |tg| %>
+    <%= form_with url: run_now_target_admin_instance_telegram_path(@instance, target_id: tg.id), method: :post, id: "tg-run-#{tg.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.telegram.run_now_confirm', title: tg.display_title).to_json})" } do %><% end %>
+    <%= form_with url: target_admin_instance_telegram_path(@instance, target_id: tg.id), method: :delete, id: "tg-del-#{tg.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('common.confirm').to_json})" } do %><% end %>
+    <%= form_with url: target_promos_admin_instance_telegram_path(@instance, target_id: tg.id), method: :post, id: "tg-promo-new-#{tg.id}", multipart: true, data: { turbo: false }, html: { hidden: true } do %><% end %>
+    <%= form_with url: promo_run_now_target_admin_instance_telegram_path(@instance, target_id: tg.id), method: :post, id: "tg-promo-run-#{tg.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.telegram.promo.run_confirm', title: tg.display_title).to_json})" } do %><% end %>
+    <% tg.promos.each do |pr| %>
+      <%= form_with url: promo_admin_instance_telegram_path(@instance, promo_id: pr.id), method: :patch, id: "tg-promo-upd-#{pr.id}", data: { turbo: false }, html: { hidden: true } do %><% end %>
+      <%= form_with url: promo_admin_instance_telegram_path(@instance, promo_id: pr.id, enabled: pr.enabled? ? 0 : 1), method: :patch, id: "tg-promo-tog-#{pr.id}", data: { turbo: false }, html: { hidden: true } do %><% end %>
+      <%= form_with url: promo_admin_instance_telegram_path(@instance, promo_id: pr.id), method: :delete, id: "tg-promo-del-#{pr.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('common.confirm').to_json})" } do %><% end %>
+    <% end %>
+  <% end %>
+
+  <script>
+  (function () {
+    // Tombol "Promosi" di tiap baris: buka panel detail baris itu dan gulir ke sana.
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-open-promo]"); if (!b) return;
+      var d = document.getElementById(b.dataset.openPromo); if (!d) return;
+      d.open = true; d.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  })();
+  (function () {
+    // Grup forum: lipat/buka daftar topic, centang semua topic, dan hitung topic aktif.
+    document.querySelectorAll("tbody.tg-group").forEach(function (g) {
+      var head = g.querySelector(".tg-group-head"), all = g.querySelector(".tg-all"), num = g.querySelector(".tg-on-n");
+      var boxes = function () { return Array.prototype.slice.call(g.querySelectorAll('.tg-topic-row input[type="checkbox"][name$="[enabled]"]')); };
+      var sync = function () {
+        var b = boxes(), usable = b.filter(function (x) { return !x.disabled; }), on = b.filter(function (x) { return x.checked; }).length;
+        if (num) num.textContent = on;
+        if (all) { all.checked = usable.length > 0 && usable.every(function (x) { return x.checked; }); all.indeterminate = !all.checked && on > 0; }
+      };
+      head.addEventListener("click", function (e) { if (e.target === all || e.target.tagName === "A") return; g.classList.toggle("is-collapsed"); });
+      if (all) all.addEventListener("change", function () {
+        boxes().forEach(function (x) { if (!x.disabled) x.checked = all.checked; });
+        var f = document.getElementById("tg-bulk"); if (f) f.dispatchEvent(new Event("input", { bubbles: true }));
+        sync();
+      });
+      g.addEventListener("change", function (e) { if (e.target !== all) sync(); });
+      sync();
+    });
+  })();
+  (function () {
+    var card = document.getElementById("tg-login-card"), startBtn = document.getElementById("tg-qr-start");
+    var csrf = function () { var m = document.querySelector('meta[name="csrf-token"]'); return m ? m.content : ""; };
+    var form = document.getElementById("tg-bulk"), dirty = false;
+    if (form) { form.addEventListener("input", function (e) { if (!e.target.form || e.target.form === form) dirty = true; }); form.addEventListener("submit", function () { dirty = false; });
+      window.addEventListener("beforeunload", function (e) { if (dirty) { e.preventDefault(); e.returnValue = ""; } }); }
+    if (!card || !startBtn) return;
+
+    var box = document.getElementById("tg-qr-box"), img = document.getElementById("tg-qr-img"), msg = document.getElementById("tg-qr-msg"),
+        twofa = document.getElementById("tg-2fa"), pw = document.getElementById("tg-2fa-pw"), timer = null;
+    var i18n = <%= { waiting: t("admin.telegram.qr_waiting"), twofa: t("admin.telegram.qr_2fa"), expired: t("admin.telegram.qr_expired"), failed: t("admin.telegram.qr_failed"), ok: t("admin.telegram.qr_ok") }.to_json.html_safe %>;
+
+    function post(url, body) {
+      return fetch(url, { method: "POST", credentials: "same-origin", headers: { "X-CSRF-Token": csrf(), "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body || {}) })
+        .then(function (r) { return r.json().catch(function () { return { ok: false, message: "HTTP " + r.status }; }); });
+    }
+    function stop() { clearInterval(timer); timer = null; }
+    function reset() { stop(); box.hidden = true; twofa.hidden = true; startBtn.disabled = false; }
+    function done() { stop(); msg.textContent = i18n.ok; setTimeout(function () { location.href = location.pathname; }, 600); }
+
+    function poll() {
+      fetch(card.dataset.statusUrl, { credentials: "same-origin", headers: { Accept: "application/json" } }).then(function (r) { return r.json(); }).then(function (j) {
+        if (!j.ok) { msg.textContent = j.message || i18n.failed; return; }
+        if (j.state === "ok") return done();
+        if (j.state === "2fa") { twofa.hidden = false; msg.textContent = i18n.twofa; return; }
+        if (j.state === "waiting") { if (j.svg) img.src = j.svg; msg.textContent = i18n.waiting; return; }
+        stop(); msg.textContent = (j.state === "expired" || j.state === "gone") ? i18n.expired : (j.message || i18n.failed); startBtn.disabled = false;
+      }).catch(function () { msg.textContent = i18n.failed; });
+    }
+
+    startBtn.addEventListener("click", function () {
+      startBtn.disabled = true; msg.textContent = "…"; box.hidden = false; twofa.hidden = true;
+      post(card.dataset.startUrl).then(function (j) {
+        if (!j.ok) { msg.textContent = j.message || i18n.failed; startBtn.disabled = false; return; }
+        img.src = j.svg; msg.textContent = i18n.waiting; stop(); timer = setInterval(poll, 2500);
+      });
+    });
+    document.getElementById("tg-qr-cancel").addEventListener("click", function () { post(card.dataset.cancelUrl).then(reset); });
+    document.getElementById("tg-2fa-send").addEventListener("click", function () {
+      post(card.dataset.passwordUrl, { password: pw.value }).then(function (j) { if (j.ok) done(); else msg.textContent = j.message || i18n.failed; });
+    });
+  })();
+  </script>
+<% end %>

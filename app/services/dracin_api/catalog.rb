@@ -75,14 +75,19 @@ module DracinApi
 
     STALE_TTL = 6.hours # salinan "basi" dipakai bila upstream gagal/timeout (host *.goodbos.online sering lambat)
 
-    def fetch(*key, ttl: CACHE_TTL)
+    # Adapter boleh menetapkan CACHE_TTL sendiri (hub berkuota seperti Mola memakai TTL jauh lebih panjang).
+    def cache_ttl = (@adapter.class.const_defined?(:CACHE_TTL, false) ? @adapter.class::CACHE_TTL : CACHE_TTL)
+
+    def fetch(*key, ttl: cache_ttl)
       ckey = [ "dracin_api", "v2", slug, @lang, *key ]
       Rails.cache.fetch(ckey, expires_in: ttl, race_condition_ttl: RACE_TTL) do
-        value = with_fallback { |a| yield a }
+        value, used = with_fallback { |a| yield a }
         Rails.cache.write([ *ckey, "stale" ], value, expires_in: STALE_TTL) unless value.nil?
+        Health.ok!(provider, adapter: used) # hanya sumber adapter yang benar-benar berhasil yang dianggap sehat
         value
       end
     rescue DracinApi::Error => e
+      Health.fail!(provider, e, adapter: @adapter)
       stale = Rails.cache.read([ *ckey, "stale" ])
       raise if stale.nil?
       Rails.logger.warn("[DracinApi] #{slug} #{key.first}: #{e.message} → pakai cache lama")
@@ -90,16 +95,19 @@ module DracinApi
     end
 
     # Adapter utama error atau hasil kosong → coba adapter cadangan dari hub lain (Adapters.fallback_for).
+    # Mengembalikan [nilai, adapter yang dipakai].
     def with_fallback
       value = begin
         yield adapter
       rescue DracinApi::Error => e
         raise unless fallback
         Rails.logger.warn("[DracinApi] #{slug}: #{e.message} → fallback #{fallback.class.name.demodulize}")
-        return yield(fallback)
+        ProviderErrorStat.bump!(provider, ProviderErrorStat::RESCUED)
+        Health.source_fail!(provider, e, adapter: adapter) # sumber utama bermasalah walau cadangan menolong
+        return [ yield(fallback), fallback ]
       end
-      return yield(fallback) if fallback && (value.nil? || (value.respond_to?(:empty?) && value.empty?))
-      value
+      return [ yield(fallback), fallback ] if fallback && (value.nil? || (value.respond_to?(:empty?) && value.empty?))
+      [ value, adapter ]
     end
 
     def fallback

@@ -19,6 +19,8 @@
         <div class="member-status"><strong><%= tt("members.adfree_inactive") %></strong></div>
       <% end %>
 
+      <% unless @member.adfree? %><%= render "template/v1/shared/share" %><% end %>
+
       <div class="member-offer">
         <h2><%= tt("members.offer_title") %></h2>
         <ul class="member-pkgs">
@@ -65,10 +67,8 @@
       <% end %>
     <% else %>
       <h1><%= tt("members.title") %></h1>
-      <p class="member-intro"><%= tt("members.intro") %></p>
-      <ul class="member-pkgs">
-        <% pkgs.each do |p| %><li><strong><%= p["price"] %></strong> <span>→ <%= tt("members.offer_days", days: p["days"]) %></span></li><% end %>
-      </ul>
+      <p class="member-intro"><%= tt("members.intro_guest") %></p>
+      <%= render "template/v1/shared/share" %>
       <div class="member-tabs">
         <a href="<%= template_v1_member_path %>" class="<%= 'is-active' if tab == 'login' %>"><%= tt("members.login") %></a>
         <a href="<%= template_v1_member_path(tab: 'register') %>" class="<%= 'is-active' if tab == 'register' %>"><%= tt("members.register") %></a>

@@ -20,7 +20,7 @@ class Instance < ApplicationRecord
   # locale bawaan (:id) memakai key polos. Baca lewat #localized(key).
   LOCALIZED_KEYS = %w[site_title meta_description seo_content footer_text footer_about ads_title ads_text ads_button_text].freeze
   EXTRA_LOCALES = (I18n.available_locales - [ I18n.default_locale ]).map(&:to_s).freeze
-  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url amp_enabled amp_google_redirect members_enabled adfree_site_url] + SOCIALS.keys.map { |k| "social_#{k}" } + LOCALIZED_KEYS.product(EXTRA_LOCALES).map { |k, l| "#{k}_#{l}" }).freeze
+  SETTING_KEYS = (%w[app_name site_title meta_description icon_url logo_url copyright footer_text footer_about template watermark_url watermark_position watermark_opacity watermark_size watermark_text footer_show_providers footer_show_powered seo_content seo_keywords seo_generated_at seo_job_status seo_job_info seo_job_at protect_source gsc_verification bing_verification indexnow_key indexnow_auto indexnow_last ads_enabled ads_duration ads_title ads_text ads_image_url ads_button_text ads_button_url amp_enabled amp_google_redirect members_enabled adfree_site_url] + SOCIALS.keys.map { |k| "social_#{k}" } + LOCALIZED_KEYS.product(EXTRA_LOCALES).map { |k, l| "#{k}_#{l}" }).freeze
   WATERMARK_SIZES = %w[small medium large xlarge].freeze
   WATERMARK_POSITIONS = %w[top-center top-left top-right bottom-left bottom-right].freeze
   include InstanceTheme
@@ -46,6 +46,7 @@ class Instance < ApplicationRecord
   has_many :members, dependent: :destroy
   has_many :deposit_requests, dependent: :destroy
   has_many :auto_posts, dependent: :destroy
+  has_one :telegram_account, dependent: :destroy
   has_many :visits, dependent: :delete_all
 
   scope :owned_by, ->(user) { where(created_by_id: user.id) }
@@ -90,6 +91,12 @@ class Instance < ApplicationRecord
   def amp_google_redirect? = amp_enabled? && amp_google_redirect == "1"
 
   def watermark_src = watermark_url.presence || logo_url.presence || icon_url.presence
+  # Teks domain yang dibakar di video auto posting: isian manual, '0' = mati, kosong = domain aktif instance.
+  def watermark_text_value
+    v = watermark_text.to_s.strip
+    return nil if v == "0"
+    v.presence || domains.active.first&.hostname
+  end
   def watermark_pos = watermark_position.presence || "top-center"
   def watermark_alpha = (watermark_opacity.presence || 70).to_i
   def watermark_size_key = watermark_size.presence || "medium"

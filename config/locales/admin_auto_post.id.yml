@@ -6,7 +6,29 @@ id:
       title: Auto Posting
       hint: posting otomatis ke Instagram; tiap akun punya judul, jadwal, dan teks sendiri
       page_title: "Auto Posting — %{name}"
-      page_subtitle: "Satu kartu = satu akun Instagram (cookie). Akun boleh memakai judul yang sama atau berbeda."
+      page_subtitle: "Satu baris = satu akun Instagram (cookie). Ubah beberapa akun sekaligus lalu klik Simpan semua."
+      table_title: Akun Instagram
+      table_hint: "Klik ⇩ di judul kolom untuk menyalin nilai baris pertama ke semua baris. Cookie, judul manual, dan teks tetap ada di Detail."
+      save_all: Simpan semua
+      bulk_saved: "%{n} akun disimpan."
+      fill_hint: Salin nilai baris pertama ke semua baris
+      col_on: Aktif
+      col_account: Akun
+      col_title: Judul
+      col_auto: otomatis
+      col_interval: Interval (mnt)
+      col_max: Maks (dtk)
+      col_fx: Variasi
+      col_remix: remix
+      col_bgm: musik
+      col_status: Status
+      detail: Detail
+      run_now_short: Posting
+      sync_short: Sinkron
+      progress_short: "%{posts} post · EP %{ep}"
+      stat_dead: Cookie mati
+      status_dead: Cookie mati
+      dead_hint: "Cookie ditolak Instagram berkali-kali (%{at}) sehingga auto posting dinonaktifkan otomatis. Tempel cookie baru lalu Simpan semua dan centang Aktif."
       back_to_instance: Pengaturan instance
       manage: Kelola akun & auto posting
       accounts_count: "%{n} akun · %{on} aktif"
@@ -27,6 +49,10 @@ id:
       empty: Belum ada akun. Tambahkan cookie Instagram di atas.
       f_enabled: Aktifkan auto posting untuk akun ini
       f_label: Nama akun
+      f_label_hint: otomatis @username dari cookie bila dikosongkan
+      profile_status: Profil
+      sync_profile: Sinkron profil
+      sync_profile_queued: Sinkron profil diantrekan (username + website bio).
       f_cookie: Cookie
       f_cookie_hint: kosongkan bila tidak diganti
       cookie_label_ph: Nama akun (opsional)
@@ -57,6 +83,8 @@ id:
       f_auto_title_hint: "judul diambil dari Statistik pengunjung (paling banyak dibuka, belum pernah diposting akun ini); bila sudah habis, acak dari judul terbaru penyedia"
       f_episodes_per_title: Episode per judul
       f_episodes_per_title_hint: setelah jatah habis, ganti judul berikutnya
+      f_genres: Genre otomatis
+      f_genres_hint: "dipisah koma; judul otomatis diambil dari statistik yang cocok genre ini, lalu pencarian genre di penyedia, lalu acak terbaru; kosongkan = semua genre"
       f_title_manual_hint: "opsional saat judul otomatis: judul awal / judul saat ini"
       f_remix: Variasi anti-copyright
       f_remix_hint: "tiap unggahan diubah sedikit (kecepatan ±3-5 %, nada suara, zoom-crop, warna, awal digeser) agar sidik jari audio/video tidak sama dengan sumber atau akun lain; judul juga dirotasi antar akun"

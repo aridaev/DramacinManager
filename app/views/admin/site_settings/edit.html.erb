@@ -68,6 +68,31 @@
       </div>
     </div>
 
+    <div class="card" id="telegram">
+      <div class="card-head">
+        <h2><%= dm_icon("plug", size: 18) %> <%= t("admin.site_settings.tg_title") %></h2>
+        <% if @tg_api_id.present? && @tg_api_hash.present? %><span class="badge badge-success"><%= t("admin.site_settings.tg_connected") %></span><% else %><span class="badge badge-muted"><%= t("common.not_set") %></span><% end %>
+      </div>
+      <p><%= t("admin.site_settings.tg_text_html") %></p>
+      <div class="form-row">
+        <div class="field">
+          <div class="field-label-row"><%= f.label :telegram_api_id, t("admin.site_settings.tg_api_id") %><span class="field-hint"><%= @tg_api_id.present? ? t("admin.settings.api_key_current", masked: masked_secret(@tg_api_id)) : "" %></span></div>
+          <%= f.text_field :telegram_api_id, value: "", autocomplete: "off", inputmode: "numeric", placeholder: @tg_api_id.present? ? t("admin.api_sources.f_api_key_keep") : "12345678" %>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><%= f.label :telegram_api_hash, t("admin.site_settings.tg_api_hash") %><span class="field-hint"><%= @tg_api_hash.present? ? t("admin.settings.api_key_current", masked: masked_secret(@tg_api_hash)) : "" %></span></div>
+          <%= f.password_field :telegram_api_hash, autocomplete: "off", placeholder: @tg_api_hash.present? ? t("admin.api_sources.f_api_key_keep") : "0123456789abcdef…" %>
+        </div>
+      </div>
+      <div class="field-actions" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <%= f.submit t("common.save"), class: "btn btn-sm" %>
+        <button type="submit" class="btn btn-secondary btn-sm" form="tg-test-form" <%= "disabled" if @tg_api_id.blank? || @tg_api_hash.blank? %>><%= t("admin.site_settings.tg_test") %></button>
+        <button type="submit" class="btn btn-danger btn-sm" form="tg-clear-form" <%= "disabled" if @tg_api_id.blank? && @tg_api_hash.blank? %>><%= t("admin.site_settings.tg_clear") %></button>
+        <%= link_to t("admin.site_settings.tg_page"), "https://my.telegram.org/apps", target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" %>
+        <% if @tg_status.present? %><span class="muted" style="font-size:.78rem"><%= @tg_status %></span><% end %>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-head"><h2><%= dm_icon("box", size: 18) %> <%= t("admin.site_settings.inst_title") %></h2></div>
       <p><%= t("admin.site_settings.inst_text") %></p>
@@ -99,6 +124,8 @@
   <%# Form aksi terpisah (di luar form utama; HTML melarang form bersarang). Tombolnya di atas lewat atribut form="…". %>
   <%= form_with url: test_cloudflare_admin_site_settings_path, method: :post, id: "cf-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
   <%= form_with url: test_tokenplus_admin_site_settings_path, method: :post, id: "tp-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: test_telegram_admin_site_settings_path, method: :post, id: "tg-test-form", data: { turbo: false }, html: { hidden: true } do %><% end %>
+  <%= form_with url: clear_telegram_admin_site_settings_path, method: :delete, id: "tg-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('common.confirm').to_json})" } do %><% end %>
   <%= form_with url: clear_tokenplus_admin_site_settings_path, method: :delete, id: "tp-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm('#{j t('common.confirm', default: 'Yakin?')}')" } do %><% end %>
   <%= form_with url: clear_cloudflare_admin_site_settings_path, method: :delete, id: "cf-clear-form", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('common.confirm').to_json})" } do %><% end %>
 <% end %>

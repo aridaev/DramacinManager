@@ -2,6 +2,128 @@
   <%= link_to new_admin_api_source_path, class: "btn btn-sm" do %><%= dm_icon("plus", size: 16) %> <%= t("admin.api_sources.new") %><% end %>
 <% end %>
 <%= render layout: "shared/app_shell", locals: { title: t("admin.api_sources.title"), subtitle: t("admin.api_sources.subtitle") } do %>
+  <% unhealthy = @sources.reject(&:healthy?); warn = @sources.select { |s| s.healthy? && ((s.quota_ratio && s.quota_ratio >= 0.8) || s.key_expiring_soon?) } %>
+  <% (unhealthy + warn).each do |s| %>
+    <div class="flash <%= unhealthy.include?(s) ? 'flash-alert' : 'flash-notice' %>" style="margin-bottom:10px">
+      <%= t("admin.api_sources.health_warning_html", name: s.name, note: [ s.health_note, (s.quota_ratio ? t("admin.api_sources.quota", used: s.quota_used, limit: s.quota_limit) : nil), (s.key_expires_at ? t("admin.api_sources.key_expires", date: l(s.key_expires_at.to_date)) : nil) ].compact.join(" · ")) %>
+    </div>
+  <% end %>
+  <% if @muted.any? %>
+    <div class="card">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div>
+            <strong><%= t("admin.api_sources.health_table_title") %> (<%= @muted.size %>)</strong>
+            <div class="muted" style="font-size:.78rem"><%= t("admin.api_sources.health_table_hint") %></div>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <%= button_to t("admin.api_sources.recheck_all"), recheck_all_admin_providers_path, method: :post, class: "btn btn-secondary btn-sm" %>
+          <%= button_to t("admin.api_sources.unmute"), unmute_admin_providers_path, method: :post, class: "btn btn-sm" %>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><%= t("admin.api_sources.col_provider") %></th>
+              <th><%= t("admin.api_sources.col_source") %></th>
+              <th><%= t("admin.api_sources.col_problem") %></th>
+              <th><%= t("admin.api_sources.col_since") %></th>
+              <th><%= t("admin.api_sources.col_hidden_until") %></th>
+              <th><%= t("admin.api_sources.col_recovery") %></th>
+              <th class="col-action"><%= t("admin.providers.col_action") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @muted.each do |p| %>
+              <% kind = DracinApi::Failure.kind(p.last_error) %>
+              <tr>
+                <td>
+                  <span class="provider-cell">
+                    <% if p.logo_url.present? %><%= image_tag provider_logo_path(p.slug), alt: "", class: "provider-logo", loading: "lazy" %><% end %>
+                    <strong><%= p.name %></strong>
+                  </span>
+                  <div class="muted" style="font-size:.74rem"><code><%= p.slug %></code></div>
+                </td>
+                <td><%= p.api_source&.name || tag.span("—", class: "muted") %></td>
+                <td style="max-width:300px">
+                  <span class="badge <%= kind.in?(%i[maintenance rate_limit timeout]) ? 'badge-info' : 'badge-danger' %>"><%= t("admin.api_sources.problems.#{kind}") %></span>
+                  <span class="muted" style="font-size:.74rem"><%= t("admin.api_sources.failures_count", count: p.failures_count) %></span>
+                  <div class="domain-err" style="margin-top:4px;white-space:normal" title="<%= p.last_error %>"><%= p.last_error.to_s.truncate(110) %></div>
+                </td>
+                <td class="muted" style="font-size:.78rem"><%= p.last_error_at ? l(p.last_error_at, format: :short) : "—" %></td>
+                <td style="font-size:.78rem"><%= l(p.unavailable_until, format: :short) %></td>
+                <td style="font-size:.78rem;max-width:220px">
+                  <% if p.recovery_checked_at %>
+                    <span class="<%= 'badge badge-success' if p.recovery_result.to_s.start_with?('Hidup') %>"><%= p.recovery_result.to_s.truncate(70) %></span>
+                    <div class="muted" style="font-size:.7rem"><%= l(p.recovery_checked_at, format: :short) %></div>
+                  <% else %><span class="muted"><%= t("admin.api_sources.never_checked") %></span><% end %>
+                </td>
+                <td class="col-action">
+                  <%= button_to t("admin.api_sources.recheck"), recheck_admin_provider_path(p), method: :post, class: "btn btn-secondary btn-xs" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+  <div class="card">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div>
+          <strong><%= t("admin.api_sources.stats_title") %></strong>
+          <div class="muted" style="font-size:.78rem"><%= t("admin.api_sources.stats_hint", min: ProviderErrorStat::DISCARD_MIN_ERRORS, pct: (ProviderErrorStat::DISCARD_RATE * 100).to_i) %></div>
+        </div>
+      </div>
+    </div>
+    <% if @error_stats.empty? %>
+      <p class="muted"><%= t("admin.api_sources.stats_empty") %></p>
+    <% else %>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><%= t("admin.api_sources.col_provider") %></th>
+              <th class="num"><%= t("admin.api_sources.stats_daily") %></th>
+              <th class="num"><%= t("admin.api_sources.stats_week") %></th>
+              <th class="num"><%= t("admin.api_sources.stats_month") %></th>
+              <th class="num"><%= t("admin.api_sources.stats_ok_week") %></th>
+              <th class="num"><%= t("admin.api_sources.stats_rate") %></th>
+              <th><%= t("admin.api_sources.stats_kinds") %></th>
+              <th><%= t("admin.api_sources.stats_verdict") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @error_stats.each do |r| %>
+              <tr>
+                <td>
+                  <strong><%= r[:provider].name %></strong>
+                  <div class="muted" style="font-size:.74rem"><code><%= r[:provider].slug %></code><%= " · #{r[:provider].api_source.name}" if r[:provider].api_source %><%= " · #{t('admin.api_sources.stats_off')}" unless r[:provider].enabled? %></div>
+                </td>
+                <td class="num"><%= r[:today] %></td>
+                <td class="num"><strong><%= r[:week] %></strong></td>
+                <td class="num"><%= r[:month] %></td>
+                <td class="num"><%= r[:ok_week] %></td>
+                <td class="num"><%= r[:rate] ? "#{(r[:rate] * 100).round}%" : "—" %></td>
+                <td style="font-size:.76rem;max-width:260px">
+                  <% r[:kinds].sort_by { |_, n| -n }.each do |kind, n| %>
+                    <span class="badge badge-muted"><%= t("admin.api_sources.problems.#{kind}", default: kind) %> <%= n %></span>
+                  <% end %>
+                  <% if r[:rescued_month].positive? %><span class="badge badge-info"><%= t("admin.api_sources.stats_rescued") %> <%= r[:rescued_month] %></span><% end %>
+                </td>
+                <td>
+                  <span class="badge <%= { discard: 'badge-danger', watch: 'badge-info', healthy: 'badge-success', no_data: 'badge-muted' }[r[:verdict]] %>"><%= t("admin.api_sources.verdicts.#{r[:verdict]}") %></span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
   <div class="card">
     <% if @sources.empty? %>
       <p class="muted"><%= t("admin.api_sources.empty") %></p>
@@ -16,6 +138,7 @@
               <th><%= t("admin.api_sources.col_key") %></th>
               <th><%= t("admin.api_sources.col_providers") %></th>
               <th><%= t("admin.api_sources.col_last_test") %></th>
+              <th title="<%= t("admin.api_sources.health_hint") %>"><%= t("admin.api_sources.col_health") %></th>
               <th class="col-action"><%= t("admin.providers.col_action") %></th>
             </tr>
           </thead>
@@ -34,6 +157,14 @@
                 <td><%= @provider_counts[s.id].to_i %></td>
                 <td class="muted" style="font-size:.78rem">
                   <% if s.last_tested_at %><%= l(s.last_tested_at, format: :short) %><br><%= s.last_test_result %><% else %><%= t("common.never") %><% end %>
+                </td>
+                <td style="font-size:.78rem">
+                  <% if s.healthy? %><span class="badge badge-success"><%= t("admin.api_sources.healthy") %></span>
+                  <% else %><span class="badge badge-danger"><%= t("admin.api_sources.unhealthy") %></span> <span class="muted"><%= t("admin.api_sources.unhealthy_until", at: l(s.unhealthy_until, format: :short)) %></span><% end %>
+                  <% if s.health_note.present? %><div class="domain-err" style="margin-top:4px;max-width:260px;white-space:normal"><%= s.health_note %></div><% end %>
+                  <% if s.quota_ratio %><div class="muted" style="margin-top:4px;<%= 'color:var(--error)' if s.quota_ratio >= 0.8 %>"><%= t("admin.api_sources.quota", used: s.quota_used, limit: s.quota_limit) %></div><% end %>
+                  <% if s.key_expires_at %><div class="muted" style="<%= 'color:var(--error)' if s.key_expiring_soon? %>"><%= t("admin.api_sources.key_expires", date: l(s.key_expires_at.to_date)) %></div><% end %>
+                  <% if s.health_checked_at %><div class="muted" style="font-size:.7rem"><%= l(s.health_checked_at, format: :short) %></div><% end %>
                 </td>
                 <td class="col-action">
                   <span class="inline-actions">

@@ -1,4 +1,4 @@
-﻿<% content_for :title, tv1_page_title(@drama.title, current_provider.name) %>
+<% content_for :title, tv1_page_title(@drama.title, current_provider.name) %>
 <% content_for :description, @drama.synopsis.to_s.truncate(160) if @drama.synopsis.present? %>
 <% first = @episodes.find { |e| !e.locked } || @episodes.first %>
 

@@ -112,6 +112,8 @@ id:
       f_watermark_hint: kosong = pakai Logo, lalu Icon; PNG transparan paling bagus
       f_wm_position: Posisi
       f_wm_opacity: Transparansi
+      f_wm_text: Teks domain di video
+      f_wm_text_hint: "dibakar di tengah bawah video auto posting; kosong = domain aktif instance, isi 0 untuk mematikan"
       wm_none: belum ada logo/watermark
       wm_pos:
         top-center: Tengah atas
@@ -171,6 +173,17 @@ id:
       col_key: Key
       col_providers: Penyedia
       col_last_test: Tes terakhir
+      col_health: Kesehatan
+      healthy: Sehat
+      unhealthy: Tidak sehat
+      unhealthy_until: "s/d %{at}"
+      quota: "Kuota %{used}/%{limit} hari ini"
+      key_expires: "Token berlaku s/d %{date}"
+      health_hint: "Diperbarui otomatis dari error nyata saat pengunjung mengakses + cek terjadwal tiap 6 jam. Provider dari sumber yang tidak sehat disembunyikan dari situs publik sampai pulih."
+      health_warning_html: "<strong>%{name}</strong>: %{note}"
+      muted_providers: "Provider sedang disembunyikan (gagal beruntun): %{list}"
+      unmute: Pulihkan sekarang
+      unmuted: "%{name} dipulihkan; akan dicoba lagi pada request berikutnya."
       test: Tes
       sync: Sinkron
       sync_confirm: Tarik daftar platform dari sumber ini ke tabel penyedia?
@@ -289,6 +302,25 @@ id:
       ns_instruction_html: 'Di registrar domain <strong>%{hostname}</strong>, ganti nameserver menjadi:'
       ns_note: Setelah diubah, klik Cek status. Cloudflare biasanya mendeteksi dalam beberapa menit hingga 24 jam.
       last_checked: Dicek
+      geo_label: Akses negara
+      geo_all: Semua negara
+      geo_only: Hanya %{country}
+      geo_set_id: Hanya Indonesia
+      geo_set_asia: Semua Asia
+      geo_pick: Pilih negara…
+      geo_apply: Terapkan negara terpilih
+      geo_all_asia: seluruh Asia
+      geo_n_countries: "%{n} negara Asia"
+      geo_none: Pilih minimal satu negara.
+      geo_confirm_asia: "Blokir semua pengunjung %{hostname} di luar benua Asia (kecuali bot mesin pencari)?"
+      geo_confirm_pick: "Blokir semua pengunjung %{hostname} di luar negara terpilih (kecuali bot mesin pencari)?"
+      geo_open: Buka semua negara
+      geo_hint: "WAF Cloudflare: pengunjung di luar negara terpilih diblokir; bot mesin pencari terverifikasi (Google, Bing) tetap boleh."
+      geo_confirm_id: "Blokir semua pengunjung %{hostname} di luar Indonesia (kecuali bot mesin pencari)?"
+      geo_on: "%{hostname}: kini hanya bisa diakses dari %{country} (aktif ±1 menit)."
+      geo_off: "%{hostname}: pembatasan negara dihapus."
+      geo_failed: "Gagal mengatur WAF Cloudflare: %{error}"
+      geo_unknown: Negara tidak dikenal.
       statuses:
         pending_ns: Menunggu NS
         active: Aktif

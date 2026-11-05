@@ -3,6 +3,10 @@
   <%= form_with url: refresh_admin_instance_domain_path(@instance, d), method: :post, id: "dom-refresh-#{d.id}", data: { turbo: false }, html: { hidden: true } do %><% end %>
   <%= form_with url: retry_admin_instance_domain_path(@instance, d), method: :post, id: "dom-retry-#{d.id}", data: { turbo: false }, html: { hidden: true } do %><% end %>
   <%= form_with url: admin_instance_domain_path(@instance, d, delete_zone: 1), method: :delete, id: "dom-delete-#{d.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.domains.delete_confirm', hostname: d.hostname).to_json})" } do %><% end %>
+  <%= form_with url: geo_admin_instance_domain_path(@instance, d, country: "ID"), method: :post, id: "dom-geo-id-#{d.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.domains.geo_confirm_id', hostname: d.hostname).to_json})" } do %><% end %>
+  <%= form_with url: geo_admin_instance_domain_path(@instance, d, preset: "asia"), method: :post, id: "dom-geo-asia-#{d.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.domains.geo_confirm_asia', hostname: d.hostname).to_json})" } do %><% end %>
+  <%= form_with url: geo_admin_instance_domain_path(@instance, d), method: :post, id: "dom-geo-pick-#{d.id}", data: { turbo: false }, html: { hidden: true, onsubmit: "return confirm(#{t('admin.domains.geo_confirm_pick', hostname: d.hostname).to_json})" } do %><% end %>
+  <%= form_with url: geo_admin_instance_domain_path(@instance, d, open: 1), method: :post, id: "dom-geo-off-#{d.id}", data: { turbo: false }, html: { hidden: true } do %><% end %>
 <% end %>
 <script>
   document.querySelectorAll(".copy-ns").forEach(function (b) {

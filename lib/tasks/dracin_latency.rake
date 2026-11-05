@@ -8,7 +8,8 @@ namespace :dracin do
     samples = [ args[:samples].to_i, 1 ].max.then { |n| n == 1 && args[:samples].nil? ? 2 : n }
     key = Setting.dracin_api_key
     abort "DracinAPI key belum diset" if key.blank?
-    providers = Provider.supported.ordered.to_a
+    # Hub berkuota harian (Mola: 100 request/hari) tidak diukur — pengukuran tiap 30 menit akan menghabiskan kuota.
+    providers = Provider.supported.ordered.to_a.reject { |p| p.adapter_slug == "mola" }
     results = {}
 
     threads = providers.map do |pr|

@@ -142,6 +142,7 @@ id:
         coming: "Segera"
         offline: "Offline"
       status_unknown: "Belum dicek"
+      muted_until: "Disembunyikan s/d %{at}"
       enabled_notice: "%{name} diaktifkan."
       disabled_notice: "%{name} dinonaktifkan."
       enable_all_notice: "Semua %{count} platform diaktifkan."
@@ -195,6 +196,7 @@ id:
         revenge: "Balas Dendam"
         ceo: "CEO"
         rebirth: "Terlahir Kembali"
+      provider_unavailable: "Penyedia %{provider} sedang tidak tersedia, dialihkan ke %{to}."
       api_error:
         title: "Gagal memuat data dari penyedia"
         missing_api_key: "License key DracinAPI belum diisi, sehingga katalog belum bisa dimuat."

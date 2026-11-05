@@ -205,7 +205,7 @@ html[data-theme="dark"] .icon-moon { display: none; }
 .rank-body { grid-column: 1 / -1; min-width: 0; display: grid; gap: 2px; margin-top: 8px; }
 .rank-body strong { font-size: .86rem; font-weight: 600; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .rank-body small { color: var(--t3); font-size: .72rem; }
-﻿
+
 /* ---------- Genre / filter / crumbs / pager ---------- */
 .genre-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .genre-chip { padding: 6px 14px; border-radius: 999px; background: var(--s1); color: var(--t2); font-size: .84rem; font-weight: 600; border: 1px solid var(--line); transition: .15s; }
@@ -333,7 +333,9 @@ html[data-theme="dark"] .icon-moon { display: none; }
   html.menu-open .chan::after { display: none; }
   html.menu-open .chan.is-active { background: var(--accent-tint); color: var(--accent-ink); }
   html.menu-open .chan-sub { position: static; box-shadow: none; border: 0; padding-left: 16px; }
-  html.menu-open .menu-backdrop { display: block; position: fixed; inset: 0; background: rgba(0, 0, 0, .55); z-index: 85; }
+  html.menu-open .menu-backdrop { display: block; position: fixed; inset: 0; background: transparent; z-index: 85; }
+  html.menu-open .header { z-index: 90; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  html.menu-open .channels { box-shadow: var(--shadow), 0 0 0 100vmax rgba(0, 0, 0, .5); }
   html.menu-open { overflow: hidden; }
   .hero-link { min-height: 240px; padding: 16px var(--gutter) 44px; }
   .hero-desc { display: none; }
@@ -480,3 +482,55 @@ html.fake-fs .mtabs, html.fake-fs .preview-bar { display: none; }
 .member-pick-item small { color: var(--t2); font-size: .74rem; }
 .member-hist li { flex-wrap: wrap; }
 .member-hist-until { flex-basis: 100%; color: var(--t2); font-size: .76rem; }
+
+/* ---------- Tombol "Bebas Iklan" (navbar) + share ---------- */
+.adfree-btn { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; height: 36px; padding: 0 14px 0 11px; border-radius: 999px; background: linear-gradient(135deg, #ff9500, #ff3b30); color: #fff; font-weight: 800; font-size: .85rem; line-height: 1; white-space: nowrap; text-decoration: none; box-shadow: 0 0 0 0 rgba(255, 90, 40, .6); animation: adfree-pulse 1.8s ease-out infinite; }
+.adfree-btn svg { width: 17px; height: 17px; fill: #fff3b0; transform-origin: 50% 90%; animation: adfree-flame 1.1s ease-in-out infinite alternate; }
+.adfree-btn:hover { filter: brightness(1.1); color: #fff; }
+.adfree-btn.is-on { background: linear-gradient(135deg, #22c55e, #16a34a); animation: none; }
+.adfree-btn.is-on svg { animation: none; }
+@keyframes adfree-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 90, 40, .55); } 70% { box-shadow: 0 0 0 10px rgba(255, 90, 40, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 90, 40, 0); } }
+@keyframes adfree-flame { from { transform: scale(1) rotate(-4deg); } to { transform: scale(1.18) rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) { .adfree-btn, .adfree-btn svg { animation: none; } }
+
+.share { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--s1); }
+.share-title { margin: 0; font-weight: 800; font-size: 1rem; color: var(--t1); }
+.share-hint, .share-active { margin: 0; font-size: .84rem; line-height: 1.5; color: var(--t2); }
+.share-active { color: #22c55e; font-weight: 700; }
+.share-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.share-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--s2); color: var(--t1); font: inherit; font-weight: 700; font-size: .84rem; cursor: pointer; text-decoration: none; }
+.share-btn[hidden] { display: none; }
+.share-btn:hover { filter: brightness(1.12); }
+.share-btn.is-native { background: linear-gradient(135deg, #ff9500, #ff3b30); color: #fff; }
+.share-btn.is-whatsapp { background: #25d366; color: #06361a; }
+.share-btn.is-telegram { background: #2aabee; color: #04283d; }
+.share-btn.is-facebook { background: #1877f2; color: #fff; }
+.share-btn.is-x { background: #111; color: #fff; border: 1px solid #444; }
+.share-msg { margin: 0; min-height: 1.2em; font-size: .84rem; font-weight: 700; color: #22c55e; }
+.share-msg.is-bad { color: #ff6b6b; }
+.share.is-compact { margin-top: 10px; padding: 10px; background: rgba(0, 0, 0, .35); border-color: rgba(255, 255, 255, .18); }
+.share.is-compact .share-title { font-size: .85rem; color: #fff; }
+.share.is-compact .share-btn { min-height: 32px; padding: 0 11px; font-size: .76rem; }
+.player-ad-share { margin-top: 6px; position: relative; z-index: 3; }
+@media (max-width: 420px) { .adfree-btn { padding: 0 11px 0 9px; font-size: .8rem; } }
+@media (max-width: 640px) { .header-tools .adfree-btn { height: 34px; } }
+
+/* Halaman status penyedia (maintenance / down / auth / rate limit / tidak ditemukan) */
+.status-page { max-width: 520px; margin: 48px auto; padding: 32px 22px; text-align: center; background: var(--s1); border: 1px solid var(--line); border-radius: var(--r3); }
+.status-icon { width: 68px; height: 68px; margin: 0 auto 16px; display: grid; place-items: center; border-radius: 50%; background: rgba(148, 163, 184, .14); color: var(--t3); }
+.status-icon.status-maintenance { background: rgba(245, 158, 11, .16); color: #f59e0b; }
+.status-icon.status-down, .status-icon.status-auth, .status-icon.status-missing_api_key { background: rgba(239, 68, 68, .14); color: #ef4444; }
+.status-icon.status-rate_limit, .status-icon.status-timeout { background: rgba(59, 130, 246, .15); color: #60a5fa; }
+.status-title { margin: 0 0 4px; font-size: 1.25rem; line-height: 1.3; color: var(--t1); }
+.status-provider { margin: 0 0 12px; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--t3); }
+.status-text { margin: 0 auto 22px; max-width: 400px; font-size: .92rem; line-height: 1.6; color: var(--t3); }
+.status-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.status-alt { margin-top: 26px; padding-top: 18px; border-top: 1px dashed var(--line); }
+.status-alt-title { margin: 0 0 10px; font-size: .8rem; color: var(--t3); }
+.status-alt-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.status-admin { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin-top: 22px; padding-top: 16px; border-top: 1px dashed var(--line); }
+.status-admin code { flex: 1 1 100%; font-size: .72rem; color: var(--t3); word-break: break-word; }
+@media (max-width: 560px) {
+  .status-page { margin: 20px 0; padding: 24px 16px; }
+  .status-actions .btn { flex: 1 1 100%; }
+}

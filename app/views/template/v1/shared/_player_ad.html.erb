@@ -19,6 +19,7 @@
           <% if href %><a class="btn player-ad-btn" href="<%= href %>" target="_blank" rel="nofollow sponsored noopener"><%= ad_btn.presence || t("ads.button_default") %></a><% end %>
           <% if inst.members_enabled? %><a class="player-ad-cta" href="<%= template_v1_member_path %>"><%= tt("members.ad_cta") %></a><% end %>
         </div>
+        <% if adfree_nav? %><div class="player-ad-share"><%= render "template/v1/shared/share", compact: true %></div><% end %>
       </div>
     </div>
   </div>

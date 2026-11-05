@@ -1,0 +1,8916 @@
+[
+{
+"slug": "audiotoon",
+"name": "AudioToon",
+"logo": "/logos/audiotoon.png",
+"badge": "Audio & Video Drama",
+"endpoints": [
+{
+"action": "lang",
+"path": "/api/audiotoon/lang",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "session",
+"path": "/api/audiotoon/session",
+"params": []
+},
+{
+"action": "home",
+"path": "/api/audiotoon/home",
+"params": [
+{
+"name": "tab",
+"default": "drama"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "category",
+"path": "/api/audiotoon/category",
+"params": [
+{
+"name": "type",
+"default": "3"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "drama",
+"path": "/api/audiotoon/drama",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "audio",
+"path": "/api/audiotoon/audio",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "comic",
+"path": "/api/audiotoon/comic",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "novels",
+"path": "/api/audiotoon/novels",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/audiotoon/search",
+"params": [
+{
+"name": "keyword",
+"default": "dahaga sang tuan"
+},
+{
+"name": "type",
+"default": "0"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/audiotoon/detail",
+"params": [
+{
+"name": "book_id",
+"default": "6021487"
+}
+]
+},
+{
+"action": "episodes",
+"path": "/api/audiotoon/episodes",
+"params": [
+{
+"name": "book_id",
+"default": "6021487"
+}
+]
+},
+{
+"action": "play",
+"path": "/api/audiotoon/play",
+"params": [
+{
+"name": "book_id",
+"default": "6021487"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "id_episode",
+"default": "410"
+}
+]
+},
+{
+"action": "audio-play",
+"path": "/api/audiotoon/audio-play",
+"params": [
+{
+"name": "book_id",
+"default": "2198018"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "id_episode",
+"default": "271676"
+}
+]
+},
+{
+"action": "read-novel",
+"path": "/api/audiotoon/read-novel",
+"params": [
+{
+"name": "book_id",
+"default": "5801811"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "id_episode",
+"default": "12112459"
+}
+]
+},
+{
+"action": "pages",
+"path": "/api/audiotoon/pages",
+"params": [
+{
+"name": "book_id",
+"default": "785"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "id_episode",
+"default": "570"
+}
+]
+}
+]
+},
+{
+"slug": "dramaboxv2",
+"name": "DramaBox V2",
+"logo": "/logos/dramabox.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramaboxv2/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramaboxv2/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/dramaboxv2/ranking",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/dramaboxv2/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "vip",
+"path": "/api/dramaboxv2/vip",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "dubbing",
+"path": "/api/dramaboxv2/dubbing",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramaboxv2/search",
+"params": [
+{
+"name": "keyword",
+"default": "naga"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramaboxv2/detail",
+"params": [
+{
+"name": "book_id",
+"default": "42000003452"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramaboxv2/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "42000003452"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramaboxv2/stream",
+"params": [
+{
+"name": "book_id",
+"default": "42000003452"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramabox",
+"name": "DramaBox",
+"logo": "/logos/dramabox.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramabox/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramabox/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/dramabox/ranking",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/dramabox/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "vip",
+"path": "/api/dramabox/vip",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "dubbing",
+"path": "/api/dramabox/dubbing",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramabox/search",
+"params": [
+{
+"name": "keyword",
+"default": "naga"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramabox/detail",
+"params": [
+{
+"name": "book_id",
+"default": "42000003452"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramabox/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "42000003452"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramabox/stream",
+"params": [
+{
+"name": "book_id",
+"default": "42000003452"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+},
+{
+"action": "decrypt",
+"path": "/api/dramabox/decrypt",
+"params": [
+{
+"name": "url",
+"default": "https://hwztvideo.dramaboxdb.com/56/5x4/54x3/543x9/54392000024/701701865_1/701701865.1080p.nav2.encrypt.mp4?etavirp_nuyila=1&Expires=1791356400&Signature=jd3lDeAt4Z5CR145yoZvQghNHUeNZGqTb~ZNPEhWXm9PqSrfPXD8z6pv92UzBL2LODNChQxXA4MqaxG3KCa8UZhzUE0CTtZhKiDEITfBUJF3P-LOXiyHiAAJuauJImni4TDhMwfXaoQ7TnDwOxvv4Sn6T5hD9nlgTZc4vG-FA99ataJTHdCaayxTCwxfsdyLfGwg6ZA~SbivtlTsmwArOXRZVt1HTiuEL6P4asnoLgjWgTXHYmZzuvOIjkgRhYSbHjjH~swkDUgEkFVM3SbD4pGYQ055cjLFGdycUQaKFg38VochdT1w95qTOjgvaTrvvKayj-AtKVWPKn0ZqsbDOQ__&Key-Pair-Id=K3HA2TLE2QH99V"
+},
+{
+"name": "book_id",
+"default": ""
+},
+{
+"name": "episode",
+"default": ""
+}
+]
+}
+]
+},
+{
+"slug": "shortmaxv2",
+"name": "ShortMax V2",
+"logo": "/logos/shortmax.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/shortmax_v2/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/shortmax_v2/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/shortmax_v2/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "class_id",
+"default": "0"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/shortmax_v2/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/shortmax_v2/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/shortmax_v2/detail",
+"params": [
+{
+"name": "drama_id",
+"default": "35419"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/shortmax_v2/allepisode",
+"params": [
+{
+"name": "drama_id",
+"default": "35419"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/shortmax_v2/stream",
+"params": [
+{
+"name": "drama_id",
+"default": "35419"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+},
+{
+"action": "stream_plain",
+"path": "/api/shortmax_v2/stream_plain",
+"params": [
+{
+"name": "drama_id",
+"default": "35419"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "shortmax",
+"name": "ShortMax",
+"logo": "/logos/shortmax.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/shortmax/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/shortmax/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/shortmax/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/shortmax/all",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/shortmax/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/shortmax/detail",
+"params": [
+{
+"name": "book_id",
+"default": "29119"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/shortmax/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "29119"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/shortmax/stream",
+"params": [
+{
+"name": "book_id",
+"default": "29119"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+},
+{
+"action": "stream_plain",
+"path": "/api/shortmax/stream_plain",
+"params": [
+{
+"name": "book_id",
+"default": "29119"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "vibeshortv2",
+"name": "VibeShort V2",
+"logo": "/logos/vibeshort.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/vibeshort_v2/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/vibeshort_v2/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/vibeshort_v2/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "class_id",
+"default": "0"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/vibeshort_v2/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/vibeshort_v2/search",
+"params": [
+{
+"name": "keyword",
+"default": "istri"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/vibeshort_v2/detail",
+"params": [
+{
+"name": "drama_id",
+"default": "16329"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/vibeshort_v2/allepisode",
+"params": [
+{
+"name": "drama_id",
+"default": "16329"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/vibeshort_v2/stream",
+"params": [
+{
+"name": "drama_id",
+"default": "16329"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+},
+{
+"action": "stream_plain",
+"path": "/api/vibeshort_v2/stream_plain",
+"params": [
+{
+"name": "drama_id",
+"default": "16329"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "vibeshort",
+"name": "VibeShort",
+"logo": "/logos/vibeshort.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/vibeshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/vibeshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/vibeshort/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/vibeshort/all",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/vibeshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/vibeshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "8714"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/vibeshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "8714"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/vibeshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "8714"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+},
+{
+"action": "stream_plain",
+"path": "/api/vibeshort/stream_plain",
+"params": [
+{
+"name": "book_id",
+"default": "8714"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "storyreelv2",
+"name": "StoryReel V2",
+"logo": "/logos/storyreel.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/storyreel_v2/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/storyreel_v2/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/storyreel_v2/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "class_id",
+"default": "0"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/storyreel_v2/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/storyreel_v2/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/storyreel_v2/detail",
+"params": [
+{
+"name": "drama_id",
+"default": "34260"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/storyreel_v2/allepisode",
+"params": [
+{
+"name": "drama_id",
+"default": "34260"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/storyreel_v2/stream",
+"params": [
+{
+"name": "drama_id",
+"default": "34260"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+},
+{
+"action": "stream_plain",
+"path": "/api/storyreel_v2/stream_plain",
+"params": [
+{
+"name": "drama_id",
+"default": "34260"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "storyreel",
+"name": "StoryReel",
+"logo": "/logos/storyreel.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/storyreel/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/storyreel/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/storyreel/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/storyreel/all",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/storyreel/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/storyreel/detail",
+"params": [
+{
+"name": "book_id",
+"default": "28274"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/storyreel/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "28274"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/storyreel/stream",
+"params": [
+{
+"name": "book_id",
+"default": "28274"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+},
+{
+"action": "stream_plain",
+"path": "/api/storyreel/stream_plain",
+"params": [
+{
+"name": "book_id",
+"default": "28274"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "blinkdrama",
+"name": "BlinkDrama",
+"logo": "/logos/blinkdrama.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/blinkdrama/set_language",
+"params": [
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/blinkdrama/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/blinkdrama/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "class_id",
+"default": "0"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "new",
+"path": "/api/blinkdrama/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "search",
+"path": "/api/blinkdrama/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/blinkdrama/detail",
+"params": [
+{
+"name": "drama_id",
+"default": "3814"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/blinkdrama/allepisode",
+"params": [
+{
+"name": "drama_id",
+"default": "3814"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/blinkdrama/stream",
+"params": [
+{
+"name": "drama_id",
+"default": "3814"
+},
+{
+"name": "episode_index",
+"default": "1"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "stream_plain",
+"path": "/api/blinkdrama/stream_plain",
+"params": [
+{
+"name": "drama_id",
+"default": "3814"
+},
+{
+"name": "episode_index",
+"default": "1"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+}
+]
+},
+{
+"slug": "reelshort",
+"name": "ReelShort",
+"logo": "/logos/reelshort.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/reelshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/reelshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/reelshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "1001"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/reelshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "1001"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/reelshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "1001"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "reelshortv2",
+"name": "ReelShort V2",
+"logo": "/logos/reelshort.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/reelshortv2/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/reelshortv2/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "populer",
+"path": "/api/reelshortv2/populer",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/reelshortv2/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/reelshortv2/search",
+"params": [
+{
+"name": "word",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "anime",
+"path": "/api/reelshortv2/anime",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "asia",
+"path": "/api/reelshortv2/asia",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/reelshortv2/detail",
+"params": [
+{
+"name": "book_id",
+"default": "6a84401802c3b97af6039437"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/reelshortv2/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "6a84401802c3b97af6039437"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/reelshortv2/stream",
+"params": [
+{
+"name": "book_id",
+"default": "6a84401802c3b97af6039437"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "netshort",
+"name": "NetShort",
+"logo": "/logos/netshort.svg",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/netshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id_ID"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/netshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/netshort/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/netshort/all",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "anime",
+"path": "/api/netshort/anime",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/netshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/netshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "2080576395143299074"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/netshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "2080576395143299074"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/netshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "2080576395143299074"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "codec",
+"default": "h264"
+}
+]
+}
+]
+},
+{
+"slug": "melolo",
+"name": "MeloLo",
+"logo": "/logos/melolo.svg",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/melolo/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/melolo/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "rank",
+"path": "/api/melolo/rank",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "18"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "new_release",
+"path": "/api/melolo/new_release",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "10"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "all_drama",
+"path": "/api/melolo/all_drama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "10"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "anime",
+"path": "/api/melolo/anime",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "search",
+"path": "/api/melolo/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/melolo/detail",
+"params": [
+{
+"name": "book_id",
+"default": "7676779940888448053"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/melolo/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "7676779940888448053"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/melolo/stream",
+"params": [
+{
+"name": "book_id",
+"default": "7676779940888448053"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "decrypt",
+"path": "/api/melolo/decrypt",
+"params": [
+{
+"name": "url",
+"default": "https://v19-ml.melolostatic.com/6980a5f384a702f3b28c23df8536e712/6a9471bb/video/tos/alisg/tos-alisg-v-ea7654-sg/oYDC2LLehc7eRAT14UcNiOwMJWQhIAzeGGh8Ih/?a=645713&br=1948&bt=974&cc=10&cd=0%7C0%7C0%7C1&ch=0&cr=7&cs=4&cv=1&dr=0&ds=3&dy_q=1788091470&er=1&ft=eFIeK7mc3P..2NvjQP3u7nRfB~G~l-4kSYNc&l=202608302004302D536A027E8E0D3FF5CD&lr=default&mime_type=video_mp4&qs=0&rc=Z2U3OTVkaTY0Z2Q8ZTo1OEBpanh3b2o5cnE2O2YzcDs4NEBhLjRiMV4xX14xMTI1NF8yYSMwZ20zMmRjYWdhLS1kLTVzcw%3D%3D"
+}
+]
+}
+]
+},
+{
+"slug": "dramawave",
+"name": "DramaWave",
+"logo": "/logos/dramawave.svg",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramawave/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramawave/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "exclusive",
+"path": "/api/dramawave/exclusive",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "vip",
+"path": "/api/dramawave/vip",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramawave/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramawave/detail",
+"params": [
+{
+"name": "book_id",
+"default": "6KynNr5FAZ"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramawave/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "6KynNr5FAZ"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramawave/stream",
+"params": [
+{
+"name": "book_id",
+"default": "6KynNr5FAZ"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "goodshort",
+"name": "GoodShort",
+"logo": "/logos/goodshort.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/goodshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "tren",
+"path": "/api/goodshort/tren",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/goodshort/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "anime",
+"path": "/api/goodshort/anime",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "dubbing",
+"path": "/api/goodshort/dubbing",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/goodshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/goodshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "31000888236"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/goodshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "31000888236"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/goodshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "31000888236"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "flextv",
+"name": "FlexTV",
+"logo": "/logos/flextv.svg",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/flextv/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/flextv/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/flextv/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/flextv/detail",
+"params": [
+{
+"name": "book_id",
+"default": "14700"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/flextv/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "14700"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/flextv/stream",
+"params": [
+{
+"name": "book_id",
+"default": "14700"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "playlet",
+"name": "Playlet",
+"logo": "/logos/playlet.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/playlet/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/playlet/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "10"
+}
+]
+},
+{
+"action": "rank",
+"path": "/api/playlet/rank",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "15"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/playlet/all",
+"params": [
+{
+"name": "sorts",
+"default": "latest"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "15"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/playlet/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/playlet/detail",
+"params": [
+{
+"name": "book_id",
+"default": "10504"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/playlet/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "10504"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/playlet/stream",
+"params": [
+{
+"name": "book_id",
+"default": "10504"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "joyreels",
+"name": "JoyReels",
+"logo": "/logos/joyreels.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/joyreels/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "hot",
+"path": "/api/joyreels/hot",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/joyreels/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "rank",
+"path": "/api/joyreels/rank",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+},
+{
+"name": "sort",
+"default": "weekly"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "film",
+"path": "/api/joyreels/film",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "asia",
+"path": "/api/joyreels/asia",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/joyreels/search",
+"params": [
+{
+"name": "keyword",
+"default": "wanita"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/joyreels/detail",
+"params": [
+{
+"name": "playlet_id",
+"default": "4459"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/joyreels/allepisode",
+"params": [
+{
+"name": "playlet_id",
+"default": "4459"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/joyreels/stream",
+"params": [
+{
+"name": "playlet_id",
+"default": "4459"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "en"
+}
+]
+}
+]
+},
+{
+"slug": "loveshots",
+"name": "LoveShots",
+"logo": "/logos/loveshots.png",
+"badge": "Multi-Sub",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/loveshots/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/loveshots/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/loveshots/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/loveshots/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "rankings",
+"path": "/api/loveshots/rankings",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/loveshots/search",
+"params": [
+{
+"name": "keyword",
+"default": "love"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/loveshots/detail",
+"params": [
+{
+"name": "drama_id",
+"default": "-OwaofD9TaLrMgtJYyfD"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/loveshots/allepisode",
+"params": [
+{
+"name": "drama_id",
+"default": "-OwaofD9TaLrMgtJYyfD"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/loveshots/stream",
+"params": [
+{
+"name": "drama_id",
+"default": "-OwaofD9TaLrMgtJYyfD"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "flareflow",
+"name": "FlareFlow",
+"logo": "/logos/flareflow.svg",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/flareflow/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/flareflow/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/flareflow/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/flareflow/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/flareflow/detail",
+"params": [
+{
+"name": "drama_id",
+"default": "138770"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/flareflow/allepisode",
+"params": [
+{
+"name": "drama_id",
+"default": "138770"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/flareflow/stream",
+"params": [
+{
+"name": "drama_id",
+"default": "138770"
+},
+{
+"name": "episode_index",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "flickreels",
+"name": "FlickReels",
+"logo": "/logos/flickreels.svg",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/flickreels/set_language",
+"params": [
+{
+"name": "lang",
+"default": "6"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/flickreels/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/flickreels/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/flickreels/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/flickreels/detail",
+"params": [
+{
+"name": "book_id",
+"default": "5672"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/flickreels/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "5672"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/flickreels/stream",
+"params": [
+{
+"name": "book_id",
+"default": "5672"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "idrama",
+"name": "iDrama",
+"logo": "/logos/idrama.svg",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/idrama/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/idrama/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "cursor",
+"default": ""
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "search",
+"path": "/api/idrama/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/idrama/detail",
+"params": [
+{
+"name": "book_id",
+"default": "160000642419"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/idrama/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "160000642419"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/idrama/stream",
+"params": [
+{
+"name": "book_id",
+"default": "160000642419"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "codec",
+"default": "h264"
+},
+{
+"name": "lang",
+"default": ""
+}
+]
+}
+]
+},
+{
+"slug": "moboreels",
+"name": "MoboReels",
+"logo": "/logos/moboreels.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/moboreels/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/moboreels/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "baru",
+"path": "/api/moboreels/baru",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "animasi",
+"path": "/api/moboreels/animasi",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "asia",
+"path": "/api/moboreels/asia",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "original",
+"path": "/api/moboreels/original",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/moboreels/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/moboreels/detail",
+"params": [
+{
+"name": "book_id",
+"default": "10425414"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/moboreels/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "10425414"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/moboreels/stream",
+"params": [
+{
+"name": "book_id",
+"default": "10425414"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+},
+{
+"action": "subtitle",
+"path": "/api/moboreels/subtitle",
+"params": [
+{
+"name": "book_id",
+"default": "64522414"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "format",
+"default": "vtt"
+}
+]
+}
+]
+},
+{
+"slug": "momeshort",
+"name": "MomeShort",
+"logo": "/logos/momeshort.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/momeshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/momeshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/momeshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/momeshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "131443"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/momeshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "131443"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/momeshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "131443"
+},
+{
+"name": "episode",
+"default": "5"
+}
+]
+}
+]
+},
+{
+"slug": "petadrama",
+"name": "PetaDrama",
+"logo": "/logos/petadrama.png",
+"badge": "Full Episode 1080p",
+"endpoints": [
+{
+"action": "alldrama",
+"path": "/api/petadrama/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "50"
+}
+]
+},
+{
+"action": "category_dramas",
+"path": "/api/petadrama/category_dramas",
+"params": [
+{
+"name": "category_id",
+"default": "57819"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/petadrama/search",
+"params": [
+{
+"name": "q",
+"default": "desire"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/petadrama/detail",
+"params": [
+{
+"name": "id",
+"default": "forbidden-desire-4"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/petadrama/allepisode",
+"params": [
+{
+"name": "id",
+"default": "forbidden-desire-4"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/petadrama/stream",
+"params": [
+{
+"name": "id",
+"default": "forbidden-desire-4"
+},
+{
+"name": "ep",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "pinedrama",
+"name": "PineDrama",
+"logo": "/logos/pinedrama.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/pinedrama/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/pinedrama/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/pinedrama/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/pinedrama/detail",
+"params": [
+{
+"name": "book_id",
+"default": "7676094030534939668"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/pinedrama/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "7676094030534939668"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/pinedrama/stream",
+"params": [
+{
+"name": "book_id",
+"default": "7676094030534939668"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "starshort",
+"name": "StarShort",
+"logo": "/logos/starshort.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/starshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "4"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/starshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "4"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/starshort/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "4"
+}
+]
+},
+{
+"action": "baru",
+"path": "/api/starshort/baru",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "4"
+}
+]
+},
+{
+"action": "vip",
+"path": "/api/starshort/vip",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "4"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/starshort/search",
+"params": [
+{
+"name": "query",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "4"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/starshort/detail",
+"params": [
+{
+"name": "bookId",
+"default": "53P"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/starshort/allepisode",
+"params": [
+{
+"name": "bookId",
+"default": "53P"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/starshort/stream",
+"params": [
+{
+"name": "bookId",
+"default": "53P"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "stardusttv",
+"name": "StardustTV",
+"logo": "/logos/stardusttv.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/stardust/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id_ID"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/stardust/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "15"
+}
+]
+},
+{
+"action": "hot",
+"path": "/api/stardust/hot",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "15"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/stardust/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "15"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/stardust/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "15"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/stardust/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/stardust/detail",
+"params": [
+{
+"name": "book_id",
+"default": "21404"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/stardust/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "21404"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/stardust/stream",
+"params": [
+{
+"name": "book_id",
+"default": "21404"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "storeel",
+"name": "StoReel",
+"logo": "/logos/storeel.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/storeel/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/storeel/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "home",
+"path": "/api/storeel/home",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/storeel/search",
+"params": [
+{
+"name": "keyword",
+"default": "love"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/storeel/detail",
+"params": [
+{
+"name": "book_id",
+"default": "103843"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/storeel/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "103843"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/storeel/stream",
+"params": [
+{
+"name": "book_id",
+"default": "103843"
+},
+{
+"name": "episode",
+"default": "10"
+}
+]
+},
+{
+"action": "decrypt-mp4",
+"path": "/api/storeel/decrypt-mp4",
+"params": [
+{
+"name": "url",
+"default": ""
+}
+]
+}
+]
+},
+{
+"slug": "shotshort",
+"name": "ShotShort",
+"logo": "/logos/shotshort.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/shotshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/shotshort/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/shotshort/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+},
+{
+"name": "sort_type",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/shotshort/search",
+"params": [
+{
+"name": "query",
+"default": "Cinta"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/shotshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "3478"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/shotshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "3478"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/shotshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "3478"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "chapter_id",
+"default": ""
+}
+]
+}
+]
+},
+{
+"slug": "kalostv",
+"name": "KalosTV",
+"logo": "/logos/kalostv.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/kalostv/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/kalostv/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/kalostv/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/kalostv/detail",
+"params": [
+{
+"name": "book_id",
+"default": "24857"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/kalostv/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "24857"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/kalostv/stream",
+"params": [
+{
+"name": "book_id",
+"default": "24857"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "cubetv",
+"name": "CubeTV",
+"logo": "/logos/cubetv.png",
+"badge": "Multi-Sub",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/cubetv/set_language",
+"params": [
+{
+"name": "lang",
+"default": "9"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/cubetv/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "hot",
+"path": "/api/cubetv/hot",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "newrelease",
+"path": "/api/cubetv/newrelease",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/cubetv/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/cubetv/detail",
+"params": [
+{
+"name": "book_id",
+"default": "gZOnAv"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/cubetv/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "gZOnAv"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/cubetv/stream",
+"params": [
+{
+"name": "book_id",
+"default": "xvP6Va"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "mymuse",
+"name": "MyMuse",
+"logo": "/logos/mymuse.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/mymuse/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/mymuse/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/mymuse/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/mymuse/detail",
+"params": [
+{
+"name": "book_id",
+"default": "90c47db5-38a3-4a08-a7f4-668643ae90e0"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/mymuse/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "90c47db5-38a3-4a08-a7f4-668643ae90e0"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/mymuse/stream",
+"params": [
+{
+"name": "book_id",
+"default": "90c47db5-38a3-4a08-a7f4-668643ae90e0"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "huangdou",
+"name": "HuangDou",
+"logo": "/logos/huangdou.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/huangdou/set_language",
+"params": [
+{
+"name": "lang",
+"default": "zh"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/huangdou/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "recommend",
+"path": "/api/huangdou/recommend",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "24"
+}
+]
+},
+{
+"action": "newest",
+"path": "/api/huangdou/newest",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "24"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/huangdou/search",
+"params": [
+{
+"name": "keyword",
+"default": "系统"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/huangdou/detail",
+"params": [
+{
+"name": "book_id",
+"default": "117"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/huangdou/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "117"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/huangdou/stream",
+"params": [
+{
+"name": "book_id",
+"default": "117"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramadash",
+"name": "DramaDash",
+"logo": "/logos/dramadash.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramadash/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramadash/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "10"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/dramadash/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "10"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramadash/search",
+"params": [
+{
+"name": "query",
+"default": "love"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "10"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramadash/detail",
+"params": [
+{
+"name": "bookId",
+"default": "86"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramadash/allepisode",
+"params": [
+{
+"name": "bookId",
+"default": "86"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramadash/stream",
+"params": [
+{
+"name": "bookId",
+"default": "86"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+}
+]
+},
+{
+"slug": "freeshort",
+"name": "FreeShort",
+"logo": "/logos/freeshort.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/freeshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/freeshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/freeshort/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/freeshort/ranking",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "hot",
+"path": "/api/freeshort/hot",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/freeshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/freeshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "1894647932189634561"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/freeshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "1894647932189634561"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/freeshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "1894647932189634561"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "meloshort",
+"name": "MeloShort",
+"logo": "/logos/meloshort.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/meloshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/meloshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "recommend",
+"path": "/api/meloshort/recommend",
+"params": [
+{
+"name": "reset",
+"default": "1"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/meloshort/ranking",
+"params": []
+},
+{
+"action": "search",
+"path": "/api/meloshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/meloshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "68c38fe32d059c053dc285d8"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/meloshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "68c38fe32d059c053dc285d8"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/meloshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "68c38fe32d059c053dc285d8"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "sodareels",
+"name": "SodaReels",
+"logo": "/logos/sodareels.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/sodareels/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/sodareels/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/sodareels/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/sodareels/detail",
+"params": [
+{
+"name": "book_id",
+"default": "own_2091766617176506370"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/sodareels/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "own_2091766617176506370"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/sodareels/stream",
+"params": [
+{
+"name": "book_id",
+"default": "own_2091766617176506370"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramaverse",
+"name": "DramaVerse",
+"logo": "/logos/dramaverse.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramaverse/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramaverse/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "hot",
+"path": "/api/dramaverse/hot",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/dramaverse/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramaverse/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramaverse/detail",
+"params": [
+{
+"name": "book_id",
+"default": "102062"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramaverse/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "102062"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramaverse/stream",
+"params": [
+{
+"name": "book_id",
+"default": "102062"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dotdrama",
+"name": "DotDrama",
+"logo": "/logos/dotdrama.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dotdrama/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dotdrama/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dotdrama/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dotdrama/detail",
+"params": [
+{
+"name": "book_id",
+"default": "2080121635156328450"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dotdrama/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "2080121635156328450"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dotdrama/stream",
+"params": [
+{
+"name": "book_id",
+"default": "2080121635156328450"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "microdrama",
+"name": "MicroDrama",
+"logo": "/logos/microdrama.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/microdrama/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/microdrama/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/microdrama/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/microdrama/detail",
+"params": [
+{
+"name": "book_id",
+"default": "own_2092796728044609537"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/microdrama/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "own_2092796728044609537"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/microdrama/stream",
+"params": [
+{
+"name": "book_id",
+"default": "own_2092796728044609537"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "vigloo",
+"name": "Vigloo",
+"logo": "/logos/vigloo.svg",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/vigloo/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/vigloo/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/vigloo/ranking",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "browse",
+"path": "/api/vigloo/browse",
+"params": [
+{
+"name": "sortType",
+"default": "POPULAR"
+},
+{
+"name": "limit",
+"default": "30"
+},
+{
+"name": "cursor",
+"default": ""
+}
+]
+},
+{
+"action": "browse_filters",
+"path": "/api/vigloo/browse_filters",
+"params": []
+},
+{
+"action": "search",
+"path": "/api/vigloo/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/vigloo/detail",
+"params": [
+{
+"name": "book_id",
+"default": "15002942"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/vigloo/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "15002942"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/vigloo/stream",
+"params": [
+{
+"name": "book_id",
+"default": "15002942"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "moreshort",
+"name": "MoreShort",
+"logo": "/logos/moreshort.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/moreshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/moreshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/moreshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/moreshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "CN0100"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/moreshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "CN0100"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/moreshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "CN0100"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramabite",
+"name": "DramaBite",
+"logo": "/logos/dramabite.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramabite/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramabite/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramabite/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramabite/detail",
+"params": [
+{
+"name": "book_id",
+"default": "15258"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramabite/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "15258"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramabite/stream",
+"params": [
+{
+"name": "book_id",
+"default": "15258"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "freereels",
+"name": "FreeReels",
+"logo": "/logos/freereels.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/freereels/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/freereels/foryou",
+"params": [
+{
+"name": "next",
+"default": ""
+}
+]
+},
+{
+"action": "popular",
+"path": "/api/freereels/popular",
+"params": [
+{
+"name": "next",
+"default": ""
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/freereels/terbaru",
+"params": [
+{
+"name": "next",
+"default": ""
+}
+]
+},
+{
+"action": "dubbing",
+"path": "/api/freereels/dubbing",
+"params": [
+{
+"name": "next",
+"default": ""
+}
+]
+},
+{
+"action": "anime",
+"path": "/api/freereels/anime",
+"params": [
+{
+"name": "next",
+"default": ""
+}
+]
+},
+{
+"action": "search",
+"path": "/api/freereels/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "next",
+"default": ""
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/freereels/detail",
+"params": [
+{
+"name": "book_id",
+"default": "8Xu2sx8lhv"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/freereels/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "8Xu2sx8lhv"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/freereels/stream",
+"params": [
+{
+"name": "book_id",
+"default": "8Xu2sx8lhv"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramaora",
+"name": "Dramaora",
+"logo": "/logos/dramaora.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramaora/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en-us"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramaora/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "category_dramas",
+"path": "/api/dramaora/category_dramas",
+"params": [
+{
+"name": "category_id",
+"default": "57819"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramaora/search",
+"params": [
+{
+"name": "keyword",
+"default": "love"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramaora/detail",
+"params": [
+{
+"name": "vid",
+"default": "52023960492"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramaora/allepisode",
+"params": [
+{
+"name": "vid",
+"default": "52023960492"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramaora/stream",
+"params": [
+{
+"name": "vid",
+"default": "52023960492"
+},
+{
+"name": "eid",
+"default": "520297190414"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "fundrama",
+"name": "FunDrama",
+"logo": "/logos/fundrama.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/fundrama/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/fundrama/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/fundrama/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/fundrama/detail",
+"params": [
+{
+"name": "book_id",
+"default": "own_506463"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/fundrama/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "own_506463"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/fundrama/stream",
+"params": [
+{
+"name": "book_id",
+"default": "own_506463"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramarush",
+"name": "DramaRush",
+"logo": "/logos/dramarush.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramarush/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramarush/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramarush/search",
+"params": [
+{
+"name": "keyword",
+"default": "ceo"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramarush/detail",
+"params": [
+{
+"name": "book_id",
+"default": "3711"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramarush/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "3711"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramarush/stream",
+"params": [
+{
+"name": "book_id",
+"default": "3711"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "shortswave",
+"name": "Shortswave",
+"logo": "/logos/shortswave.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/shortswave/set_language",
+"params": [
+{
+"name": "lang",
+"default": "in"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/shortswave/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "recommend",
+"path": "/api/shortswave/recommend",
+"params": [
+{
+"name": "reset",
+"default": "1"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/shortswave/ranking",
+"params": []
+},
+{
+"action": "search",
+"path": "/api/shortswave/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/shortswave/detail",
+"params": [
+{
+"name": "book_id",
+"default": "6a8bafd4e3bf934e833882b7"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/shortswave/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "6a8bafd4e3bf934e833882b7"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/shortswave/stream",
+"params": [
+{
+"name": "book_id",
+"default": "6a8bafd4e3bf934e833882b7"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "relala",
+"name": "Relala",
+"logo": "/logos/relala.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/relala/set_language",
+"params": [
+{
+"name": "lang",
+"default": "6"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/relala/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/relala/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/relala/detail",
+"params": [
+{
+"name": "book_id",
+"default": "5931"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/relala/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "5931"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/relala/stream",
+"params": [
+{
+"name": "book_id",
+"default": "5931"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "bonustv",
+"name": "BonusTV",
+"logo": "/logos/bonustv.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/bonustv/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/bonustv/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/bonustv/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/bonustv/detail",
+"params": [
+{
+"name": "book_id",
+"default": "zYVRcwP3Zb"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/bonustv/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "zYVRcwP3Zb"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/bonustv/stream",
+"params": [
+{
+"name": "book_id",
+"default": "zYVRcwP3Zb"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "sixthshort",
+"name": "SixthShort",
+"logo": "/logos/sixthshort.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/sixthshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/sixthshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/sixthshort/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/sixthshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "love"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/sixthshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "20110001"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/sixthshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "20110001"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/sixthshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "20110001"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "snackshort",
+"name": "SnackShort",
+"logo": "/logos/snackshort.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/snackshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/snackshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "popular",
+"path": "/api/snackshort/popular",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/snackshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/snackshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "1390"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/snackshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "1390"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/snackshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "1390"
+},
+{
+"name": "chapter_id",
+"default": "95357"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "soreel",
+"name": "Soreel",
+"logo": "/logos/soreel.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/soreel/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en-us"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/soreel/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/soreel/ranking",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/soreel/search",
+"params": [
+{
+"name": "keyword",
+"default": "husband"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/soreel/detail",
+"params": [
+{
+"name": "book_id",
+"default": "52029998924"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/soreel/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "52029998924"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/soreel/stream",
+"params": [
+{
+"name": "book_id",
+"default": "52029998924"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "stareel",
+"name": "StarReel",
+"logo": "/logos/stareel.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/stareel/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/stareel/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/stareel/detail",
+"params": [
+{
+"name": "book_id",
+"default": "4108"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/stareel/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "4108"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/stareel/stream",
+"params": [
+{
+"name": "book_id",
+"default": "4108"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "storygo",
+"name": "StoryGo",
+"logo": "/logos/storygo.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/storygo/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en-us"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/storygo/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/storygo/search",
+"params": [
+{
+"name": "keyword",
+"default": "Love"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/storygo/detail",
+"params": [
+{
+"name": "book_id",
+"default": "52021452445"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/storygo/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "52021452445"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/storygo/stream",
+"params": [
+{
+"name": "book_id",
+"default": "52021452445"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "minishort",
+"name": "MiniShort",
+"logo": "/logos/minishort.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/minishort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/minishort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/minishort/search",
+"params": [
+{
+"name": "keyword",
+"default": "Love"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/minishort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "4965"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/minishort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "4965"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/minishort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "4965"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "shorten",
+"name": "Shorten",
+"logo": "/logos/shorten.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/shorten/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/shorten/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/shorten/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/shorten/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/shorten/detail",
+"params": [
+{
+"name": "book_id",
+"default": "bombshell-baby"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/shorten/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "bombshell-baby"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/shorten/stream",
+"params": [
+{
+"name": "book_id",
+"default": "bombshell-baby"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "toonshort",
+"name": "ToonShort",
+"logo": "/logos/toonshort.png",
+"badge": "Animasi HD",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/toonshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/toonshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "popular",
+"path": "/api/toonshort/popular",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/toonshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "love"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/toonshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "10040"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/toonshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "10040"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/toonshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "10040"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "velolo",
+"name": "Velolo",
+"logo": "/logos/velolo.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/velolo/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/velolo/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/velolo/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/velolo/detail",
+"params": [
+{
+"name": "book_id",
+"default": "2092541042410196992"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/velolo/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "2092541042410196992"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/velolo/stream",
+"params": [
+{
+"name": "book_id",
+"default": "2092541042410196992"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "radreels",
+"name": "RadReels",
+"logo": "/logos/radreels.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/radreels/set_language",
+"params": [
+{
+"name": "lang",
+"default": "4"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/radreels/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "baru",
+"path": "/api/radreels/baru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/radreels/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/radreels/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/radreels/detail",
+"params": [
+{
+"name": "book_id",
+"default": "lzzX"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/radreels/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "lzzX"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/radreels/stream",
+"params": [
+{
+"name": "book_id",
+"default": "lzzX"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "mydrama",
+"name": "MyDrama",
+"logo": "/logos/mydrama.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/mydrama/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/mydrama/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/mydrama/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/mydrama/detail",
+"params": [
+{
+"name": "book_id",
+"default": "4a3c19e3-0a3f-415f-88d0-fe623e843313"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/mydrama/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "4a3c19e3-0a3f-415f-88d0-fe623e843313"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/mydrama/stream",
+"params": [
+{
+"name": "book_id",
+"default": "4a3c19e3-0a3f-415f-88d0-fe623e843313"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "anyreel",
+"name": "AnyReel",
+"logo": "/logos/anyreel.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/anyreel/set_language",
+"params": [
+{
+"name": "lang",
+"default": "ID"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/anyreel/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "asian",
+"path": "/api/anyreel/asian",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/anyreel/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/anyreel/detail",
+"params": [
+{
+"name": "book_id",
+"default": "69f07bfa7b5909945e170d9b"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/anyreel/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "69f07bfa7b5909945e170d9b"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/anyreel/stream",
+"params": [
+{
+"name": "book_id",
+"default": "69f07bfa7b5909945e170d9b"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "happyshort",
+"name": "HappyShort",
+"logo": "/logos/happyshort.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/happyshort/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/happyshort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "trending",
+"path": "/api/happyshort/trending",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "popular",
+"path": "/api/happyshort/popular",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "terbaru",
+"path": "/api/happyshort/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/happyshort/ranking",
+"params": []
+},
+{
+"action": "search",
+"path": "/api/happyshort/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/happyshort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "307566"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/happyshort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "307566"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/happyshort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "307566"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "reelpine",
+"name": "ReelPine",
+"logo": "/logos/reelpine.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/reelpine/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/reelpine/foryou",
+"params": [
+{
+"name": "type",
+"default": "0"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/reelpine/search",
+"params": [
+{
+"name": "keyword",
+"default": "roommate"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/reelpine/detail",
+"params": [
+{
+"name": "book_id",
+"default": "4884"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/reelpine/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "4884"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/reelpine/stream",
+"params": [
+{
+"name": "book_id",
+"default": "4884"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dynastyshorts",
+"name": "Dynasty Shorts",
+"logo": "/logos/dynastyshorts.png",
+"badge": "Multi-Sub",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/dynasty/foryou",
+"params": []
+},
+{
+"action": "terbaru",
+"path": "/api/dynasty/terbaru",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "populer",
+"path": "/api/dynasty/populer",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "alldrama",
+"path": "/api/dynasty/alldrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dynasty/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "first",
+"default": "20"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dynasty/detail",
+"params": [
+{
+"name": "book_id",
+"default": "kemenangan-tanpa-pedang"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dynasty/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "kemenangan-tanpa-pedang"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dynasty/stream",
+"params": [
+{
+"name": "book_id",
+"default": "kemenangan-tanpa-pedang"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramashorts",
+"name": "DramaShorts",
+"logo": "/logos/dramashorts.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/dramashorts/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/dramashorts/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramashorts/search",
+"params": [
+{
+"name": "query",
+"default": "vampire"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramashorts/detail",
+"params": [
+{
+"name": "bookId",
+"default": "30c6b6e6-1783-48fe-804d-80151d70bb87"
+},
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramashorts/allepisode",
+"params": [
+{
+"name": "bookId",
+"default": "30c6b6e6-1783-48fe-804d-80151d70bb87"
+},
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramashorts/stream",
+"params": [
+{
+"name": "bookId",
+"default": "30c6b6e6-1783-48fe-804d-80151d70bb87"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+},
+{
+"name": "chapterId",
+"default": ""
+},
+{
+"name": "lang",
+"default": "en"
+}
+]
+}
+]
+},
+{
+"slug": "tallflix",
+"name": "TallFlix",
+"logo": "/logos/tallflix.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/tallflix/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/tallflix/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/tallflix/search",
+"params": [
+{
+"name": "query",
+"default": "Hades"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/tallflix/detail",
+"params": [
+{
+"name": "bookId",
+"default": "6a851a797644b6b93fd38772"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/tallflix/allepisode",
+"params": [
+{
+"name": "bookId",
+"default": "6a851a797644b6b93fd38772"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/tallflix/stream",
+"params": [
+{
+"name": "bookId",
+"default": "6a851a797644b6b93fd38772"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+}
+]
+},
+{
+"slug": "qlax",
+"name": "Qlax",
+"logo": "/logos/flareflow.svg",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/qlax/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/qlax/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/qlax/search",
+"params": [
+{
+"name": "query",
+"default": "omega"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/qlax/detail",
+"params": [
+{
+"name": "bookId",
+"default": "summer-s-fiery-lust-the-rancher-and-his-son-manual_05ab0ff9e305"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/qlax/allepisode",
+"params": [
+{
+"name": "bookId",
+"default": "summer-s-fiery-lust-the-rancher-and-his-son-manual_05ab0ff9e305"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/qlax/stream",
+"params": [
+{
+"name": "bookId",
+"default": "summer-s-fiery-lust-the-rancher-and-his-son-manual_05ab0ff9e305"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "subtitles",
+"path": "/api/qlax/subtitles",
+"params": [
+{
+"name": "bookId",
+"default": "summer-s-fiery-lust-the-rancher-and-his-son-manual_05ab0ff9e305"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "shortical",
+"name": "Shortical",
+"logo": "/logos/shortical.png",
+"badge": "Fast Stream",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/shortical/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/shortical/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "24"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/shortical/search",
+"params": [
+{
+"name": "query",
+"default": "Against"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "24"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/shortical/detail",
+"params": [
+{
+"name": "bookId",
+"default": "2163"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/shortical/allepisode",
+"params": [
+{
+"name": "bookId",
+"default": "2163"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/shortical/stream",
+"params": [
+{
+"name": "bookId",
+"default": "2163"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+}
+]
+},
+{
+"slug": "luzicine",
+"name": "LuziCine",
+"logo": "/logos/luzicine.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/luzicine/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/luzicine/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "genre",
+"default": "100004"
+},
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/luzicine/search",
+"params": [
+{
+"name": "query",
+"default": "gadis"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pageSize",
+"default": "20"
+},
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/luzicine/detail",
+"params": [
+{
+"name": "bookId",
+"default": "mini975s1e0"
+},
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/luzicine/allepisode",
+"params": [
+{
+"name": "bookId",
+"default": "mini975s1e0"
+},
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/luzicine/stream",
+"params": [
+{
+"name": "bookId",
+"default": "mini975s1e0"
+},
+{
+"name": "episodeIndex",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id-ID"
+}
+]
+}
+]
+},
+{
+"slug": "zebrashort",
+"name": "ZebraShort",
+"logo": "/logos/starreel.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "languages",
+"path": "/api/zebrashort/languages",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/zebrashort/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "all",
+"default": ""
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/zebrashort/all",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "recommend",
+"path": "/api/zebrashort/recommend",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/zebrashort/search",
+"params": [
+{
+"name": "query",
+"default": "perangkap"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/zebrashort/detail",
+"params": [
+{
+"name": "book_id",
+"default": "44"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/zebrashort/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "44"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/zebrashort/stream",
+"params": [
+{
+"name": "book_id",
+"default": "44"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+}
+]
+},
+{
+"slug": "iqiyi",
+"name": "iQIYI",
+"logo": "/logos/iqiyi.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/iqiyi/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "recomendasi",
+"path": "/api/iqiyi/recomendasi",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "vip",
+"path": "/api/iqiyi/vip",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "drama",
+"path": "/api/iqiyi/drama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "film",
+"path": "/api/iqiyi/film",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "kdrama",
+"path": "/api/iqiyi/kdrama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "anime",
+"path": "/api/iqiyi/anime",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "overdo",
+"path": "/api/iqiyi/overdo",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "per_page",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/iqiyi/search",
+"params": [
+{
+"name": "keyword",
+"default": "love"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/iqiyi/detail",
+"params": [
+{
+"name": "album_id",
+"default": "6392960994095801"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/iqiyi/allepisode",
+"params": [
+{
+"name": "album_id",
+"default": "6392960994095801"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/iqiyi/stream",
+"params": [
+{
+"name": "album_id",
+"default": "6392960994095801"
+},
+{
+"name": "episode",
+"default": "1"
+},
+{
+"name": "tv_id",
+"default": ""
+}
+]
+}
+]
+},
+{
+"slug": "wetv",
+"name": "WeTV",
+"logo": "/logos/wetv.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/wetv/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/wetv/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/wetv/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/wetv/detail",
+"params": [
+{
+"name": "book_id",
+"default": "huayofqjqnmz7wn"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/wetv/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "huayofqjqnmz7wn"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/wetv/stream",
+"params": [
+{
+"name": "book_id",
+"default": "huayofqjqnmz7wn"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "drakorid",
+"name": "DrakorID",
+"logo": "/logos/drakorid.png",
+"badge": "Drakor HD",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/drakorid/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/drakorid/all",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "movie",
+"path": "/api/drakorid/movie",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/drakorid/search",
+"params": [
+{
+"name": "keyword",
+"default": "Killer"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/drakorid/detail",
+"params": [
+{
+"name": "book_id",
+"default": "a-bona-fide-killer-2026"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/drakorid/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "a-bona-fide-killer-2026"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/drakorid/stream",
+"params": [
+{
+"name": "book_id",
+"default": "a-bona-fide-killer-2026"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "drachinreborn",
+"name": "DrachinReborn",
+"logo": "/logos/drachinreborn.png",
+"badge": "C-Drama HD",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/drachinreborn/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "count",
+"default": "20"
+}
+]
+},
+{
+"action": "all",
+"path": "/api/drachinreborn/all",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/drachinreborn/search",
+"params": [
+{
+"name": "keyword",
+"default": "Blossom"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/drachinreborn/detail",
+"params": [
+{
+"name": "book_id",
+"default": "1980"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/drachinreborn/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "1980"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/drachinreborn/stream",
+"params": [
+{
+"name": "book_id",
+"default": "1980"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "dramaqueen",
+"name": "DramaQueen",
+"logo": "/logos/dramaqueen.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/dramaqueen/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "drama",
+"path": "/api/dramaqueen/drama",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "movie",
+"path": "/api/dramaqueen/movie",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/dramaqueen/search",
+"params": [
+{
+"name": "keyword",
+"default": "Pull Strings"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/dramaqueen/detail",
+"params": [
+{
+"name": "book_id",
+"default": "2356"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/dramaqueen/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "2356"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/dramaqueen/stream",
+"params": [
+{
+"name": "book_id",
+"default": "2356"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "lookseries",
+"name": "LookSeries",
+"logo": "/logos/lookseries.png",
+"badge": "Series & Film",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/lookseries/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "film",
+"path": "/api/lookseries/film",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "series",
+"path": "/api/lookseries/series",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "kartun",
+"path": "/api/lookseries/kartun",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "platforms",
+"path": "/api/lookseries/platforms",
+"params": []
+},
+{
+"action": "category",
+"path": "/api/lookseries/category",
+"params": [
+{
+"name": "topic_id",
+"default": "netflix"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/lookseries/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/lookseries/detail",
+"params": [
+{
+"name": "book_id",
+"default": "472625"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/lookseries/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "472625"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/lookseries/stream",
+"params": [
+{
+"name": "book_id",
+"default": "472625"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "ansflix",
+"name": "Ansflix",
+"logo": "/logos/ansflix.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/ansflix/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/ansflix/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "pagesize",
+"default": "12"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/ansflix/search",
+"params": [
+{
+"name": "keyword",
+"default": "Putri"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/ansflix/detail",
+"params": [
+{
+"name": "book_id",
+"default": "2935"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/ansflix/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "2935"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/ansflix/stream",
+"params": [
+{
+"name": "book_id",
+"default": "2935"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "lupacine",
+"name": "LupaCine",
+"logo": "/logos/lupacine.png",
+"badge": "Multi-Language",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/lupacine/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/lupacine/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "pilihan",
+"path": "/api/lupacine/pilihan",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/lupacine/search",
+"params": [
+{
+"name": "keyword",
+"default": "Cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/lupacine/detail",
+"params": [
+{
+"name": "book_id",
+"default": "mini332s1e0"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/lupacine/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "mini332s1e0"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/lupacine/stream",
+"params": [
+{
+"name": "book_id",
+"default": "mini332s1e0"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "reellife",
+"name": "ReelLife",
+"logo": "/logos/reellife.png",
+"badge": "Full Episode",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/reellife/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/reellife/search",
+"params": [
+{
+"name": "keyword",
+"default": "cinta"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/reellife/detail",
+"params": [
+{
+"name": "book_id",
+"default": "1001"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/reellife/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "1001"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/reellife/stream",
+"params": [
+{
+"name": "book_id",
+"default": "1001"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "bstation",
+"name": "Bstation",
+"logo": "/logos/bstation.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/bstation/set_language",
+"params": [
+{
+"name": "lang",
+"default": "id"
+}
+]
+},
+{
+"action": "foryou",
+"path": "/api/bstation/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "new",
+"path": "/api/bstation/new",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/bstation/ranking",
+"params": []
+},
+{
+"action": "donghua",
+"path": "/api/bstation/donghua",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "jepang",
+"path": "/api/bstation/jepang",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "catalog",
+"path": "/api/bstation/catalog",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "order_type",
+"default": "fav_count"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/bstation/search",
+"params": [
+{
+"name": "keyword",
+"default": "naruto"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/bstation/detail",
+"params": [
+{
+"name": "book_id",
+"default": "1005144"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/bstation/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "1005144"
+}
+]
+},
+{
+"action": "subtitle",
+"path": "/api/bstation/subtitle",
+"params": [
+{
+"name": "episode_id",
+"default": "10117811"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/bstation/stream",
+"params": [
+{
+"name": "book_id",
+"default": "2414241"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "anichin",
+"name": "Anichin",
+"logo": "/logos/anichin.png",
+"badge": "Donghua HD",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/anichin/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "list",
+"path": "/api/anichin/list",
+"params": [
+{
+"name": "order",
+"default": "popular"
+},
+{
+"name": "status",
+"default": ""
+},
+{
+"name": "type",
+"default": ""
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/anichin/search",
+"params": [
+{
+"name": "keyword",
+"default": "Tales"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/anichin/detail",
+"params": [
+{
+"name": "book_id",
+"default": "tales-of-herding-gods-episode-98-subtitle-indonesia"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/anichin/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "tales-of-herding-gods-episode-98-subtitle-indonesia"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/anichin/stream",
+"params": [
+{
+"name": "book_id",
+"default": "tales-of-herding-gods-episode-98-subtitle-indonesia"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "donghuaqueen",
+"name": "DonghuaQueen",
+"logo": "/logos/donghuaqueen.png",
+"badge": "Donghua HD",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/donghuaqueen/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "limit",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/donghuaqueen/search",
+"params": [
+{
+"name": "keyword",
+"default": "World of Immortals"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/donghuaqueen/detail",
+"params": [
+{
+"name": "book_id",
+"default": "1"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/donghuaqueen/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "1"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/donghuaqueen/stream",
+"params": [
+{
+"name": "book_id",
+"default": "1"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "samehadaku",
+"name": "Samehadaku",
+"logo": "/logos/samehadaku.png",
+"badge": "Anime HD",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/samehadaku/foryou",
+"params": []
+},
+{
+"action": "search",
+"path": "/api/samehadaku/search",
+"params": [
+{
+"name": "keyword",
+"default": "Liar"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/samehadaku/detail",
+"params": [
+{
+"name": "book_id",
+"default": "liar-game"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/samehadaku/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "liar-game"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/samehadaku/stream",
+"params": [
+{
+"name": "book_id",
+"default": "liar-game"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "animex",
+"name": "AnimeX",
+"logo": "/logos/animex.png",
+"badge": "FHD 1080p",
+"endpoints": [
+{
+"action": "foryou",
+"path": "/api/animex/foryou",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "count",
+"default": "20"
+}
+]
+},
+{
+"action": "list",
+"path": "/api/animex/list",
+"params": [
+{
+"name": "category",
+"default": "ongoing"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "count",
+"default": "20"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/animex/search",
+"params": [
+{
+"name": "keyword",
+"default": "Tenmaku"
+},
+{
+"name": "page",
+"default": "1"
+}
+]
+},
+{
+"action": "detail",
+"path": "/api/animex/detail",
+"params": [
+{
+"name": "book_id",
+"default": "2590"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/animex/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "2590"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/animex/stream",
+"params": [
+{
+"name": "book_id",
+"default": "2590"
+},
+{
+"name": "episode",
+"default": "1"
+}
+]
+}
+]
+},
+{
+"slug": "winknovel",
+"name": "WinkNovel",
+"logo": "/logos/winknovel.png",
+"badge": "Novel Reader",
+"endpoints": [
+{
+"action": "set_language",
+"path": "/api/winknovel/set_language",
+"params": [
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "home",
+"path": "/api/winknovel/home",
+"params": [
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+},
+{
+"name": "category_id",
+"default": "0"
+},
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "ranking",
+"path": "/api/winknovel/ranking",
+"params": [
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "categories",
+"path": "/api/winknovel/categories",
+"params": [
+{
+"name": "lang",
+"default": "en"
+}
+]
+},
+{
+"action": "search",
+"path": "/api/winknovel/search",
+"params": [
+{
+"name": "query",
+"default": "Think Again"
+},
+{
+"name": "page",
+"default": "1"
+},
+{
+"name": "page_size",
+"default": "20"
+}
+]
+},
+{
+"action": "hots",
+"path": "/api/winknovel/search/hots",
+"params": []
+},
+{
+"action": "detail",
+"path": "/api/winknovel/detail",
+"params": [
+{
+"name": "book_id",
+"default": "4898"
+},
+{
+"name": "rich",
+"default": "false"
+}
+]
+},
+{
+"action": "allepisode",
+"path": "/api/winknovel/allepisode",
+"params": [
+{
+"name": "book_id",
+"default": "4898"
+}
+]
+},
+{
+"action": "stream",
+"path": "/api/winknovel/stream",
+"params": [
+{
+"name": "book_id",
+"default": "4898"
+},
+{
+"name": "episode",
+"default": "11"
+}
+]
+},
+{
+"action": "resolve_segments",
+"path": "/api/winknovel/resolve_segments",
+"params": [
+{
+"name": "url",
+"default": "https://static.winknoveltv.com/videos/6742/1080/11/dbWhYXJYYMHqWmEz.m3u8"
+}
+]
+}
+]
+}
+]

@@ -32,9 +32,11 @@ module DracinApi
       "storyreel"  => "DracinApi::Adapters::Vibeshort",
       "vibeshort"  => "DracinApi::Adapters::Vibeshort",
       "vigloo"     => "DracinApi::Adapters::Vigloo",
-      "vorta"      => "DracinApi::Adapters::Vorta" # hub multi-platform; slug provider = category_p
+      "vorta"      => "DracinApi::Adapters::Vorta", # hub multi-platform; slug provider = category_p
+      "mola"       => "DracinApi::Adapters::Mola"   # hub Mola API (api.molatv.id); slug provider = slug platform Mola
     }.freeze
-    NATIVE = REGISTRY.reject { |_, v| v == "DracinApi::Adapters::Vorta" }.freeze
+    HUBS = %w[DracinApi::Adapters::Vorta DracinApi::Adapters::Mola].freeze
+    NATIVE = REGISTRY.reject { |_, v| HUBS.include?(v) }.freeze
 
     module_function
 
@@ -46,16 +48,16 @@ module DracinApi
       klass.constantize.new(provider, api_key: api_key.presence || provider.effective_api_key, lang: lang)
     end
 
-    # Adapter cadangan bila adapter utama gagal: provider DracinAPI → Vorta (bila kategorinya ada di hub Vorta),
-    # provider Vorta → adapter native DracinAPI dengan slug yang sama.
+    # Adapter cadangan bila adapter utama gagal: provider DracinAPI → hub (Vorta bila kategorinya ada, lalu Mola bila
+    # platformnya ada); provider hub → adapter native DracinAPI dengan slug yang sama (atau hub lain).
     def fallback_for(provider, lang: nil)
-      if provider.adapter_slug == "vorta"
-        klass = NATIVE[provider.slug] or return nil
-        key = ApiSource.enabled.where.not(auth_mode: "hmac_sha256").ordered.first&.api_key.presence || Setting.dracin_api_key
-        return nil if key.blank?
-        klass.constantize.new(provider, api_key: key, lang: lang)
+      if HUBS.include?(REGISTRY[provider.adapter_slug])
+        klass = NATIVE[provider.slug]
+        key = klass && (ApiSource.enabled.where.not(auth_mode: "hmac_sha256").ordered.detect { |s| !Mola.source_for?(s) }&.api_key.presence || Setting.dracin_api_key)
+        return klass.constantize.new(provider, api_key: key, lang: lang) if key.present?
+        provider.adapter_slug == "vorta" ? Mola.fallback_for(provider, lang: lang) : Vorta.fallback_for(provider, lang: lang)
       else
-        Vorta.fallback_for(provider, lang: lang)
+        Vorta.fallback_for(provider, lang: lang) || Mola.fallback_for(provider, lang: lang)
       end
     end
   end

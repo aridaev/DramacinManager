@@ -1,0 +1,76 @@
+<% if adfree_nav? %>
+  <%
+    compact = local_assigns[:compact]
+    ttl = @drama.try(:title).presence
+    url = request.base_url + (controller_name == "members" ? template_v1_root_path : request.path)
+    text = ttl ? tt("members.share_text", title: ttl, site: tv1_site_name) : tt("members.share_text_site", site: tv1_site_name)
+    enc = ->(s) { ERB::Util.url_encode(s.to_s) }
+    targets = [
+      [ "whatsapp", "WhatsApp", "https://wa.me/?text=#{enc.("#{text} #{url}")}" ],
+      [ "telegram", "Telegram", "https://t.me/share/url?url=#{enc.(url)}&text=#{enc.(text)}" ],
+      [ "facebook", "Facebook", "https://www.facebook.com/sharer/sharer.php?u=#{enc.(url)}" ],
+      [ "x", "X", "https://twitter.com/intent/tweet?text=#{enc.(text)}&url=#{enc.(url)}" ]
+    ]
+  %>
+  <div class="share<%= ' is-compact' if compact %>" data-share-box data-url="<%= url %>" data-text="<%= text %>" data-title="<%= ttl || tv1_site_name %>" data-claim="<%= template_v1_member_share_path %>" data-copied="<%= tt('members.share_copied') %>">
+    <% if guest_adfree? %><p class="share-active"><%= tt("members.share_active", time: l(guest_adfree_until, format: "%H:%M")) %></p><% end %>
+    <p class="share-title"><%= tt("members.share_title", m: share_reward_minutes) %></p>
+    <% unless compact %><p class="share-hint"><%= tt("members.share_hint") %></p><% end %>
+    <div class="share-row">
+      <button type="button" class="share-btn is-native" data-share-native hidden><%= tt("members.share_native") %></button>
+      <% targets.each do |key, label, href| %><a class="share-btn is-<%= key %>" href="<%= href %>" target="_blank" rel="noopener nofollow" data-share-link><%= label %></a><% end %>
+      <button type="button" class="share-btn is-copy" data-share-copy><%= tt("members.share_copy") %></button>
+    </div>
+    <p class="share-msg" role="status" aria-live="polite"></p>
+  </div>
+
+  <% unless @share_js_done %>
+    <% @share_js_done = true %>
+    <% content_for :scripts do %>
+      <script>
+        (function () {
+          var meta = document.querySelector('meta[name="csrf-token"]');
+          function msg(box, text, bad) {
+            var m = box.querySelector(".share-msg");
+            if (m) { m.textContent = text || ""; m.classList.toggle("is-bad", !!bad); }
+          }
+          function claim(box) {
+            if (box.dataset.busy) return;
+            box.dataset.busy = "1";
+            fetch(box.dataset.claim, { method: "POST", credentials: "same-origin", headers: { "Accept": "application/json", "X-CSRF-Token": meta ? meta.content : "" } })
+              .then(function (r) { return r.json(); })
+              .then(function (d) {
+                msg(box, d.message, !d.ok);
+                if (d.ok) setTimeout(function () { location.reload(); }, 1500); else delete box.dataset.busy;
+              })
+              .catch(function () { delete box.dataset.busy; });
+          }
+          function copyText(t) {
+            if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
+            return new Promise(function (ok, fail) {
+              var ta = document.createElement("textarea");
+              ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+              document.body.appendChild(ta); ta.select();
+              try { document.execCommand("copy") ? ok() : fail(); } catch (e) { fail(e); }
+              document.body.removeChild(ta);
+            });
+          }
+          document.querySelectorAll("[data-share-box]").forEach(function (box) {
+            var nat = box.querySelector("[data-share-native]");
+            if (nat && navigator.share) {
+              nat.hidden = false;
+              nat.addEventListener("click", function () {
+                navigator.share({ title: box.dataset.title, text: box.dataset.text, url: box.dataset.url }).then(function () { claim(box); }).catch(function () {});
+              });
+            }
+            box.querySelectorAll("[data-share-link]").forEach(function (a) { a.addEventListener("click", function () { claim(box); }); });
+            var cp = box.querySelector("[data-share-copy]");
+            if (cp) cp.addEventListener("click", function () {
+              copyText(box.dataset.url).then(function () { msg(box, box.dataset.copied, false); claim(box); }).catch(function () {});
+            });
+          });
+        })();
+      </script>
+    <% end %>
+  <% end %>
+<% end %>

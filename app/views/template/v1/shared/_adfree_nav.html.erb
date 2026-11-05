@@ -1,0 +1,6 @@
+<% if adfree_nav? %>
+  <%= link_to template_v1_member_path, class: [ "adfree-btn", ("is-on" if adfree_now?), local_assigns[:variant] ], title: tt("members.nav_hint", m: share_reward_minutes) do %>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.6 3.6-1.4 5.2-3 7.3-1.4 1.9-2 3.4-2 5.3a6 6 0 0 0 12 0c0-2.5-1.2-4.4-2.7-5.8.1 1.7-.5 2.8-1.5 3.5C14.6 8.1 13.7 4.5 12 2z"/></svg>
+    <span><%= tt("members.nav") %></span>
+  <% end %>
+<% end %>

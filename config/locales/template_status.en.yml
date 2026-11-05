@@ -1,0 +1,31 @@
+en:
+  template:
+    v1:
+      status:
+        this_provider: "this provider"
+        try_other: "Or watch through another provider:"
+        admin_health: "Provider health"
+        maintenance:
+          title: "Under maintenance"
+          text: "%{provider} is undergoing maintenance on the provider's side. It is usually brief, so try again later or head back home."
+        down:
+          title: "Provider is offline"
+          text: "We can't reach the %{provider} server right now. We check it automatically and will bring it back as soon as it recovers."
+        timeout:
+          title: "Provider is too slow"
+          text: "%{provider} did not respond in time. Please try again shortly."
+        auth:
+          title: "Provider unavailable"
+          text: "Access to %{provider} is being refused at the moment. We're working on it, please pick another provider for now."
+        rate_limit:
+          title: "Too many requests"
+          text: "%{provider} is temporarily limiting requests. Wait a moment and try again."
+        not_found:
+          title: "Title not available"
+          text: "This title was not found on %{provider}. It may have been removed or is being re-synced."
+        missing_api_key:
+          title: "Catalog not ready"
+          text: "The catalog can't be loaded because the API configuration is incomplete."
+        generic:
+          title: "Failed to load from the provider"
+          text: "%{provider} did not respond or returned an error. Try again shortly or pick another provider."

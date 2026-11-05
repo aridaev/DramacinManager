@@ -1,0 +1,101 @@
+en:
+  admin:
+    site_settings:
+      tg_title: Telegram MTProto
+      tg_text_html: "Your Telegram app's <code>api_id</code> and <code>api_hash</code>, created at my.telegram.org/apps. Used to log a Telegram account in by QR scan per Instance (not a bot token)."
+      tg_connected: Set
+      tg_api_id: API ID
+      tg_api_hash: API Hash
+      tg_test: Test sidecar
+      tg_clear: Remove
+      tg_page: Create at my.telegram.org
+      tg_missing: API ID / API Hash not set.
+      tg_ok: Telegram sidecar is running. API ID and Hash are verified at the first QR login.
+      tg_failed: "Telegram sidecar problem: %{error}"
+      tg_cleared: Telegram credentials removed.
+      tg_id_invalid: API ID must be a number.
+    telegram:
+      title: Telegram Auto Poster
+      hint: auto-post videos to Telegram groups/channels via a QR-linked Telegram account
+      manage: Manage Telegram
+      targets_count: "%{n} targets · %{on} on"
+      page_title: "Telegram Auto Poster — %{name}"
+      page_subtitle: Log in a Telegram account by QR scan, load its groups/channels, then pick destinations and set a schedule for each.
+      not_configured: Telegram API ID / API Hash not set in Site Settings.
+      sidecar_down: The Telegram service (sidecar) is unreachable.
+      account_title: Telegram account
+      connected: Connected
+      not_logged_in: Not logged in
+      session_dead: Session dead
+      logged_in_at: "logged in %{at}"
+      synced_at: "list loaded %{at}"
+      dead_hint: "Telegram rejected the session (%{at}); all targets were disabled. Log in again by QR."
+      qr_howto: "Click Login, then on your phone: Telegram → Settings → Devices → Link Desktop Device, and scan the QR."
+      qr_start: Telegram login (QR)
+      qr_cancel: Cancel
+      qr_waiting: Waiting for scan… the QR refreshes automatically.
+      qr_2fa: This account has two-step verification. Enter the password.
+      qr_expired: QR expired. Click Login again.
+      qr_failed: Failed. Try again.
+      qr_ok: Logged in.
+      qr_gone: Login session expired, start again.
+      password_label: Two-step password
+      password_send: Send
+      sync: Load groups/channels
+      logout: Logout
+      logout_confirm: Log out the Telegram account? All targets will be disabled.
+      logged_out: Telegram account unlinked.
+      synced: "%{n} groups/channels/topics loaded."
+      auth_dead: The Telegram session is no longer valid. Log in again.
+      need_login: Log in a Telegram account first.
+      cannot_post: "This account cannot post in %{title}."
+      cannot_post_short: cannot post
+      targets_title: Groups & channels
+      targets_hint: "Tick On for the destinations to use. Minimum interval %{min} minutes to keep the account safe from limits."
+      targets_empty: No targets yet. Click Load groups/channels.
+      col_target: Target
+      eps_per_title: episodes/title
+      detail: Fixed text & log
+      flow_hint: Videos are sent from your Telegram account with a caption and site link. Posts from the same account are spaced a few minutes apart.
+      bulk_saved: "%{n} targets saved."
+      run_now_confirm: "Send one post to %{title} now?"
+      run_now_queued: Post queued.
+      target_deleted: "%{title} removed from the list."
+      chat_type:
+        channel: Channel
+        supergroup: Supergroup
+        group: Group
+        forum: Forum group
+      topic_badge: Topic in a forum group
+      topic_all: Enable/disable all topics
+      topics_count: "%{n} topics"
+      topics_active: active
+      promo:
+        title: Promotion
+        enabled: Enabled
+        every: every
+        minutes: minutes
+        next: next
+        send_now: Send promo now
+        hint: "Active promos are sent in rotation on this schedule, separate from the video schedule. Minimum interval is %{min} minutes to avoid looking like spam."
+        none: No promos for this destination yet.
+        summary: "%{n} promos"
+        sent: "Sent %{n}x"
+        with_image: with image
+        enable: Enable
+        disable: Disable
+        add: Add promo
+        body_ph: Promotion text (links and emoji allowed). Max 4000 characters, or 1024 with an image.
+        image_label: "Image (optional):"
+        image_missing: The image file could not be read.
+        image_too_big: "Image is too large (max %{mb} MB)."
+        image_type: Not a valid image file (JPG, PNG, WebP, or GIF).
+        image_pixels: Image resolution is too large.
+        too_long: "Promo text is too long (%{n} of max %{max} characters)."
+        quota: "At most %{max} promos per destination."
+        need_active: "%{title}: add at least one active promo first."
+        created: Promo added.
+        saved: Promo saved.
+        deleted: Promo deleted.
+        run_now_queued: Promo queued.
+        run_confirm: "Send a promo to %{title} now?"

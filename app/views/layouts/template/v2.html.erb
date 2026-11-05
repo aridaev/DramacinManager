@@ -73,6 +73,7 @@
             </details>
           <% end %>
         </nav>
+        <div class="side-adfree"><%= render "template/v1/shared/adfree_nav", variant: "is-side" %></div>
 
         <div class="side-foot">
           <% if enabled_providers.any? %>
@@ -102,6 +103,7 @@
           <%= link_to template_v1_root_path, class: "brand" do %>
             <% if tv1_logo_url %><%= image_tag tv1_logo_url, alt: tv1_site_name, class: "brand-logo" %><% else %><span class="brand-name"><%= tv1_site_name %></span><% end %>
           <% end %>
+          <%= render "template/v1/shared/adfree_nav", variant: "is-top" %>
           <%= link_to template_v1_search_path, class: "icon-btn", aria: { label: tt("search") } do %><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><% end %>
         </header>
 

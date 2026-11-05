@@ -112,6 +112,8 @@ en:
       f_watermark_hint: empty = use Logo, then Icon; transparent PNG works best
       f_wm_position: Position
       f_wm_opacity: Opacity
+      f_wm_text: Domain text on video
+      f_wm_text_hint: "burned at the bottom centre of auto-posted videos; empty = instance active domain, 0 to disable"
       wm_none: no logo/watermark yet
       wm_pos:
         top-center: Top center
@@ -171,6 +173,17 @@ en:
       col_key: Key
       col_providers: Providers
       col_last_test: Last test
+      col_health: Health
+      healthy: Healthy
+      unhealthy: Unhealthy
+      unhealthy_until: "until %{at}"
+      quota: "Quota %{used}/%{limit} today"
+      key_expires: "Token valid until %{date}"
+      health_hint: "Updated automatically from real errors while visitors browse + a scheduled check every 6 hours. Providers of an unhealthy source are hidden from the public site until it recovers."
+      health_warning_html: "<strong>%{name}</strong>: %{note}"
+      muted_providers: "Providers currently hidden (consecutive failures): %{list}"
+      unmute: Recover now
+      unmuted: "%{name} recovered; it will be retried on the next request."
       test: Test
       sync: Sync
       sync_confirm: Pull the platform list from this source into the providers table?
@@ -289,6 +302,25 @@ en:
       ns_instruction_html: 'At the registrar of <strong>%{hostname}</strong>, change the nameservers to:'
       ns_note: After changing, click Check status. Cloudflare usually detects it within minutes up to 24 hours.
       last_checked: Checked
+      geo_label: Country access
+      geo_all: All countries
+      geo_only: "%{country} only"
+      geo_set_id: Indonesia only
+      geo_set_asia: All Asia
+      geo_pick: Choose countries…
+      geo_apply: Apply selected countries
+      geo_all_asia: all of Asia
+      geo_n_countries: "%{n} Asian countries"
+      geo_none: Select at least one country.
+      geo_confirm_asia: "Block every visitor of %{hostname} outside Asia (except search-engine bots)?"
+      geo_confirm_pick: "Block every visitor of %{hostname} outside the selected countries (except search-engine bots)?"
+      geo_open: Open to all countries
+      geo_hint: "Cloudflare WAF: visitors outside the selected country are blocked; verified search-engine bots (Google, Bing) stay allowed."
+      geo_confirm_id: "Block every visitor of %{hostname} outside Indonesia (except search-engine bots)?"
+      geo_on: "%{hostname}: now reachable only from %{country} (live in ~1 minute)."
+      geo_off: "%{hostname}: country restriction removed."
+      geo_failed: "Failed to configure Cloudflare WAF: %{error}"
+      geo_unknown: Unknown country.
       statuses:
         pending_ns: Waiting for NS
         active: Active

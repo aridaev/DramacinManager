@@ -1,0 +1,21 @@
+<%# Ringkasan Auto Poster Telegram di halaman edit instance; login QR & pengaturan tujuan ada di admin/telegram#show.
+    Dirender di luar <form> utama lalu dipindah ke bawah kartu Auto Posting oleh JS. %>
+<% tg_acc = @instance.telegram_account %>
+<% tg_targets = tg_acc ? tg_acc.targets.to_a : [] %>
+<section class="card inst-sec" id="sec-telegram">
+  <div class="card-head">
+    <h2><%= t("admin.telegram.title") %></h2>
+    <span class="muted" style="font-size:.76rem"><%= t("admin.telegram.hint") %></span>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <%= link_to admin_instance_telegram_path(@instance), class: "btn btn-sm btn-secondary" do %><%= dm_icon("clock", size: 14) %> <%= t("admin.telegram.manage") %><% end %>
+    <% if tg_acc&.logged_in? %>
+      <span class="badge badge-success"><%= tg_acc.label %></span>
+      <span class="muted" style="font-size:.74rem"><%= t("admin.telegram.targets_count", n: tg_targets.size, on: tg_targets.count(&:enabled?)) %></span>
+    <% elsif tg_acc&.auth_dead? %>
+      <span class="badge badge-danger"><%= t("admin.telegram.session_dead") %></span>
+    <% else %>
+      <span class="badge badge-muted"><%= t("admin.telegram.not_logged_in") %></span>
+    <% end %>
+  </div>
+</section>

@@ -63,6 +63,30 @@ class Provider < ApplicationRecord
   scope :enabled, -> { where(enabled: true) }
   scope :disabled, -> { where(enabled: false) }
   scope :supported, -> { where(slug: DracinApi::Adapters.supported_slugs).or(where(adapter_key: DracinApi::Adapters.supported_slugs)) }
+  # Tidak sedang dimute oleh DracinApi::Health (gagal beruntun).
+  scope :not_muted, -> { where("unavailable_until IS NULL OR unavailable_until <= ?", Time.current) }
+
+  # Provider yang boleh tampil di situs publik: aktif + punya adapter + tidak dimute + sumbernya sehat
+  # (provider tanpa api_source mengikuti sumber default).
+  # Bila semuanya dianggap tidak sehat (mis. salah deteksi atau semua sumber habis kuota), jangan kosongkan situs:
+  # tampilkan semua yang aktif+didukung agar pengunjung tetap dapat katalog ter-cache (dan sumber sempat pulih).
+  def self.available
+    healthy = healthy_relation
+    healthy.exists? ? healthy : enabled.supported
+  end
+
+  def self.healthy_relation
+    bad = ApiSource.unhealthy.pluck(:id)
+    rel = enabled.supported.not_muted
+    return rel if bad.empty?
+    default_bad = ApiSource.default && bad.include?(ApiSource.default.id)
+    rel = rel.where("providers.api_source_id IS NULL OR providers.api_source_id NOT IN (?)", bad)
+    rel = rel.where.not(api_source_id: nil) if default_bad
+    rel
+  end
+
+  def muted? = unavailable_until.present? && unavailable_until > Time.current
+  def available? = enabled? && supported? && !muted? && (api_source || ApiSource.default)&.healthy? != false
 
   def self.sync_catalog!
     CATALOG.each_with_index do |(name, slug, category), index|
@@ -92,7 +116,11 @@ class Provider < ApplicationRecord
         provider.api_source = source if source
       end
       provider.name = entry["name"].presence || slug.titleize if provider.new_record? || entry["name"].present?
-      provider.position = (source && !source.is_default? ? Provider.maximum(:position).to_i : 0) + index + 1 if provider.new_record?
+      if provider.new_record?
+        provider.position = (source && !source.is_default? ? Provider.maximum(:position).to_i : 0) + index + 1
+        provider.enabled = entry["enabled"] if entry.key?("enabled") # hub berkuota (Mola) → nonaktif dulu, admin memilih
+        provider.category = entry["category"] if entry["category"].present? && categories.key?(entry["category"])
+      end
       provider.last_status = entry["status"].to_s.presence
       provider.last_latency_ms = entry["latency"]
       provider.last_checked_at = entry["lastChecked"].present? ? (Time.zone.parse(entry["lastChecked"]) || now) : now

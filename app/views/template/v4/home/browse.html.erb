@@ -1,4 +1,4 @@
-﻿<% heading = @heading || (@query ? tt("browse.search_title", query: @query) : tt("browse.genre_title", genre: t("template.v1.genres.#{@genre}", default: @genre.to_s.titleize))) %>
+<% heading = @heading || (@query ? tt("browse.search_title", query: @query) : tt("browse.genre_title", genre: t("template.v1.genres.#{@genre}", default: @genre.to_s.titleize))) %>
 <% content_for :title, tv1_page_title(heading, current_provider.name) %>
 
 <section class="module page">

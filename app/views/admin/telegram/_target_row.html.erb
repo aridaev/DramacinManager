@@ -1,0 +1,105 @@
+<%# Satu baris tujuan (grup/channel biasa, atau satu topic di bawah grup forum). Lokal: tg, nested (true = topic bersarang). %>
+            <% n = "targets[#{tg.id}]" %>
+            <tr id="tg-<%= tg.id %>" class="ap-row <%= 'is-dead' unless tg.can_post? %> <%= 'tg-topic-row' if nested %>">
+              <td>
+                <input type="hidden" name="<%= n %>[enabled]" value="0">
+                <input type="checkbox" name="<%= n %>[enabled]" value="1" <%= "checked" if tg.enabled? %> <%= "disabled" unless tg.can_post? %> title="<%= t("admin.auto_post.f_enabled") %>">
+              </td>
+              <td>
+                <% if nested %>
+                  <strong class="tg-topic-name" title="<%= tg.display_title %>"><%= (tg.topic_title.presence || "Topic ##{tg.topic_id}").truncate(40) %></strong>
+                  <% if tg.topic_id.to_i == 1 %><span class="badge badge-muted">General</span><% end %>
+                <% else %>
+                  <strong title="<%= tg.display_title %>"><%= tg.title.truncate(34) %></strong>
+                <% end %>
+                <div class="ap-sub">
+                  <% unless nested %><%= t("admin.telegram.chat_type.#{tg.chat_type}", default: tg.chat_type.to_s) %><% end %><% if tg.username.present? && !nested %> · <a href="https://t.me/<%= tg.username %><%= "/#{tg.topic_id}" if tg.topic_id.to_i > 1 %>" target="_blank" rel="noopener">@<%= tg.username %></a><% end %>
+                  <% unless tg.can_post? %> · <span class="domain-err"><%= t("admin.telegram.cannot_post_short") %></span><% end %>
+                  <% if tg.promo_enabled? %> · <span class="badge badge-info"><%= t("admin.telegram.promo.title") %> <%= tg.promo_interval_minutes %>m</span><% end %>
+                </div>
+                <div class="ap-sub" title="<%= tg.drama_title %>"><%= t("admin.auto_post.progress_short", posts: tg.posts_count, ep: tg.last_episode || "—") %><%= " P#{tg.last_part}/#{tg.parts_total}" if tg.parts_total.to_i > 1 %><% if tg.next_run_at %> · <%= l(tg.next_run_at, format: :short) %><% end %><% if tg.drama_title.present? %> · <%= tg.drama_title.truncate(24) %><% end %></div>
+              </td>
+              <td><input type="text" name="<%= n %>[genres]" value="<%= tg.genres %>" placeholder="<%= AutoPost::DEFAULT_GENRES %>" class="nav-in ap-in" style="width:140px"></td>
+              <td>
+                <input type="number" name="<%= n %>[interval_minutes]" value="<%= tg.interval_minutes %>" min="<%= TelegramTarget::MIN_INTERVAL %>" max="<%= TelegramTarget::MAX_INTERVAL %>" step="1" class="nav-in ap-in" style="width:66px">
+                <div class="ap-sub"><%= t("admin.telegram.eps_per_title") %> <input type="number" name="<%= n %>[episodes_per_title]" value="<%= tg.episodes_per_title %>" min="<%= TelegramTarget::MIN_EPISODES_PER_TITLE %>" max="<%= TelegramTarget::MAX_EPISODES_PER_TITLE %>" class="nav-in ap-in" style="width:48px"></div>
+              </td>
+              <td><input type="number" name="<%= n %>[max_seconds]" value="<%= tg.max_seconds %>" min="<%= TelegramTarget::MIN_SECONDS %>" max="<%= TelegramTarget::MAX_SECONDS %>" step="1" class="nav-in ap-in" style="width:66px"></td>
+              <td>
+                <label class="ap-check"><input type="hidden" name="<%= n %>[remix]" value="0"><input type="checkbox" name="<%= n %>[remix]" value="1" <%= "checked" if tg.remix? %>> <%= t("admin.auto_post.col_remix") %></label>
+                <label class="ap-check"><input type="hidden" name="<%= n %>[bgm]" value="0"><input type="checkbox" name="<%= n %>[bgm]" value="1" <%= "checked" if tg.bgm? %>> <%= t("admin.auto_post.col_bgm") %></label>
+              </td>
+              <td>
+                <% case tg.status_kind
+                   when :ok %><span class="badge badge-success">OK</span>
+                <% when :failed %><span class="badge badge-danger"><%= t("admin.auto_post.failed") %></span>
+                <% when :queued %><span class="badge badge-muted"><%= tg.last_status %></span>
+                <% else %><span class="muted">—</span><% end %>
+                <% if tg.last_status.present? && tg.status_kind != :queued %><div class="ap-sub" title="<%= tg.last_status %>"><%= tg.last_status.sub(/\A(ok|gagal):\s*/, "").truncate(44) %><% if tg.last_run_at %> · <%= l(tg.last_run_at, format: :short) %><% end %></div><% end %>
+              </td>
+              <td class="ap-actions">
+                <button type="button" class="btn btn-xs <%= tg.promo_enabled? ? 'btn-primary' : 'btn-secondary' %>" data-open-promo="tg-detail-<%= tg.id %>" title="<%= t("admin.telegram.promo.title") %>"><%= t("admin.telegram.promo.title") %><%= " (#{tg.promos.size})" if tg.promos.any? %></button>
+                <button type="submit" form="tg-run-<%= tg.id %>" class="btn btn-secondary btn-xs" <%= "disabled" unless tg.can_post? %>><%= t("admin.auto_post.run_now_short") %></button>
+                <button type="submit" form="tg-del-<%= tg.id %>" class="btn btn-danger btn-xs"><%= t("common.delete", default: "Hapus") %></button>
+              </td>
+            </tr>
+            <% promos = tg.promos.sort_by(&:id) %>
+            <tr class="ap-detail"><td colspan="8">
+              <details id="tg-detail-<%= tg.id %>"><summary class="muted" style="cursor:pointer;font-size:.76rem"><%= t("admin.telegram.detail") %> · <%= t("admin.telegram.promo.summary", n: promos.size) %> · <%= t("admin.auto_post.log_title", n: tg.log.size) %></summary>
+                <div class="field" style="margin:8px 0">
+                  <div class="field-label-row"><label><%= t("admin.auto_post.f_fixed_text") %></label><span class="field-hint"><%= t("admin.auto_post.f_fixed_text_hint") %></span></div>
+                  <textarea name="<%= n %>[fixed_text]" rows="2" class="ap-cookie-in" style="font-family:inherit;font-size:.8rem" maxlength="1000"><%= tg.fixed_text %></textarea>
+                </div>
+
+                <div class="tg-promo">
+                  <div class="tg-promo-head">
+                    <strong><%= t("admin.telegram.promo.title") %></strong>
+                    <label class="ap-check"><input type="hidden" name="<%= n %>[promo_enabled]" value="0"><input type="checkbox" name="<%= n %>[promo_enabled]" value="1" <%= "checked" if tg.promo_enabled? %> <%= "disabled" unless tg.can_post? && promos.any?(&:enabled?) %>> <%= t("admin.telegram.promo.enabled") %></label>
+                    <span><%= t("admin.telegram.promo.every") %> <input type="number" name="<%= n %>[promo_interval_minutes]" value="<%= tg.promo_interval_minutes %>" min="<%= TelegramTarget::PROMO_MIN_INTERVAL %>" max="<%= TelegramTarget::PROMO_MAX_INTERVAL %>" step="1" class="nav-in ap-in" style="width:76px"> <%= t("admin.telegram.promo.minutes") %></span>
+                    <% case tg.promo_status_kind
+                       when :ok %><span class="badge badge-success">OK</span>
+                    <% when :failed %><span class="badge badge-danger"><%= t("admin.auto_post.failed") %></span>
+                    <% when :queued %><span class="badge badge-muted"><%= tg.promo_last_status %></span><% end %>
+                    <% if tg.promo_last_status.present? && tg.promo_status_kind != :queued %><span class="muted" style="font-size:.72rem" title="<%= tg.promo_last_status %>"><%= tg.promo_last_status.sub(/\A(ok|gagal):\s*/, "").truncate(50) %><% if tg.promo_last_run_at %> · <%= l(tg.promo_last_run_at, format: :short) %><% end %></span><% end %>
+                    <% if tg.promo_enabled? && tg.promo_next_run_at %><span class="muted" style="font-size:.72rem"><%= t("admin.telegram.promo.next") %> <%= l(tg.promo_next_run_at, format: :short) %></span><% end %>
+                    <button type="submit" form="tg-promo-run-<%= tg.id %>" class="btn btn-secondary btn-xs" <%= "disabled" unless tg.can_post? && promos.any?(&:enabled?) %>><%= t("admin.telegram.promo.send_now") %></button>
+                  </div>
+                  <p class="muted" style="font-size:.72rem;margin:4px 0 8px"><%= t("admin.telegram.promo.hint", min: TelegramTarget::PROMO_MIN_INTERVAL) %></p>
+
+                  <% if promos.empty? %><p class="muted" style="font-size:.78rem;margin:0 0 8px"><%= t("admin.telegram.promo.none") %></p><% end %>
+                  <% promos.each do |pr| %>
+                    <div class="tg-promo-item <%= 'is-off' unless pr.enabled? %>">
+                      <% if pr.image_exists? %><a href="<%= promo_image_admin_instance_telegram_path(@instance, promo_id: pr.id) %>" target="_blank" rel="noopener"><img src="<%= promo_image_admin_instance_telegram_path(@instance, promo_id: pr.id) %>" alt="" width="56" height="56" loading="lazy" class="tg-promo-thumb"></a><% end %>
+                      <div class="tg-promo-main">
+                        <textarea name="body" form="tg-promo-upd-<%= pr.id %>" rows="2" maxlength="<%= pr.has_image? ? TelegramPromo::MAX_CAPTION : TelegramPromo::MAX_TEXT %>" class="ap-cookie-in" style="font-family:inherit;font-size:.8rem"><%= pr.body %></textarea>
+                        <div class="ap-sub" style="max-width:none"><%= t("admin.telegram.promo.sent", n: pr.sent_count) %><% if pr.last_sent_at %> · <%= l(pr.last_sent_at, format: :short) %><% end %><% if pr.has_image? %> · <%= t("admin.telegram.promo.with_image") %><% end %></div>
+                      </div>
+                      <div class="tg-promo-actions">
+                        <button type="submit" form="tg-promo-upd-<%= pr.id %>" class="btn btn-secondary btn-xs"><%= t("common.save", default: "Simpan") %></button>
+                        <button type="submit" form="tg-promo-tog-<%= pr.id %>" class="btn btn-secondary btn-xs"><%= pr.enabled? ? t("admin.telegram.promo.disable") : t("admin.telegram.promo.enable") %></button>
+                        <button type="submit" form="tg-promo-del-<%= pr.id %>" class="btn btn-danger btn-xs"><%= t("common.delete", default: "Hapus") %></button>
+                      </div>
+                    </div>
+                  <% end %>
+
+                  <div class="tg-promo-new">
+                    <textarea name="body" form="tg-promo-new-<%= tg.id %>" rows="2" maxlength="<%= TelegramPromo::MAX_TEXT %>" placeholder="<%= t("admin.telegram.promo.body_ph") %>" class="ap-cookie-in" style="font-family:inherit;font-size:.8rem"></textarea>
+                    <div class="tg-promo-new-row">
+                      <label class="muted" style="font-size:.74rem"><%= t("admin.telegram.promo.image_label") %> <input type="file" name="image" form="tg-promo-new-<%= tg.id %>" accept="image/jpeg,image/png,image/webp,image/gif"></label>
+                      <button type="submit" form="tg-promo-new-<%= tg.id %>" class="btn btn-sm" <%= "disabled" if promos.size >= TelegramPromo::MAX_PER_TARGET %>><%= t("admin.telegram.promo.add") %></button>
+                    </div>
+                  </div>
+                </div>
+
+                <% if tg.log.any? %>
+                  <div class="table-wrap"><table class="table" style="font-size:.76rem">
+                    <thead><tr><th><%= t("admin.auto_post.log_at") %></th><th>EP</th><th><%= t("admin.auto_post.log_result") %></th></tr></thead>
+                    <tbody>
+                      <% tg.log.first(30).each do |e| %>
+                        <tr><td><%= (Time.iso8601(e["at"]).in_time_zone rescue nil)&.then { |tm| l(tm, format: :short) } %></td><td><%= e["episode"] || "—" %> <%= e["part"] %></td>
+                          <td style="white-space:normal"><% if e["ok"] %><span class="badge badge-success">OK</span> <% if e["url"] %><a href="<%= e["url"] %>" target="_blank" rel="noopener"><%= e["url"] %></a><% end %><% else %><span class="badge badge-danger"><%= t("admin.auto_post.failed") %></span> <%= e["error"] %><% end %></td></tr>
+                      <% end %>
+                    </tbody></table></div>
+                <% end %>
+              </details>
+            </td></tr>

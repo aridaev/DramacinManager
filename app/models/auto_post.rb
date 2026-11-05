@@ -15,6 +15,8 @@ class AutoPost < ApplicationRecord
   MIN_EPISODES_PER_TITLE = 1
   MAX_EPISODES_PER_TITLE = 100
   POSTED_TITLES_MAX = 2000
+  AUTH_FAILS_TO_DISABLE = 2 # AUTH gagal berturut-turut sebanyak ini → cookie dianggap mati, akun dinonaktifkan
+  DEFAULT_GENRES = "Sexy, Romance, Dewasa".freeze # genre otomatis bawaan untuk judul otomatis
   DEFAULT_FIXED_TEXT = "Tonight, @thv took a turn in the audience as he watched @gracieabrams and @dojacat perform at #VogueWorld Hollywood. No stranger to a fashion show either, the @bts.bighitofficial star dressed in a look that could have easily appeared on the runway."
 
   belongs_to :instance
@@ -33,7 +35,16 @@ class AutoPost < ApplicationRecord
 
   # Input mentah boleh berupa header Cookie, JSON ekspor Cookie-Editor, atau format Netscape (dinormalisasi ke header).
   def cookie=(raw)
+    self.auth_failed_at = nil if raw.present? # cookie baru → tanda "cookie mati" dicabut
     super(self.class.normalize_cookie(raw))
+  end
+
+  def cookie_dead? = auth_failed_at.present?
+  # Ringkasan status untuk tabel: :dead (cookie mati) | :ok | :failed | :queued | nil
+  def status_kind
+    return :dead if cookie_dead?
+    s = last_status.to_s
+    s.start_with?("ok") ? :ok : (s.start_with?("gagal") ? :failed : (s.present? ? :queued : nil))
   end
 
   def label=(v)
@@ -43,6 +54,13 @@ class AutoPost < ApplicationRecord
   def fixed_text=(v)
     super(v.to_s.strip.first(1000).presence)
   end
+
+  # Daftar genre otomatis dipisah koma/baris; disimpan rapi ("Sexy, Romance, Dewasa").
+  def genres=(v)
+    super(v.to_s.split(/[,\n;]+/).map(&:strip).reject(&:blank?).uniq(&:downcase).first(10).join(", ").presence)
+  end
+
+  def genre_list = genres.to_s.split(",").map(&:strip).reject(&:blank?)
 
   def provider = provider_slug.present? ? Provider.find_by(slug: provider_slug) : nil
   def more_parts? = last_episode.present? && last_part.to_i < parts_total.to_i
@@ -71,6 +89,16 @@ class AutoPost < ApplicationRecord
       attrs[:title_episodes] = title_episodes.to_i + 1 if part.to_i >= parts.to_i # episode selesai (semua part terunggah)
     end
     update_columns(attrs.merge(updated_at: Time.current))
+  end
+
+  # AUTH gagal: setelah AUTH_FAILS_TO_DISABLE kali berturut-turut, cookie dianggap mati → akun dinonaktifkan
+  # (tidak lagi mencoba tiap interval) dan ditandai agar tampil "Cookie mati" sampai cookie diganti.
+  def record_auth_failure!(error)
+    record!(ok: false, error: "AUTH: #{error}")
+    streak = Array(log).take_while { |e| !e["ok"] && e["error"].to_s.start_with?("AUTH") }.size
+    return if streak < AUTH_FAILS_TO_DISABLE
+    update_columns(enabled: false, next_run_at: nil, auth_failed_at: Time.current, last_status: "cookie mati: #{error.to_s.first(200)}", updated_at: Time.current)
+    Rails.logger.warn("[AutoPost] ##{id} #{label}: cookie mati (#{streak}x AUTH gagal) → auto posting dinonaktifkan")
   end
 
   # Textarea "tambah akun" boleh berisi beberapa cookie: dipisah baris kosong atau "---" (JSON = satu akun).

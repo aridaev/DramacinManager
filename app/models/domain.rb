@@ -61,6 +61,56 @@ class Domain < ApplicationRecord
     self
   end
 
+  # Semua negara/wilayah Asia (ISO 3166-1 alpha-2 => nama). Dipakai sebagai pilihan pembatasan akses.
+  GEO_COUNTRIES = {
+    "AF" => "Afghanistan", "AM" => "Armenia", "AZ" => "Azerbaijan", "BH" => "Bahrain", "BD" => "Bangladesh",
+    "BT" => "Bhutan", "BN" => "Brunei", "KH" => "Kamboja", "CN" => "Tiongkok", "CY" => "Siprus",
+    "GE" => "Georgia", "HK" => "Hong Kong", "IN" => "India", "ID" => "Indonesia", "IR" => "Iran",
+    "IQ" => "Irak", "IL" => "Israel", "JP" => "Jepang", "JO" => "Yordania", "KZ" => "Kazakhstan",
+    "KW" => "Kuwait", "KG" => "Kirgistan", "LA" => "Laos", "LB" => "Lebanon", "MO" => "Makau",
+    "MY" => "Malaysia", "MV" => "Maladewa", "MN" => "Mongolia", "MM" => "Myanmar", "NP" => "Nepal",
+    "KP" => "Korea Utara", "OM" => "Oman", "PK" => "Pakistan", "PS" => "Palestina", "PH" => "Filipina",
+    "QA" => "Qatar", "SA" => "Arab Saudi", "SG" => "Singapura", "KR" => "Korea Selatan", "LK" => "Sri Lanka",
+    "SY" => "Suriah", "TW" => "Taiwan", "TJ" => "Tajikistan", "TH" => "Thailand", "TL" => "Timor Leste",
+    "TR" => "Turki", "TM" => "Turkmenistan", "AE" => "Uni Emirat Arab", "UZ" => "Uzbekistan", "VN" => "Vietnam",
+    "YE" => "Yaman"
+  }.freeze
+  GEO_ASIA = GEO_COUNTRIES.keys.freeze
+
+  # "ID,MY" / ["ID", "MY"] / "ID" → ["ID", "MY"] (huruf besar, unik, urut sesuai daftar).
+  def self.parse_geo(value)
+    codes = Array(value).flat_map { |v| v.to_s.split(/[,\s]+/) }.map(&:upcase).reject(&:blank?).uniq
+    [ codes & GEO_ASIA, codes - GEO_ASIA ] # [dikenal, tidak dikenal]
+  end
+
+  # Ringkasan untuk UI: satu negara → namanya; semua Asia → "Semua Asia"; selain itu → "N negara Asia".
+  def self.geo_summary(codes)
+    codes = Array(codes)
+    return GEO_COUNTRIES[codes.first] || codes.first if codes.size == 1
+    return I18n.t("admin.domains.geo_all_asia") if codes.size == GEO_ASIA.size
+    I18n.t("admin.domains.geo_n_countries", n: codes.size)
+  end
+
+  def geo_restricted? = geo_country.present?
+  def geo_codes = geo_country.to_s.split(",").map(&:strip).reject(&:blank?)
+
+  # Batasi akses situs publik ke satu/banyak negara lewat WAF Cloudflare (kosong/nil = buka untuk semua negara).
+  def set_geo!(countries, client = CloudflareClient.from_settings)
+    raise CloudflareClient::Error, "Zone Cloudflare belum ada" if cf_zone_id.blank?
+    codes = self.class.parse_geo(countries).first
+    if codes.any?
+      rs_id = client.set_geo_allow_only(cf_zone_id, codes)
+      update!(geo_country: codes.join(","), cf_geo_ruleset_id: rs_id, last_error: nil)
+    else
+      client.clear_geo(cf_zone_id)
+      update!(geo_country: nil, cf_geo_ruleset_id: nil, last_error: nil)
+    end
+    self
+  rescue CloudflareClient::Error => e
+    update_columns(last_error: "Geo: #{e.message}".truncate(500), last_checked_at: Time.current)
+    raise
+  end
+
   # Hapus zone di CF (opsional) lalu record lokal.
   def deprovision!(client = CloudflareClient.from_settings, delete_zone: true)
     client.delete_zone(cf_zone_id) if delete_zone && cf_zone_id.present? && client.configured?

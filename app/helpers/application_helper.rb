@@ -12,7 +12,12 @@ module ApplicationHelper
     else "badge-danger"
     end
     label = status.blank? ? t("admin.providers.status_unknown") : t("admin.providers.statuses.#{status}", default: status.titleize)
-    tag.span label, class: [ "badge", css ]
+    badge = tag.span label, class: [ "badge", css ]
+    # Mute kesehatan runtime (gagal beruntun) ditampilkan di samping status hub.
+    if provider.respond_to?(:muted?) && provider.muted?
+      badge += " " + tag.span(t("admin.providers.muted_until", at: l(provider.unavailable_until, format: :short)), class: "badge badge-danger", title: provider.last_error.to_s)
+    end
+    badge
   end
 
   def provider_adapter_badge(provider)

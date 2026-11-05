@@ -44,6 +44,7 @@
         <% end %>
 
         <div class="header-tools">
+          <%= render "template/v1/shared/adfree_nav" %>
           <% if enabled_providers.any? %>
             <%= form_with url: template_v1_root_path, method: :get, class: "provider-form", data: { turbo: false } do |f| %>
               <%= select_tag :provider, options_from_collection_for_select(enabled_providers, :slug, :name, current_provider&.slug), class: "tool-select", data: { autosubmit: true }, aria: { label: tt("provider") } %>

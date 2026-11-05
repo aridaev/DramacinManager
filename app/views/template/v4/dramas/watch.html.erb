@@ -1,4 +1,4 @@
-﻿<% content_for :title, tv1_page_title(tt("watch.title", title: @drama.title, number: @episode_number), current_provider.name) %>
+<% content_for :title, tv1_page_title(tt("watch.title", title: @drama.title, number: @episode_number), current_provider.name) %>
 
 <nav class="crumbs"><%= link_to tt("nav.home"), template_v1_root_path %><span>›</span><%= link_to @drama.title, tv1_drama_path(@drama) %><span>›</span><span><%= tt("watch.episode", number: @episode_number) %></span></nav>
 

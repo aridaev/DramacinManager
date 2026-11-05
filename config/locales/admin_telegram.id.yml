@@ -1,0 +1,101 @@
+id:
+  admin:
+    site_settings:
+      tg_title: Telegram MTProto
+      tg_text_html: "<code>api_id</code> dan <code>api_hash</code> aplikasi Telegram Anda, dibuat di my.telegram.org/apps. Dipakai untuk login akun Telegram lewat scan QR di tiap Instance (bukan bot token)."
+      tg_connected: Terisi
+      tg_api_id: API ID
+      tg_api_hash: API Hash
+      tg_test: Tes sidecar
+      tg_clear: Hapus
+      tg_page: Buat di my.telegram.org
+      tg_missing: API ID / API Hash belum diisi.
+      tg_ok: Sidecar Telegram aktif. API ID dan Hash terbukti benar saat login QR pertama.
+      tg_failed: "Sidecar Telegram bermasalah: %{error}"
+      tg_cleared: Kredensial Telegram dihapus.
+      tg_id_invalid: API ID harus berupa angka.
+    telegram:
+      title: Auto Poster Telegram
+      hint: posting otomatis video ke grup/channel Telegram lewat akun Telegram yang di-scan QR
+      manage: Kelola Telegram
+      targets_count: "%{n} tujuan · %{on} aktif"
+      page_title: "Auto Poster Telegram — %{name}"
+      page_subtitle: Login akun Telegram dengan scan QR, muat daftar grup/channel, lalu pilih tujuan dan atur jadwal masing-masing.
+      not_configured: API ID / API Hash Telegram belum diisi di Pengaturan Situs.
+      sidecar_down: Layanan Telegram (sidecar) tidak bisa dihubungi.
+      account_title: Akun Telegram
+      connected: Terhubung
+      not_logged_in: Belum login
+      session_dead: Sesi mati
+      logged_in_at: "login %{at}"
+      synced_at: "daftar dimuat %{at}"
+      dead_hint: "Sesi Telegram ditolak (%{at}); semua tujuan dinonaktifkan. Login ulang dengan scan QR."
+      qr_howto: "Klik Login, lalu di HP: Telegram → Pengaturan → Perangkat → Tautkan Perangkat Desktop, dan scan QR."
+      qr_start: Login Telegram (QR)
+      qr_cancel: Batal
+      qr_waiting: Menunggu scan… QR diperbarui otomatis.
+      qr_2fa: Akun memakai verifikasi dua langkah. Masukkan password.
+      qr_expired: QR kedaluwarsa. Klik Login lagi.
+      qr_failed: Gagal. Coba lagi.
+      qr_ok: Berhasil login.
+      qr_gone: Sesi login habis, mulai ulang.
+      password_label: Password dua langkah
+      password_send: Kirim
+      sync: Muat grup/channel
+      logout: Logout
+      logout_confirm: Logout akun Telegram? Semua tujuan dinonaktifkan.
+      logged_out: Akun Telegram dilepas.
+      synced: "%{n} grup/channel/topic dimuat."
+      auth_dead: Sesi Telegram tidak berlaku lagi. Login ulang.
+      need_login: Login akun Telegram dulu.
+      cannot_post: "Akun tidak boleh posting di %{title}."
+      cannot_post_short: tidak bisa posting
+      targets_title: Grup & channel
+      targets_hint: "Centang Aktif untuk tujuan yang dipakai. Interval minimal %{min} menit agar akun aman dari pembatasan."
+      targets_empty: Belum ada tujuan. Klik Muat grup/channel.
+      col_target: Tujuan
+      eps_per_title: episode/judul
+      detail: Teks tetap & log
+      flow_hint: Video dikirim dari akun Telegram Anda dengan caption dan tautan situs. Tujuan yang sama akun dijeda beberapa menit.
+      bulk_saved: "%{n} tujuan disimpan."
+      run_now_confirm: "Kirim satu posting ke %{title} sekarang?"
+      run_now_queued: Posting masuk antrean.
+      target_deleted: "%{title} dihapus dari daftar."
+      chat_type:
+        channel: Channel
+        supergroup: Supergrup
+        group: Grup
+        forum: Grup forum
+      topic_badge: Topic di grup forum
+      topic_all: Aktifkan/nonaktifkan semua topic
+      topics_count: "%{n} topic"
+      topics_active: aktif
+      promo:
+        title: Promosi
+        enabled: Aktif
+        every: tiap
+        minutes: menit
+        next: berikutnya
+        send_now: Kirim promo sekarang
+        hint: "Promo aktif dikirim bergantian sesuai jadwal ini, terpisah dari jadwal video. Interval minimal %{min} menit agar tidak dianggap spam."
+        none: Belum ada promo untuk tujuan ini.
+        summary: "%{n} promo"
+        sent: "Terkirim %{n}x"
+        with_image: dengan gambar
+        enable: Aktifkan
+        disable: Matikan
+        add: Tambah promo
+        body_ph: Teks promosi (boleh tautan dan emoji). Maks 4000 karakter, atau 1024 bila ada gambar.
+        image_label: "Gambar (opsional):"
+        image_missing: Berkas gambar tidak terbaca.
+        image_too_big: "Gambar terlalu besar (maks %{mb} MB)."
+        image_type: Berkas bukan gambar yang valid (JPG, PNG, WebP, atau GIF).
+        image_pixels: Resolusi gambar terlalu besar.
+        too_long: "Teks promo terlalu panjang (%{n} dari maks %{max} karakter)."
+        quota: "Maksimal %{max} promo per tujuan."
+        need_active: "%{title}: tambahkan minimal satu promo aktif dulu."
+        created: Promo ditambahkan.
+        saved: Promo disimpan.
+        deleted: Promo dihapus.
+        run_now_queued: Promo masuk antrean.
+        run_confirm: "Kirim promo ke %{title} sekarang?"

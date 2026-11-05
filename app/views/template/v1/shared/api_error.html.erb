@@ -1,17 +1,45 @@
-<% content_for :title, tv1_page_title(t("template.v1.api_error.title"), current_provider&.name) %>
-<div class="empty-state" style="margin-top:40px">
-  <h2><%= t("template.v1.api_error.title") %></h2>
-  <p><%= t("template.v1.api_error.#{@error_kind}", provider: current_provider&.name) %></p>
-  <% if admin? %>
-    <p class="muted"><code><%= @error.message %></code></p>
-    <div class="hero-acts" style="justify-content:center;margin-top:14px">
-      <%= link_to t("template.v1.api_error.retry"), request.fullpath, class: "btn btn-sm" %>
-      <%= link_to t("template.v1.api_error.configure"), edit_admin_settings_path, class: "btn btn-outline btn-sm" %>
-    </div>
-  <% else %>
-    <div class="hero-acts" style="justify-content:center;margin-top:14px">
-      <%= link_to t("template.v1.api_error.retry"), request.fullpath, class: "btn btn-sm" %>
-      <%= link_to t("template.v1.browse.back_home"), template_v1_root_path, class: "btn btn-outline btn-sm" %>
+<% kind = @error_kind.to_s %>
+<% icons = {
+     "maintenance"     => '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>',
+     "timeout"         => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+     "rate_limit"      => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+     "auth"            => '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+     "missing_api_key" => '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+     "not_found"       => '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5"/>'
+   }
+   icon = icons.fetch(kind) { '<path d="M2 9a16 16 0 0 1 20 0M5 12.5a11 11 0 0 1 14 0M8.5 16a6 6 0 0 1 7 0"/><path d="M12 19.5h.01"/><path d="m3 3 18 18"/>' } %>
+<% content_for :title, tv1_page_title(t("template.v1.status.#{kind}.title", default: t("template.v1.status.generic.title")), current_provider&.name) %>
+<% content_for :head do %><meta name="robots" content="noindex, nofollow"><% end %>
+<section class="status-page" role="status">
+  <div class="status-icon status-<%= kind %>" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <%= raw icon %>
+    </svg>
+  </div>
+
+  <h1 class="status-title"><%= t("template.v1.status.#{kind}.title", default: t("template.v1.status.generic.title")) %></h1>
+  <% if current_provider %><p class="status-provider"><%= current_provider.name %></p><% end %>
+  <p class="status-text"><%= t("template.v1.status.#{kind}.text", provider: current_provider&.name || t("template.v1.status.this_provider"), default: t("template.v1.status.generic.text", provider: current_provider&.name || t("template.v1.status.this_provider"))) %></p>
+
+  <div class="status-actions">
+    <%= link_to t("template.v1.browse.back_home"), template_v1_root_path, class: "btn" %>
+    <%= link_to t("template.v1.api_error.retry"), request.fullpath, class: "btn btn-outline" unless kind == "missing_api_key" %>
+  </div>
+
+  <% if @alternative_providers.present? %>
+    <div class="status-alt">
+      <p class="status-alt-title"><%= t("template.v1.status.try_other") %></p>
+      <div class="status-alt-list">
+        <% @alternative_providers.each do |p| %><%= link_to p.name, template_v1_provider_home_path(p.slug), class: "chip" %><% end %>
+      </div>
     </div>
   <% end %>
-</div>
+
+  <% if admin? %>
+    <div class="status-admin">
+      <code><%= @error.message %></code>
+      <%= link_to t("template.v1.api_error.configure"), edit_admin_settings_path, class: "btn btn-outline btn-sm" %>
+      <%= link_to t("template.v1.status.admin_health"), admin_api_sources_path, class: "btn btn-outline btn-sm" %>
+    </div>
+  <% end %>
+</section>

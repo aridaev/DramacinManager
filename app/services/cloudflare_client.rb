@@ -75,6 +75,44 @@ class CloudflareClient
 
   def delete_zone(zone_id) = request(:delete, "/zones/#{zone_id}")
 
+  # --- WAF custom rules (phase http_request_firewall_custom; Free plan: maks 5 rule) ---------------------------
+  GEO_PHASE = "http_request_firewall_custom".freeze
+  GEO_MARK = "dracinmanager-geo".freeze # penanda rule milik kita (di description) agar rule lain tidak tersentuh
+
+  # Ruleset entrypoint zone untuk phase custom; nil bila belum pernah dibuat.
+  def firewall_ruleset(zone_id)
+    request(:get, "/zones/#{zone_id}/rulesets/phases/#{GEO_PHASE}/entrypoint")
+  rescue Error => e
+    raise unless e.message =~ /could not find|not found|does not exist|\A(10003|20217):/i
+    nil
+  end
+
+  # Hanya pengunjung dari negara `countries` (satu kode atau array, ISO 3166-1 alpha-2) yang boleh mengakses;
+  # selain itu diblokir. Bot terverifikasi (Googlebot, Bingbot, dll.) tetap diizinkan agar SEO tidak rusak.
+  # Idempoten: rule lama dengan penanda GEO_MARK diganti. Mengembalikan id ruleset.
+  def set_geo_allow_only(zone_id, countries)
+    codes = Array(countries).map { |c| c.to_s.upcase }.select { |c| c.match?(/\A[A-Z0-9]{2}\z/) }.uniq
+    raise Error, "Daftar negara kosong" if codes.empty?
+    list = codes.map { |c| %("#{c}") }.join(" ")
+    expr = %[(not ip.src.country in {#{list}} and not cf.client.bot)]
+    label = codes.size <= 5 ? codes.join(",") : "#{codes.size} negara"
+    rule = { action: "block", expression: expr, description: "#{GEO_MARK}: hanya #{label}", enabled: true }
+    rs = firewall_ruleset(zone_id)
+    if rs
+      rules = Array(rs["rules"]).reject { |r| r["description"].to_s.start_with?(GEO_MARK) }.map { |r| r.slice("id", "action", "expression", "description", "enabled", "action_parameters").compact }
+      request(:put, "/zones/#{zone_id}/rulesets/#{rs['id']}", body: { rules: [ rule ] + rules })["id"]
+    else
+      request(:post, "/zones/#{zone_id}/rulesets", body: { name: "default", kind: "zone", phase: GEO_PHASE, rules: [ rule ] })["id"]
+    end
+  end
+
+  # Hapus rule geo milik kita (rule lain dibiarkan).
+  def clear_geo(zone_id)
+    rs = firewall_ruleset(zone_id) or return
+    ours = Array(rs["rules"]).select { |r| r["description"].to_s.start_with?(GEO_MARK) }
+    ours.each { |r| request(:delete, "/zones/#{zone_id}/rulesets/#{rs['id']}/rules/#{r['id']}") }
+  end
+
   private
   def request(method, path, query: nil, body: nil)
     raise Error, "Token Cloudflare belum diisi" unless configured?

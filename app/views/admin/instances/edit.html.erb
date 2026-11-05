@@ -185,6 +185,10 @@
           </div>
         </div>
         <p class="muted" style="font-size:.76rem;margin:8px 0 0"><%= t("admin.instances.wm_download_note") %></p>
+        <div class="field" style="margin-top:10px">
+          <div class="field-label-row"><%= f.label :watermark_text, t("admin.instances.f_wm_text") %><span class="field-hint"><%= t("admin.instances.f_wm_text_hint") %></span></div>
+          <%= f.text_field :watermark_text, value: @instance.watermark_text, placeholder: @instance.domains.active.first&.hostname || "drama-china.com", class: "nav-in", style: "width:100%" %>
+        </div>
               <div class="field">
           <label class="check-row"><%= f.check_box :protect_source, { checked: @instance.protect_source? }, "1", "0" %> <%= t("admin.instances.f_protect_source") %></label>
           <span class="field-hint"><%= t("admin.instances.f_protect_source_hint") %></span>
@@ -514,7 +518,7 @@
       </div>
     </div>
   <% end %>
-  <div class="inst-layout inst-layout-after"><div></div><div class="inst-main"><%= render "domains" %><%= render "auto_post" %></div></div>
+  <div class="inst-layout inst-layout-after"><div></div><div class="inst-main"><%= render "domains" %><%= render "auto_post" %><%= render "telegram" %></div></div>
   <%= render "domain_forms" %>
 
 <script>
@@ -629,6 +633,7 @@
       var domSec = document.getElementById("sec-domains"), gen = document.getElementById("sec-general"), after = document.querySelector(".inst-layout-after");
       var apSec = document.getElementById("sec-autopost"), mem = document.getElementById("sec-members");
       if (apSec && mem) mem.insertAdjacentElement("afterend", apSec);
+      var tgSec = document.getElementById("sec-telegram"); if (tgSec && apSec) apSec.insertAdjacentElement("afterend", tgSec);
       if (domSec && gen) { gen.insertAdjacentElement("afterend", domSec); if (after) after.remove(); }
       var tabs = document.querySelectorAll(".inst-tab"), secs = document.querySelectorAll(".inst-sec");
       tabs.forEach(function (t) { t.addEventListener("click", function (e) { e.preventDefault(); document.getElementById(t.dataset.sec).scrollIntoView({ behavior: "smooth", block: "start" }); }); });

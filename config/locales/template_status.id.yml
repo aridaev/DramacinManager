@@ -1,0 +1,31 @@
+id:
+  template:
+    v1:
+      status:
+        this_provider: "penyedia ini"
+        try_other: "Atau tonton lewat penyedia lain:"
+        admin_health: "Kesehatan penyedia"
+        maintenance:
+          title: "Sedang dalam perbaikan"
+          text: "%{provider} sedang menjalani perbaikan dari pihak penyedia. Biasanya tidak lama, silakan coba lagi nanti atau kembali ke beranda."
+        down:
+          title: "Penyedia sedang tidak aktif"
+          text: "Server %{provider} sedang tidak bisa dihubungi. Kami memeriksanya otomatis dan akan menampilkannya lagi begitu pulih."
+        timeout:
+          title: "Penyedia terlalu lambat"
+          text: "%{provider} tidak merespons tepat waktu. Coba lagi beberapa saat lagi."
+        auth:
+          title: "Penyedia belum bisa diakses"
+          text: "Akses ke %{provider} sedang ditolak. Kami sedang menanganinya, silakan pilih penyedia lain dulu."
+        rate_limit:
+          title: "Terlalu banyak permintaan"
+          text: "%{provider} membatasi permintaan untuk sementara. Tunggu sebentar lalu coba lagi."
+        not_found:
+          title: "Judul tidak tersedia"
+          text: "Judul ini tidak ditemukan di %{provider}. Mungkin sudah dihapus atau sedang disinkronkan ulang."
+        missing_api_key:
+          title: "Katalog belum siap"
+          text: "Katalog belum bisa dimuat karena konfigurasi API belum lengkap."
+        generic:
+          title: "Gagal memuat dari penyedia"
+          text: "%{provider} tidak merespons atau mengembalikan kesalahan. Coba lagi beberapa saat lagi atau pilih penyedia lain."

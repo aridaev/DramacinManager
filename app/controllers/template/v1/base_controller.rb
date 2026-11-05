@@ -31,15 +31,29 @@ rescue => e
 end
 
   def load_providers
-    # Hanya platform yang diaktifkan admin DAN sudah punya adapter API.
-    @enabled_providers = Provider.enabled.supported.by_latency.to_a
+    # Hanya platform yang diaktifkan admin, punya adapter API, dan sedang sehat (DracinApi::Health).
+    @enabled_providers = Provider.available.by_latency.to_a
   end
   attr_reader :enabled_providers
 
+  # Provider yang diminta tidak sehat/tidak tersedia → pindah ke provider sehat tercepat (bukan halaman error).
   def select_provider
     slug = params[:provider].presence || session[:tv1_provider]
     @provider_from_path = params[:provider].present?
-    @current_provider = enabled_providers.find { |p| p.slug == slug } || enabled_providers.first
+    @current_provider = enabled_providers.find { |p| p.slug == slug }
+    if @current_provider.nil? && slug.present? && enabled_providers.any?
+      @current_provider = enabled_providers.first
+      if @provider_from_path && request.get?
+        # ID judul milik provider yang diminta tidak berlaku di provider lain: klien non-HTML (bot/API) cukup diberi 503.
+        unless request.format.html?
+          response.set_header("Retry-After", "300")
+          return head(:service_unavailable)
+        end
+        flash[:notice] = t("template.v1.provider_unavailable", provider: Provider.find_by(slug: slug)&.name || slug, to: @current_provider.name)
+        return redirect_to url_for(params.permit!.to_h.merge(provider: @current_provider.slug, only_path: true))
+      end
+    end
+    @current_provider ||= enabled_providers.first
     session[:tv1_provider] = @current_provider&.slug
   end
   attr_reader :current_provider
@@ -55,7 +69,8 @@ end
   def render_api_error(error)
     Rails.logger.warn("[DracinApi] #{current_provider&.slug}: #{error.class} #{error.message}")
     @error = error
-    @error_kind = error.is_a?(DracinApi::MissingApiKey) ? :missing_api_key : :api_error
+    @error_kind = error.is_a?(DracinApi::MissingApiKey) ? :missing_api_key : DracinApi::Failure.kind(error)
+    @alternative_providers = enabled_providers.reject { |p| p == current_provider }.first(8)
     response.set_header("Retry-After", "30")
     render "template/v1/shared/api_error", status: :service_unavailable
   end

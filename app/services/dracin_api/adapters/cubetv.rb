@@ -22,6 +22,7 @@ module DracinApi
 
       def detail(id)
         d = get("/api/detail/#{id}", lang: lang)["data"] || {}
+        raise DracinApi::Error, "cubetv: detail tidak ditemukan" unless d.is_a?(Hash)
         to_drama(d.merge("videoid" => d["videoid"] || id, "totalEpisodeNum" => d["totalEpisodeNum"] || d["latestEpisodeNumber"]))
       end
 
@@ -43,7 +44,11 @@ module DracinApi
       private
       def get(path, params = {})
         require_key!
-        memo(path, params) { Http.get_json("#{host}#{path}", params: params.merge(code: api_key)) }
+        memo(path, params) do
+          body = Http.get_json("#{host}#{path}", params: params.merge(code: api_key))
+          raise DracinApi::Error, "cubetv: respons tidak terduga (#{body.class})" unless body.is_a?(Hash)
+          body
+        end
       end
 
       # videoUrls bisa berupa [ { quality|resolution|name, url } ], { "720p" => url }, atau string.

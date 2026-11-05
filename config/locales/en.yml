@@ -142,6 +142,7 @@ en:
         coming: "Coming soon"
         offline: "Offline"
       status_unknown: "Not checked"
+      muted_until: "Hidden until %{at}"
       enabled_notice: "%{name} enabled."
       disabled_notice: "%{name} disabled."
       enable_all_notice: "All %{count} platforms enabled."
@@ -195,6 +196,7 @@ en:
         revenge: "Revenge"
         ceo: "CEO"
         rebirth: "Rebirth"
+      provider_unavailable: "Provider %{provider} is currently unavailable, switched to %{to}."
       api_error:
         title: "Failed to load data from the provider"
         missing_api_key: "The DracinAPI license key is not set, so the catalog cannot be loaded."

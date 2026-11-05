@@ -6,10 +6,12 @@ require "tmpdir"
 # panjang dari max_seconds dipecah jadi Part 1..n: part berikutnya dijadwalkan PART_GAP kemudian, setelah part
 # terakhir episode berikutnya mengikuti interval akun. Hasil/galat dicatat di last_status + log.
 class InstagramPostJob < ApplicationJob
+  include AutoPoster::TitleResolver
+
   queue_as :default
   discard_on ActiveJob::DeserializationError
   # Render ffmpeg berat (4 core) → satu posting dalam satu waktu untuk semua akun.
-  limits_concurrency to: 1, key: "instagram_post", duration: 20.minutes
+  limits_concurrency to: 1, key: "video_post", duration: 30.minutes
   PART_GAP = 3.minutes
 
   # manual: true (tombol "Posting sekarang") → jalan walau auto posting belum diaktifkan.
@@ -18,10 +20,11 @@ class InstagramPostJob < ApplicationJob
     return unless ap && ap.platform == "instagram" && (ap.enabled? || manual)
     ap.update_columns(last_run_at: Time.current, next_run_at: (Time.current + ap.interval_minutes.minutes if ap.enabled?))
     instance = ap.instance
+    InstagramProfileSyncJob.perform_later(ap.id) if InstagramProfileSyncJob.due?(ap) # username + website bio, maks 1x/hari
     catalog, drama, ep, part = resolve_target(ap, instance_locale(instance))
     stream = catalog.play(ap.drama_id, ep.number) or raise AutoPost::RunError, "stream episode #{ep.number} kosong"
 
-    sweep_stale_tmp
+    sweep_stale_tmp("igpost")
     Dir.mktmpdir("igpost") do |dir|
       builder = AutoPoster::VideoBuilder.new(instance, stream, dir, max_seconds: ap.max_seconds, offset_seconds: (part - 1) * ap.max_seconds,
                                              remix_seed: (ap.remix? ? ap.id * 1_000_003 + ep.number : nil), bgm: ap.bgm?)
@@ -42,49 +45,9 @@ class InstagramPostJob < ApplicationJob
       ap.update_columns(next_run_at: Time.current + PART_GAP) if ap.enabled? && part < parts
     end
   rescue AutoPoster::InstagramClient::AuthError => e
-    ap&.record!(ok: false, error: "AUTH: #{e.message}")
+    ap&.record_auth_failure!(e.message)
   rescue StandardError => e
     Rails.logger.error("[InstagramPostJob] auto_post=#{auto_post_id} #{e.class}: #{e.message}")
     ap&.record!(ok: false, error: "#{e.class.name.demodulize}: #{e.message}")
   end
-
-  private
-  # Menentukan judul + episode/part berikutnya. Judul otomatis: bila belum ada judul, jatah episode judul ini habis,
-  # atau episode terbuka sudah habis → TitlePicker memilih judul baru (statistik → acak terbaru), maksimal 2x ganti.
-  def resolve_target(ap, locale, hops = 0)
-    AutoPoster::TitlePicker.new(ap, locale: locale).pick! if ap.auto_title? && (ap.drama_id.blank? || ap.title_done?)
-    provider = ap.provider or raise AutoPost::RunError, "penyedia #{ap.provider_slug} tidak ada"
-    catalog = DracinApi::Catalog.for(provider, lang: locale)
-    drama = catalog.detail(ap.drama_id)
-    episodes = catalog.episodes(ap.drama_id).reject(&:locked).sort_by(&:number)
-
-    ep = part = nil
-    if ap.more_parts?
-      ep = episodes.find { |e| e.number == ap.last_episode }
-      part = ap.last_part + 1
-    end
-    unless ep
-      ep = episodes.find { |e| e.number > ap.last_episode.to_i }
-      part = 1
-    end
-    if ep.nil? && ap.auto_title? # judul ini tidak punya episode (lagi) → judul berikutnya
-      raise AutoPost::RunError, "tidak ada episode terbuka di #{ap.drama_title}" if hops >= 2
-      AutoPoster::TitlePicker.new(ap, locale: locale).pick!
-      return resolve_target(ap, locale, hops + 1)
-    end
-    ep ||= episodes.first or raise AutoPost::RunError, "tidak ada episode terbuka" # manual: habis → ulang dari awal
-    [ catalog, drama, ep, part ]
-  end
-
-  # Dir.mktmpdir dengan blok sudah menghapus folder kerja (video/cover/watermark) setelah unggah, sukses maupun gagal.
-  # Sisa folder hanya mungkin ada bila proses dimatikan di tengah jalan (restart service) — bersihkan yang > 2 jam.
-  def sweep_stale_tmp
-    Dir.glob(File.join(Dir.tmpdir, "igpost*")).each do |d|
-      FileUtils.rm_rf(d) if File.directory?(d) && File.mtime(d) < 2.hours.ago
-    end
-  rescue StandardError => e
-    Rails.logger.warn("[InstagramPostJob] sweep tmp: #{e.message}")
-  end
-
-  def instance_locale(instance) = (instance.respond_to?(:default_locale) && instance.default_locale.presence) || I18n.default_locale.to_s
 end

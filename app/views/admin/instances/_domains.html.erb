@@ -34,6 +34,30 @@
 
           <% if d.active? %>
             <p class="domain-ok"><%= dm_icon("check", size: 14) %> <%= t("admin.domains.active_text", url: "https://#{d.hostname}") %> <%= link_to "https://#{d.hostname}", "https://#{d.hostname}", target: "_blank", rel: "noopener" %></p>
+            <div class="domain-geo">
+              <span class="muted"><%= t("admin.domains.geo_label") %>:</span>
+              <% no_zone = d.cf_zone_id.blank? %>
+              <% if d.geo_restricted? %>
+                <span class="badge badge-success" title="<%= d.geo_codes.map { |c| Domain::GEO_COUNTRIES[c] || c }.join(', ') %>"><%= t("admin.domains.geo_only", country: Domain.geo_summary(d.geo_codes)) %></span>
+                <button type="submit" form="dom-geo-off-<%= d.id %>" class="btn btn-secondary btn-xs"><%= t("admin.domains.geo_open") %></button>
+              <% else %>
+                <span class="badge badge-muted"><%= t("admin.domains.geo_all") %></span>
+              <% end %>
+              <button type="submit" form="dom-geo-id-<%= d.id %>" class="btn btn-secondary btn-xs" <%= "disabled" if no_zone %>><%= t("admin.domains.geo_set_id") %></button>
+              <button type="submit" form="dom-geo-asia-<%= d.id %>" class="btn btn-secondary btn-xs" <%= "disabled" if no_zone %>><%= t("admin.domains.geo_set_asia") %></button>
+              <details class="geo-pick">
+                <summary class="btn btn-secondary btn-xs"><%= t("admin.domains.geo_pick") %></summary>
+                <div class="geo-pick-box">
+                  <div class="geo-pick-grid">
+                    <% Domain::GEO_COUNTRIES.sort_by { |_, name| name }.each do |code, name| %>
+                      <label class="geo-opt"><input type="checkbox" name="countries[]" value="<%= code %>" form="dom-geo-pick-<%= d.id %>" <%= "checked" if d.geo_codes.include?(code) %>> <%= name %> <span class="muted">(<%= code %>)</span></label>
+                    <% end %>
+                  </div>
+                  <button type="submit" form="dom-geo-pick-<%= d.id %>" class="btn btn-sm" <%= "disabled" if no_zone %>><%= t("admin.domains.geo_apply") %></button>
+                </div>
+              </details>
+              <span class="muted" style="font-size:.72rem;flex-basis:100%"><%= t("admin.domains.geo_hint") %></span>
+            </div>
           <% elsif d.nameservers.any? %>
             <p class="muted" style="margin:6px 0"><%= t("admin.domains.ns_instruction_html", hostname: d.hostname) %></p>
             <div class="ns-list">

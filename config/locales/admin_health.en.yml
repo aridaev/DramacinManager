@@ -1,0 +1,25 @@
+en:
+  admin:
+    api_sources:
+      health_table_title: "Providers currently hidden"
+      health_table_hint: "Checked automatically every 5 minutes. A provider is shown again as soon as it loads its catalog successfully."
+      col_provider: "Provider"
+      col_source: "Source"
+      col_problem: "Problem"
+      col_since: "Last failed"
+      col_hidden_until: "Hidden until"
+      col_recovery: "Recovery check"
+      recheck: "Check now"
+      rechecked: "%{name}: check scheduled, reload this page in a moment."
+      recheck_all: "Check all now"
+      rechecked_all: "%{count} providers scheduled for a check."
+      never_checked: "Not checked yet"
+      problems:
+        maintenance: "Maintenance"
+        down: "Server down"
+        timeout: "Timeout"
+        auth: "Token / access refused"
+        rate_limit: "Rate limit"
+        not_found: "Title not found"
+        generic: "Error"
+      failures_count: "%{count}x failed"

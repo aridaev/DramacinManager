@@ -31,6 +31,7 @@ module DracinApi
       raise MissingApiKey, I18n.t("dracin_api.errors.missing_api_key") unless configured?
       return Http.get_json("#{base_url}/api/status", params: { key: api_key }) if source.nil?
       return hmac_status if source.hmac?
+      return mola_status if Adapters::Mola.source_for?(source)
       url = source.status_url or raise Error, "status_path kosong"
       # Hub DracinAPI memakai ?key=; sumber lain mengikuti auth_mode-nya.
       params = source.auth_mode == "header_x_token" && source.slug == "dracinapi" ? { key: api_key } : source.auth_params
@@ -50,6 +51,16 @@ module DracinApi
           "status" => c["is_active"] == false ? "offline" : "online", "adapter" => "vorta" }
       end
       { "success" => true, "platforms" => platforms, "key" => info.slice("plan", "limit", "used", "remaining", "expires_at") }
+    end
+
+    # Hub Mola: validasi token (/api/validate-token) lalu daftar platform dari katalog docs → entri untuk apply_status!
+    # (semua platform memakai adapter "mola", dibuat NONAKTIF karena kuota token terbatas per hari).
+    def mola_status
+      info = Http.get_json("#{base_url}/api/validate-token", params: { token: api_key })
+      raise Error, info["message"].presence || "Token Mola tidak valid" unless info["valid"] || info["success"]
+      Rails.cache.delete([ "mola", "catalog", source.id ])
+      { "success" => true, "platforms" => Adapters::Mola.platform_entries(source),
+        "key" => info.slice("name", "rate_limit_per_day", "requests_today", "expires_at") }
     end
   end
 end

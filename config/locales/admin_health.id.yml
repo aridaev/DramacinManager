@@ -1,0 +1,25 @@
+id:
+  admin:
+    api_sources:
+      health_table_title: "Penyedia yang sedang disembunyikan"
+      health_table_hint: "Dicek otomatis tiap 5 menit. Penyedia tampil kembali begitu berhasil memuat katalog."
+      col_provider: "Penyedia"
+      col_source: "Sumber"
+      col_problem: "Masalah"
+      col_since: "Terakhir gagal"
+      col_hidden_until: "Disembunyikan s/d"
+      col_recovery: "Cek pemulihan"
+      recheck: "Cek sekarang"
+      rechecked: "%{name}: pengecekan dijadwalkan, muat ulang halaman ini sebentar lagi."
+      recheck_all: "Cek semua sekarang"
+      rechecked_all: "%{count} penyedia dijadwalkan untuk dicek."
+      never_checked: "Belum dicek"
+      problems:
+        maintenance: "Maintenance"
+        down: "Server mati"
+        timeout: "Timeout"
+        auth: "Token / akses ditolak"
+        rate_limit: "Rate limit"
+        not_found: "Judul tidak ditemukan"
+        generic: "Error"
+      failures_count: "%{count}x gagal"

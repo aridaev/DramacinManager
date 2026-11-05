@@ -6,7 +6,29 @@ en:
       title: Auto Posting
       hint: automatic Instagram posting; each account has its own title, schedule and text
       page_title: "Auto Posting — %{name}"
-      page_subtitle: "One card = one Instagram account (cookie). Accounts may share a title or use different ones."
+      page_subtitle: "One row = one Instagram account (cookie). Edit several accounts, then click Save all."
+      table_title: Instagram accounts
+      table_hint: "Click ⇩ in a column header to copy the first row's value to every row. Cookie, manual title and fixed text live under Details."
+      save_all: Save all
+      bulk_saved: "%{n} accounts saved."
+      fill_hint: Copy first row's value to all rows
+      col_on: On
+      col_account: Account
+      col_title: Title
+      col_auto: auto
+      col_interval: Interval (min)
+      col_max: Max (sec)
+      col_fx: Variation
+      col_remix: remix
+      col_bgm: music
+      col_status: Status
+      detail: Details
+      run_now_short: Post
+      sync_short: Sync
+      progress_short: "%{posts} posts · EP %{ep}"
+      stat_dead: Dead cookies
+      status_dead: Cookie dead
+      dead_hint: "Instagram rejected this cookie repeatedly (%{at}), so auto posting was disabled automatically. Paste a new cookie, Save all, and tick On."
       back_to_instance: Instance settings
       manage: Manage accounts & auto posting
       accounts_count: "%{n} accounts · %{on} enabled"
@@ -27,6 +49,10 @@ en:
       empty: No accounts yet. Add an Instagram cookie above.
       f_enabled: Enable auto posting for this account
       f_label: Account name
+      f_label_hint: auto @username from cookie when empty
+      profile_status: Profile
+      sync_profile: Sync profile
+      sync_profile_queued: Profile sync queued (username + bio website).
       f_cookie: Cookie
       f_cookie_hint: leave empty to keep the current one
       cookie_label_ph: Account name (optional)
@@ -57,6 +83,8 @@ en:
       f_auto_title_hint: "titles come from visitor Statistics (most viewed, not yet posted by this account); when exhausted, random from providers' latest"
       f_episodes_per_title: Episodes per title
       f_episodes_per_title_hint: after the quota, move on to the next title
+      f_genres: Auto genres
+      f_genres_hint: "comma separated; auto titles come from Statistics matching these genres, then genre search on providers, then random latest; empty = any genre"
       f_title_manual_hint: "optional with automatic titles: starting / current title"
       f_remix: Anti-copyright variation
       f_remix_hint: "each upload is slightly altered (speed ±3-5 %, pitch, zoom-crop, colour, shifted start) so the audio/video fingerprint differs from the source and from other accounts; titles are also rotated across accounts"

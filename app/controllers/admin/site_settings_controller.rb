@@ -14,10 +14,18 @@ class Admin::SiteSettingsController < Admin::BaseController
     @tp_status = Setting.get(Setting::TP_STATUS)
     @tp_auto_model = Setting.tokenplus_auto_model?
     @tp_models = (Rails.cache.read("tokenplus_models") || []) | TokenPlusClient::SUGGESTED_MODELS
+    @tg_api_id = Setting.telegram_api_id
+    @tg_api_hash = Setting.telegram_api_hash
+    @tg_status = Setting.get(Setting::TELEGRAM_STATUS)
   end
 
   def update
-    p = params.fetch(:site, {}).permit(:cloudflare_api_token, :cloudflare_account_id, :cloudflare_auth_email, :vps_ip, :cloudflare_ssl_mode, :users_can_create_instances, :max_instances_per_user, :tokenplus_api_key, :tokenplus_model, :tokenplus_auto_model)
+    p = params.fetch(:site, {}).permit(:cloudflare_api_token, :cloudflare_account_id, :cloudflare_auth_email, :vps_ip, :cloudflare_ssl_mode, :users_can_create_instances, :max_instances_per_user, :tokenplus_api_key, :tokenplus_model, :tokenplus_auto_model, :telegram_api_id, :telegram_api_hash)
+    if p[:telegram_api_id].present? && p[:telegram_api_id].to_s.strip !~ /\A\d{3,12}\z/
+      return redirect_to edit_admin_site_settings_path(anchor: "telegram"), alert: t("admin.site_settings.tg_id_invalid")
+    end
+    Setting.set(Setting::TELEGRAM_API_ID, p[:telegram_api_id].to_s.strip) if p[:telegram_api_id].present?
+    Setting.set(Setting::TELEGRAM_API_HASH, p[:telegram_api_hash].to_s.strip) if p[:telegram_api_hash].present?
     Setting.set(Setting::CF_API_TOKEN, p[:cloudflare_api_token].to_s.strip) if p[:cloudflare_api_token].present?
     Setting.set(Setting::CF_ACCOUNT_ID, p[:cloudflare_account_id].to_s.strip)
     Setting.set(Setting::CF_AUTH_EMAIL, p[:cloudflare_auth_email].to_s.strip.downcase)
@@ -61,6 +69,23 @@ class Admin::SiteSettingsController < Admin::BaseController
   rescue TokenPlusClient::Error => e
     Setting.set(Setting::TP_STATUS, "gagal: #{e.message.truncate(80)}")
     redirect_to edit_admin_site_settings_path, alert: t("admin.site_settings.tp_failed", error: e.message)
+  end
+
+  # Tes: sidecar hidup + kredensial terisi. (Kebenaran api_id/api_hash baru terbukti saat login QR pertama.)
+  def test_telegram
+    client = TelegramClient.from_settings
+    return redirect_to edit_admin_site_settings_path(anchor: "telegram"), alert: t("admin.site_settings.tg_missing") unless client.configured?
+    client.health
+    Setting.set(Setting::TELEGRAM_STATUS, "ok · sidecar aktif · #{I18n.l(Time.current, format: :short)}")
+    redirect_to edit_admin_site_settings_path(anchor: "telegram"), notice: t("admin.site_settings.tg_ok")
+  rescue TelegramClient::Error => e
+    Setting.set(Setting::TELEGRAM_STATUS, "gagal: #{e.message.truncate(80)}")
+    redirect_to edit_admin_site_settings_path(anchor: "telegram"), alert: t("admin.site_settings.tg_failed", error: e.message)
+  end
+
+  def clear_telegram
+    Setting.set(Setting::TELEGRAM_API_ID, nil); Setting.set(Setting::TELEGRAM_API_HASH, nil); Setting.set(Setting::TELEGRAM_STATUS, nil)
+    redirect_to edit_admin_site_settings_path(anchor: "telegram"), notice: t("admin.site_settings.tg_cleared")
   end
 
   def clear_tokenplus

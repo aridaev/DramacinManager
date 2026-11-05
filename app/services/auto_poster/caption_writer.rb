@@ -9,8 +9,8 @@ module AutoPoster
     MAX_LEN = 2000 # batas IG 2200; sisakan ruang
     BASE_TAGS = %w[#fyp #fypシ #foryou #foryoupage #viral #reels #reelsinstagram #dracin #dramachina #dramacina #dramapendek #shortdrama #cdrama #nontondrama #sinopsisdrama].freeze
 
-    def initialize(auto_post, drama, episode_number, part: 1, parts: 1, locale: "id")
-      @ap, @instance, @drama, @ep, @part, @parts, @locale = auto_post, auto_post.instance, drama, episode_number, part, parts, locale.to_s
+    def initialize(auto_post, drama, episode_number, part: 1, parts: 1, locale: "id", max_len: MAX_LEN)
+      @ap, @instance, @drama, @ep, @part, @parts, @locale, @max_len = auto_post, auto_post.instance, drama, episode_number, part, parts, locale.to_s, max_len
     end
 
     def call
@@ -67,7 +67,7 @@ module AutoPoster
 
     def finalize(text)
       t = text.to_s.strip.gsub(/\r\n?/, "\n").gsub(/\n{3,}/, "\n\n")
-      t.size > MAX_LEN ? t[0, MAX_LEN].sub(/\s+\S*\z/, "") : t
+      t.size > @max_len ? t[0, @max_len].sub(/\s+\S*\z/, "") : t
     end
   end
 end

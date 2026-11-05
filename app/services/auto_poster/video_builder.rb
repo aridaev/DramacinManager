@@ -141,18 +141,26 @@ module AutoPoster
       end
       x, y = WM_POS.fetch(@instance.watermark_pos) { WM_POS["top-center"] }
       alpha = (@instance.watermark_alpha / 100.0).clamp(0.1, 1.0)
-      if wm
+      font = FONT ? "fontfile=#{FONT}:" : ""
+      g << if wm
         h = WM_HEIGHT.fetch(@instance.watermark_size_key, 120)
-        g + "[1:v]format=rgba,scale=-1:#{h},colorchannelmixer=aa=#{alpha}[wm];[base][wm]overlay=#{x}:#{y}:format=auto[v]"
+        "[1:v]format=rgba,scale=-1:#{h},colorchannelmixer=aa=#{alpha}[wm];[base][wm]overlay=#{x}:#{y}:format=auto[v0]"
       else
-        text = @instance.display_name.to_s.first(40).gsub(/[\\':%\[\],;]/) { |c| "\\#{c}" }
+        text = drawtext_escape(@instance.display_name.to_s.first(40))
         # drawtext memakai w/h = ukuran frame dan text_w/text_h = ukuran teks.
         tx = x.sub("(W-w)/2", "(w-text_w)/2").sub("W-w", "w-text_w")
         ty = y.sub("H-h", "h-text_h")
-        font = FONT ? "fontfile=#{FONT}:" : ""
-        g + "[base]drawtext=#{font}text='#{text}':fontsize=60:fontcolor=white@#{alpha}:borderw=3:bordercolor=black@0.6:x=#{tx}:y=#{ty}[v]"
+        "[base]drawtext=#{font}text='#{text}':fontsize=60:fontcolor=white@#{alpha}:borderw=3:bordercolor=black@0.6:x=#{tx}:y=#{ty}[v0]"
       end
+      # Teks domain (mis. drama-china.com) di tengah bawah, di atas area caption Reels, agar penonton tahu situsnya.
+      site = @instance.watermark_text_value
+      return g.sub(/\[v0\]\z/, "[v]") if site.blank?
+
+      g + ";[v0]drawtext=#{font}text='#{drawtext_escape(site)}':fontsize=54:fontcolor=white@0.95:borderw=3:bordercolor=black@0.7:" \
+          "box=1:boxcolor=black@0.35:boxborderw=14:x=(w-text_w)/2:y=h-text_h-#{BOTTOM_SAFE + 20}[v]"
     end
+
+    def drawtext_escape(text) = text.to_s.gsub(/[\\':%\[\],;]/) { |c| "\\#{c}" }
 
     # Parameter remix dari seed (deterministik: part 1..n satu episode memakai nilai yang sama).
     def remix_params(seed)

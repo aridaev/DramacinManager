@@ -41,6 +41,14 @@ class ApiSource < ApplicationRecord
 
   def hmac? = auth_mode == "hmac_sha256"
 
+  # Kesehatan (diisi DracinApi::Health saat runtime + rake dracin:health): tidak sehat = token ditolak / kuota habis / host down.
+  scope :unhealthy, -> { where("unhealthy_until > ?", Time.current) }
+  def healthy? = unhealthy_until.nil? || unhealthy_until <= Time.current
+  def quota_ratio = (quota_limit.to_i.positive? ? quota_used.to_f / quota_limit : nil)
+  def key_expiring_soon? = key_expires_at.present? && key_expires_at < 3.days.from_now
+  # Platform di hub berkuota harian: 1 cek status per hari sudah cukup dan tidak boros kuota.
+  def quota_limited? = quota_limit.to_i.positive?
+
   # Vorta: X-Timestamp (ms) + X-Signature = hex HMAC-SHA256("METHOD:/path?query:timestamp", secret).
   def hmac_headers(method, request_uri)
     ts = (Time.now.to_f * 1000).to_i.to_s

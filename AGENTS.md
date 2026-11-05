@@ -100,3 +100,32 @@ pakai `button_to` untuk request non-GET (jangan `link_to ... turbo_method:`).
 - Template baru (v2): tambah entri `Instance::TEMPLATES`, blok constraint baru di routes, dan include concern serupa.
 - Logo provider dari hub mengirim `Cross-Origin-Resource-Policy: same-origin` → dipakai proxy `/provider_logos/:slug` (`ProviderLogosController`, cache 1 hari, membuka bungkus `<svg><image data:…>`).
 - Cron `/etc/cron.d/dracin-domains` tiap 15 menit: `dracin:domains_refresh` mengaktifkan domain yang zone-nya sudah aktif di CF.
+- Pembatasan negara per domain: `Domain#set_geo!("ID")` → WAF custom rule di zone (`CloudflareClient#set_geo_allow_only`,
+  phase `http_request_firewall_custom`, rule ditandai description `dracinmanager-geo`, bot terverifikasi tetap lolos);
+  `set_geo!(nil)` menghapus rule kita saja. Tombol di kartu Domain (`POST admin/instances/:id/domains/:id/geo?country=ID`).
+  Ruleset kosong dikembalikan CF TANPA key `rules` → selalu `Array(rs["rules"])`. Origin masih bisa diakses langsung via IP VPS
+  (nginx tidak membatasi ke IP Cloudflare), jadi geo-block hanya berlaku lewat CF.
+
+## Hub Mola API (api.molatv.id, Okt 2026)
+- ApiSource slug `mola` (base_url api.molatv.id, auth header `X-API-TOKEN`; field auth_mode diisi `bearer` hanya formalitas).
+  `Client#status` → `mola_status`: validasi `/api/validate-token?token=` + daftar platform dari katalog docs → provider
+  dengan `adapter_key: "mola"`, dibuat NONAKTIF (quota). Sync ulang: tombol Sinkron di /admin/api_sources.
+- Adapter GENERIK `DracinApi::Adapters::Mola`: aksi+parameter tiap platform dibaca dari `const ALL_PLATFORMS` di HTML
+  `/docs/<slug>?token=` (cache 24 jam), cadangan `config/mola_platforms.json` (88 platform, 666 endpoint). Respons
+  dinormalisasi lewat daftar kunci lazim (ID_KEYS/TITLE_KEYS/...). Teruji: vibeshortv2 (data.data[]), dramaboxv2 (books[]/bookName/
+  chapterIndex), joyreels (books[]/playlet_id/tags[{name}]). Platform lain belum diuji satu per satu — kalau ada yang
+  gagal, tambahkan kunci ke konstanta tsb, jangan bikin adapter baru.
+- Bahasa katalog stateful per token (`set_language`) → dipanggil 1x/hari per platform (`ensure_language!`).
+- KUOTA token tester 100 request/hari (`validate-token` → requests_today). Karena itu: `Mola::CACHE_TTL` 6 jam
+  (Catalog menghormati `adapter.class::CACHE_TTL`), beranda maks `HOME_MAX`=2 section, dan rake `dracin:latency`
+  MELEWATI provider mola. Jangan aktifkan banyak provider Mola sebelum token diupgrade.
+- Fallback: provider DracinAPI → Vorta → Mola (`Adapters.fallback_for`); provider hub → adapter natif slug sama bila ada.
+
+## Auto posting Instagram (Okt 2026)
+- Halaman `/admin/instances/:id/auto_posts` = tabel, satu form `PATCH bulk_update` (`auto_posts[<id>][field]`); hanya baris
+  yang `changed?` disimpan. Cookie/judul manual/teks tetap/log ada di baris Detail (`<tr class="ap-detail" hidden>`).
+  Tombol ⇩ di header menyalin nilai baris pertama ke semua baris (client-side).
+- Cookie mati: `AutoPost#record_auth_failure!` — setelah `AUTH_FAILS_TO_DISABLE` (2) AUTH gagal berturut-turut akun
+  dinonaktifkan (`enabled=false, next_run_at=nil, auth_failed_at`), tampil "Cookie mati"; `cookie=` dengan nilai baru mereset
+  `auth_failed_at`. Uji controller tanpa browser: `Rack::Test` + `Warden.test_mode!` + `ActionController::Base.allow_forgery_protection = false`
+  di `bin/rails runner`.
